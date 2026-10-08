@@ -35,7 +35,7 @@ body{font-family:var(--f-ui);-webkit-user-select:none;user-select:none;touch-act
 #batt .bar b{width:7px;height:11px;background:var(--ink);opacity:.9}
 #batt .bar b.off{opacity:.15}
 #batt.low .bar b{background:var(--rec)}
-#stance{position:absolute;bottom:46px;left:44px;font-size:12px;color:var(--tape)}
+#stance{position:absolute;bottom:64px;left:44px;font-size:12px;color:var(--tape)}
 #finds{position:absolute;bottom:24px;right:44px;font-variant-numeric:tabular-nums;text-align:right}
 #keyMark{position:absolute;bottom:46px;right:44px;font-size:12px;color:var(--tape)}
 #cross{position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1px 0 0 -1px;background:rgba(216,210,194,.6)}
@@ -70,7 +70,16 @@ label.sl input{accent-color:var(--tape);width:140px}
 #tbE{bottom:198px}#tbF{bottom:146px}#tbC{bottom:94px}#tbR{bottom:42px}
 .tb.on{background:rgba(201,179,122,.35)}
 #nvTag{position:absolute;top:22px;left:50%;transform:translateX(-50%);color:#7dff8a;font-size:13px;letter-spacing:.18em}
-#mate{position:absolute;top:66px;left:44px;font-size:12px;color:var(--dim)}
+#mate{position:absolute;top:66px;left:44px;font-size:12px;color:var(--dim);line-height:1.6}
+#mate .cap{color:var(--rec)}
+#radio{position:absolute;bottom:46px;left:44px;font-size:12px;color:#8fd0c0;display:flex;gap:8px;align-items:center}
+#radio .bar{display:flex;gap:2px}
+#radio .bar b{width:5px;height:10px;background:#8fd0c0;opacity:.15}
+#radio .bar b.on{opacity:.95}
+#radio .bar b.hot{background:var(--rec)}
+#voice.spirit{color:#9fe0d0;text-shadow:0 0 6px rgba(80,200,180,.6),1px 1px 0 #000}
+.coop .lobby{font-size:14px;color:var(--ink);line-height:1.6;margin:0;padding:0;list-style:none}
+.coop .lobby li span{color:var(--dim)}
 #capTag{position:absolute;top:30%;left:50%;transform:translateX(-50%);text-align:center;color:var(--rec);font-size:20px;letter-spacing:.12em;width:min(560px,86vw)}
 #capTag small{display:block;margin-top:8px;font-size:13px;color:var(--ink);letter-spacing:.06em}
 .coop{display:flex;flex-direction:column;gap:12px;border:1px solid rgba(216,210,194,.18);padding:14px 16px;background:rgba(8,6,6,.5)}
@@ -101,9 +110,10 @@ label.sl input{accent-color:var(--tape);width:140px}
   <div id="voice" style="opacity:0"></div>
   <div id="note" style="opacity:0"><h3></h3><p></p></div>
   <div id="stance" hidden>ПРИСЕД</div>
+  <div id="radio" hidden><span>ЭФИР</span><span class="bar"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span><span id="radioTxt"></span></div>
   <div id="batt"><span>ФОНАРЬ</span><span class="bar"><b></b><b></b><b></b><b></b><b></b></span></div>
   <div id="keyMark" hidden>КЛЮЧ ОТ ПОДВАЛА</div>
-  <div id="finds">УЛИКИ 0/5</div>
+  <div id="finds">УЛИКИ 0/7</div>
 </div>
 
 <div id="touch" hidden>
@@ -118,13 +128,14 @@ label.sl input{accent-color:var(--tape);width:140px}
   <div class="box">
     <div class="eyebrow">Юклид-авеню, Ист-Кливленд · 02:47 · гроза</div>
     <h1>ДОМ<br>1417</h1>
-    <p class="lede">Особняк Холлоуэев стоит пустым с 1979 года. Тогда здесь собиралась «Церковь Утренней Звезды», и после одной ночи одиннадцать её членов больше никто не видел. Ты снимаешь ролик. Найди пять улик культа и выберись живым. В доме кто-то есть.</p>
+    <div class="eyebrow" style="color:var(--rec);letter-spacing:.3em">Поездка в Ад</div>
+    <p class="lede">Эдгар Холлоуэй строил комнаты страха для парка Юклид-Бич. Когда парк закрыли, он увёз свой аттракцион домой и собрал его заново, под садом. По воскресеньям в доме собиралась «Церковь Утренней Звезды», и каждая служба была поездкой. 21 декабря 1979 года одиннадцать прихожан сели в вагонетки, и больше их никто не видел. Ты снимаешь ролик. Найди семь улик и выберись живым. Аттракцион до сих пор работает.</p>
     <dl class="controls" id="ctlDesk">
       <dt>WASD</dt><dd>идти, Shift — бежать (бег слышно)</dd>
       <dt>C</dt><dd>присесть: тише шаги, можно пролезть под завалами</dd>
       <dt>Мышь</dt><dd>осмотреться (клик по экрану захватывает курсор)</dd>
       <dt>E / клик</dt><dd>двери, ящики, предметы, улики; в шкафу можно спрятаться</dd>
-      <dt>F</dt><dd>фонарь (вдвоём у оператора — ночной режим камеры). Батарейки садятся</dd>
+      <dt>F</dt><dd>фонарь; у оператора — ночной режим камеры, у медиума — приёмник. Батарейки садятся</dd>
       <dt>Esc</dt><dd>пауза</dd>
     </dl>
     <dl class="controls" id="ctlTouch" hidden>
@@ -137,12 +148,13 @@ label.sl input{accent-color:var(--tape);width:140px}
       <label class="sl" for="bright">Яркость <input id="bright" type="range" min="1" max="2.4" step="0.05" value="1.55"></label>
     </div>
     <div class="coop" id="coop">
-      <h2>Вдвоём</h2>
-      <p class="roleinfo">Один снимает: камера с ночным режимом видит в темноте и замечает улики издалека, но не светит. Другой держит фонарь: только свет останавливает Хозяина. Кого он поймает, того утащит в подвал к алтарю, и у напарника будет минута, чтобы разорвать круг.</p>
+      <h2>Вдвоём или втроём</h2>
+      <p class="roleinfo">Оператор снимает: камера с ночным режимом видит в темноте, но не светит. У фонарщика фонарь: только свет останавливает Хозяина. Медиум держит лампу и старый приёмник: в эфире слышно, когда Хозяин рядом, и мёртвые иногда подсказывают дорогу. Кого Хозяин поймает, того утащит к алтарю в подвале, и у остальных будет минута, чтобы разорвать круг.</p>
       <div class="roles" id="roleRow">
-        <span class="small">Ты:</span>
-        <label><input type="radio" name="role" value="cam" checked> с камерой</label>
+        <span class="small">Хочу быть:</span>
+        <label><input type="radio" name="role" value="cam" checked> оператором</label>
         <label><input type="radio" name="role" value="light"> с фонарём</label>
+        <label><input type="radio" name="role" value="medium"> медиумом</label>
       </div>
       <div class="row">
         <button class="ghost" id="host" type="button">Создать комнату</button>
@@ -150,11 +162,12 @@ label.sl input{accent-color:var(--tape);width:140px}
         <button class="ghost" id="join" type="button">Войти</button>
       </div>
       <div class="code" id="roomCode" hidden></div>
+      <ul class="lobby" id="lobby"></ul>
       <div class="status" id="netStatus"></div>
       <div class="small" id="netDiag"></div>
-      <div class="row"><button class="go" id="startCoop" type="button" hidden><i></i>Начать вдвоём</button></div>
+      <div class="row"><button class="go" id="startCoop" type="button" hidden><i></i>Начать вместе</button></div>
     </div>
-    <div class="small">Играть в наушниках. Голос — через Discord или телефон. Прототип: двор, два этажа, подвал.</div>
+    <div class="small">Играть в наушниках. Голос — через Discord или телефон. Особняк, чердак, подвал, сад и аттракцион под землёй.</div>
   </div>
 </div>
 
@@ -315,6 +328,38 @@ T.eface = makeTex(32, 32, (g, w, h) => {
   drip(g, 6, 28, 4, 2, '80,10,8', .9); drip(g, 20, 28, 4, 2, '80,10,8', .9); grain(g, w, h, 16);
 });
 
+// ---- v5: the ride, the attic, the garden ----
+T.mface = makeTex(32, 32, (g, w, h) => { g.fillStyle = '#c4baa4'; g.fillRect(0, 0, w, h); stain(g, 16, 22, 12, '120,100,80', .4); g.fillStyle = '#100c0a'; g.fillRect(8, 11, 5, 3); g.fillRect(19, 11, 5, 3); g.fillStyle = '#e8e0cc'; g.fillRect(10, 12, 1, 1); g.fillRect(21, 12, 1, 1); g.fillStyle = '#6a1610'; g.fillRect(10, 22, 12, 2); for (let i = 0; i < 3; i++) drip(g, R(8, 22), 14, R(4, 12), 1, '60,10,8', .8); cracks(g, w, h, 3, 'rgba(40,30,20,.7)'); grain(g, w, h, 14); });
+T.cmask = makeTex(32, 32, (g, w, h) => { g.fillStyle = '#140808'; g.fillRect(0, 0, w, h); g.fillStyle = '#d6ccb2'; g.beginPath(); g.ellipse(16, 18, 10, 13, 0, 0, 7); g.fill(); g.fillStyle = '#050303'; g.fillRect(9, 14, 6, 3); g.fillRect(17, 14, 6, 3); g.fillRect(14, 24, 4, 1); g.fillStyle = '#a8862a'; g.fillRect(15, 6, 2, 6); g.fillRect(12, 8, 8, 2); drip(g, 11, 17, 8, 1, '90,10,8', .9); drip(g, 20, 17, 6, 1, '90,10,8', .9); grain(g, w, h, 12); });
+T.edgar = makeTex(32, 32, (g, w, h) => { g.fillStyle = '#9a8c78'; g.fillRect(0, 0, w, h); g.fillStyle = '#d8d0c0'; g.fillRect(4, 0, 24, 6); g.strokeStyle = '#2a2420'; g.lineWidth = 1; g.strokeRect(7.5, 11.5, 6, 4); g.strokeRect(18.5, 11.5, 6, 4); g.fillRect(13, 13, 6, 1); g.fillStyle = '#0a0806'; g.fillRect(9, 13, 3, 2); g.fillRect(20, 13, 3, 2); g.fillStyle = '#d8d0c0'; g.fillRect(9, 20, 14, 3); g.fillStyle = '#1a0806'; g.fillRect(11, 24, 10, 6); stain(g, 6, 26, 6, '60,40,30', .5); grain(g, w, h, 16); });
+T.clown = makeTex(128, 112, (g, w, h) => {
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = '#5a0c08'; g.beginPath(); g.ellipse(64, 50, 62, 50, 0, 0, 7); g.fill(); g.fillRect(2, 50, 124, 62);
+  g.fillStyle = '#e8d8b0'; g.beginPath(); g.ellipse(64, 46, 50, 40, 0, 0, 7); g.fill();
+  for (const s of [-1, 1]){ g.fillStyle = '#3a0604'; g.beginPath(); g.moveTo(64 + s * 30, 14); g.lineTo(64 + s * 56, -8); g.lineTo(64 + s * 44, 22); g.fill(); g.fillStyle = '#f0c020'; g.beginPath(); g.arc(64 + s * 22, 30, 9, 0, 7); g.fill(); g.fillStyle = '#000'; g.fillRect(64 + s * 22 - 2, 23, 4, 14); g.fillStyle = '#c01818'; g.beginPath(); g.arc(64 + s * 34, 52, 6, 0, 7); g.fill(); }
+  g.fillStyle = '#c01818'; g.beginPath(); g.arc(64, 44, 7, 0, 7); g.fill();
+  g.fillStyle = '#c01818'; g.fillRect(36, 58, 56, 54);
+  g.clearRect(42, 62, 44, 50);
+  g.fillStyle = '#f2ead6'; for (let x = 42; x < 86; x += 6){ g.beginPath(); g.moveTo(x, 62); g.lineTo(x + 6, 62); g.lineTo(x + 3, 72); g.fill(); }
+  for (let y = 70; y < 112; y += 8){ g.beginPath(); g.moveTo(42, y); g.lineTo(42, y + 7); g.lineTo(49, y + 3); g.fill(); g.beginPath(); g.moveTo(86, y); g.lineTo(86, y + 7); g.lineTo(79, y + 3); g.fill(); }
+  g.fillStyle = '#f0c020'; g.font = 'bold 13px Impact, "Arial Black", sans-serif'; g.fillText('ПОЕЗДКА В АД', 22, 104 - 90);
+  for (let i = 0; i < 8; i++) drip(g, R(10, 118), R(60, 90), R(8, 20), 2, '30,4,2', .8);
+  grain(g, w, h, 14);
+});
+T.sign = textTex(128, 32, '#1a0606', (g, w, h) => { g.fillStyle = '#f0c020'; g.font = 'bold 11px Georgia, serif'; g.fillText("HOLLOWAY'S", 34, 12); g.fillStyle = '#e83020'; g.font = 'bold 13px Impact, "Arial Black", sans-serif'; g.fillText('ПОЕЗДКА В АД', 20, 27); for (let x = 3; x < w; x += 8){ g.fillStyle = (x / 8) % 2 ? '#ffd860' : '#ff4030'; g.fillRect(x, 1, 2, 2); g.fillRect(x, h - 3, 2, 2); } });
+T.rdoor = textTex(32, 64, '#0c0808', (g, w, h) => { g.fillStyle = '#1c1010'; g.fillRect(2, 2, 28, 60); g.fillStyle = '#b02010'; pentagram(g, 16, 26, 11, '#8a1a10', 1); g.fillStyle = '#c8b070'; g.font = 'bold 6px Arial, sans-serif'; g.fillText('НЕ', 11, 48); g.fillText('ОГЛЯДЫВАЙСЯ', 1, 56); grain(g, w, h, 16); });
+T.velvet = makeTex(32, 64, (g, w, h) => { for (let x = 0; x < w; x++){ const v = 0.55 + 0.45 * Math.sin(x / w * 6.283 * 3); g.fillStyle = `rgb(${70 * v + 20 | 0},${8 * v | 0},${10 * v | 0})`; g.fillRect(x, 0, 1, h); } stain(g, 16, 50, 12, '10,0,0', .6); grain(g, w, h, 14); });
+T.check = makeTex(64, 64, (g, w, h) => { for (let y = 0; y < h; y += 16) for (let x = 0; x < w; x += 16){ g.fillStyle = ((x + y) / 16) % 2 ? '#8a8474' : '#161412'; g.fillRect(x, y, 16, 16); } for (let i = 0; i < 6; i++) stain(g, R(0, w), R(0, h), R(6, 16), '40,20,10', .55); stain(g, 40, 20, 10, '90,10,8', .5); grain(g, w, h, 24); });
+T.hell = makeTex(64, 128, (g, w, h) => { g.fillStyle = '#120404'; g.fillRect(0, 0, w, h); for (let i = 0; i < 9; i++){ const x = R(0, w), fh = R(30, 80); const gr = g.createLinearGradient(0, h, 0, h - fh); gr.addColorStop(0, 'rgba(220,90,20,.9)'); gr.addColorStop(.5, 'rgba(160,20,10,.7)'); gr.addColorStop(1, 'rgba(60,0,0,0)'); g.fillStyle = gr; g.beginPath(); g.moveTo(x - 10, h); g.quadraticCurveTo(x - 6, h - fh * .5, x, h - fh); g.quadraticCurveTo(x + 6, h - fh * .5, x + 10, h); g.fill(); } g.fillStyle = 'rgba(230,200,150,.5)'; for (let i = 0; i < 3; i++){ const x = R(8, 56), y = R(20, 60); g.fillRect(x, y, 6, 7); g.fillStyle = '#000'; g.fillRect(x + 1, y + 2, 1, 2); g.fillRect(x + 4, y + 2, 1, 2); g.fillStyle = 'rgba(230,200,150,.5)'; } grain(g, w, h, 18); });
+T.mirror2 = makeTex(32, 48, (g, w, h) => { g.fillStyle = '#2a3238'; g.fillRect(0, 0, w, h); for (let i = 0; i < 5; i++) stain(g, R(0, w), R(0, h), R(4, 10), '10,10,10', .7); g.fillStyle = 'rgba(200,190,170,.18)'; g.beginPath(); g.ellipse(16, 18, 6, 8, 0, 0, 7); g.fill(); g.fillRect(9, 26, 14, 22); g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(12, 20, 3, 2); g.fillRect(17, 20, 3, 2); g.strokeStyle = '#6b5528'; g.lineWidth = 3; g.strokeRect(1, 1, w - 2, h - 2); grain(g, w, h, 12); });
+T.panelE = textTex(32, 40, '#3a3c38', (g, w, h) => { g.strokeStyle = '#1a1a18'; g.strokeRect(1.5, 1.5, 29, 37); g.fillStyle = '#d8c050'; g.fillRect(4, 4, 24, 7); g.fillStyle = '#1a1a18'; g.font = 'bold 5px Arial, sans-serif'; g.fillText('ПИТАНИЕ', 5, 9.5); g.fillStyle = '#c8b070'; g.font = '4px Arial, sans-serif'; g.fillText('ПОЕЗДКА В АД', 4, 17); g.fillStyle = '#111'; g.fillRect(12, 20, 8, 16); g.fillStyle = '#8a1a10'; g.fillRect(14, 22, 4, 3); stain(g, 24, 30, 6, '100,50,25', .6); grain(g, w, h, 18); });
+T.blueprint = textTex(16, 16, '#1c3a6a', (g) => { g.strokeStyle = '#d8e0f0'; g.lineWidth = 1; g.strokeRect(2.5, 2.5, 11, 11); g.beginPath(); g.moveTo(3, 8); g.lineTo(8, 8); g.lineTo(8, 4); g.lineTo(13, 4); g.moveTo(8, 8); g.lineTo(8, 13); g.stroke(); });
+T.ticket = textTex(16, 8, '#c8a838', (g) => { g.fillStyle = '#7a1a10'; g.fillRect(1, 1, 14, 6); g.fillStyle = '#e8d070'; g.fillRect(3, 3, 10, 2); });
+T.handle = textTex(16, 8, '#8a1a10', (g) => { g.fillStyle = '#3a3a3a'; g.fillRect(0, 2, 6, 4); g.fillStyle = '#c8b070'; g.fillRect(6, 3, 1, 2); });
+T.grave = textTex(32, 48, '#5a5852', (g, w, h) => { g.fillStyle = '#6a6860'; g.fillRect(2, 6, 28, 42); g.beginPath(); g.arc(16, 10, 14, Math.PI, 0); g.fill(); g.fillStyle = '#2a2824'; g.fillRect(14, 12, 4, 14); g.fillRect(9, 16, 14, 3); g.fillRect(8, 32, 16, 1); g.fillRect(10, 36, 12, 1); stain(g, 10, 40, 10, '40,60,30', .6); cracks(g, w, h, 3, 'rgba(20,20,18,.8)'); grain(g, w, h, 20); });
+T.crypt = textTex(64, 16, '#4a4842', (g) => { g.fillStyle = '#1a1814'; g.font = 'bold 11px Georgia, serif'; g.fillText('HOLLOWAY', 4, 12); });
+T.rust = makeTex(32, 32, (g, w, h) => { g.fillStyle = '#5a2a18'; g.fillRect(0, 0, w, h); for (let i = 0; i < 10; i++) stain(g, R(0, w), R(0, h), R(3, 9), rnd() < .5 ? '120,60,25' : '40,20,12', .6); g.fillStyle = 'rgba(200,170,90,.35)'; g.fillRect(0, 12, w, 2); grain(g, w, h, 26); });
+
 /* ================= renderer & PS1 pipeline ================= */
 const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
 renderer.setPixelRatio(1);
@@ -324,11 +369,12 @@ const camera = new THREE.PerspectiveCamera(68, 4 / 3, 0.05, 45);
 camera.rotation.order = 'YXZ';
 const LOW_H = 240;
 let rt = null, rtW = 320;
-const NL = 8;
+const NL = 12;   // slot 0: outside only, 1..10: nearest lamps and candles, 11: lightning
 const shared = {
   uFlashPos: { value: new V3() }, uFlashDir: { value: new V3(0, 0, -1) }, uFlashI: { value: 0 },
   uFlashCos: { value: new THREE.Vector2(0.87, 0.958) },
-  uFlash2Pos: { value: new V3() }, uFlash2Dir: { value: new V3(0, 0, -1) }, uFlash2I: { value: 0 }, uNV: { value: 0 },
+  uRPos: { value: [new V3(), new V3()] }, uRDir: { value: [new V3(0, 0, -1), new V3(0, 0, -1)] }, uRI: { value: [0, 0] },
+  uRCos: { value: [new THREE.Vector2(0.87, 0.958), new THREE.Vector2(0.87, 0.958)] }, uNV: { value: 0 },
   uPLPos: { value: Array.from({ length: NL }, () => new V3(0, -50, 0)) },
   uPLCol: { value: Array.from({ length: NL }, () => new V3(0, 0, 0)) },
   uPLRad: { value: Array.from({ length: NL }, () => 1) },
@@ -364,11 +410,24 @@ void main(){
 const FS = `
 uniform sampler2D map; uniform vec3 uTint; uniform float uEmissive;
 uniform vec3 uFlashPos; uniform vec3 uFlashDir; uniform float uFlashI; uniform vec2 uFlashCos;
-uniform vec3 uFlash2Pos; uniform vec3 uFlash2Dir; uniform float uFlash2I; uniform float uNV;
+uniform vec3 uRPos[2]; uniform vec3 uRDir[2]; uniform float uRI[2]; uniform vec2 uRCos[2]; uniform float uNV;
 uniform vec3 uPLPos[${NL}]; uniform vec3 uPLCol[${NL}]; uniform float uPLRad[${NL}];
 uniform vec3 uOutAmb; uniform vec3 uFogColor; uniform float uFogNear; uniform float uFogFar;
 varying vec3 vWorldPos; varying vec3 vNormal; varying vec3 vUvW; varying float vDepth;
-float lvl(float y){ return y < -0.2 ? 0.0 : (y < 3.5 ? 1.0 : 2.0); }
+float lvl(vec3 p){ if (p.x < -3.0 && p.z > 33.0 && p.y > -1.05) return 1.0; return (p.y < -1.0 && p.z > 15.98) ? -1.0 : (p.y < -0.2 ? 0.0 : (p.y < 3.5 ? 1.0 : (p.y < 6.95 ? 2.0 : 3.0))); }
+bool isOut(vec3 P){
+  if (P.y < -1.05) return false;                                                           // cellars and the ride under the garden
+  if (P.x > -0.06 && P.x < 20.06 && P.z > -0.06 && P.z < 16.06 && P.y < 7.15) return false; // the house
+  if (P.x > 0.2 && P.x < 19.8 && P.z > 4.8 && P.z < 11.2 && P.y < 10.3) return false;       // attic
+  if (P.x > -10.95 && P.x < -3.55 && P.z > 34.05 && P.z < 38.95 && P.y < 2.4) return false;  // mausoleum
+  return true;
+}
+float spotL(vec3 lp, vec3 ld, vec2 cs, vec3 P, vec3 n){
+  vec3 L = lp - P; float d = length(L); L /= max(d, 0.0001);
+  float c = dot(-L, ld);
+  float s = smoothstep(cs.x, cs.y, c) + 0.06 * smoothstep(cs.x - 0.3, cs.x, c);
+  return s / (1.0 + 0.09 * d + 0.035 * d * d) * (max(dot(n, L), 0.0) * 0.85 + 0.15);
+}
 void main(){
   vec2 uv = vUvW.xy / vUvW.z;
   vec4 tex = texture2D(map, uv);
@@ -377,7 +436,7 @@ void main(){
   vec3 n = normalize(vNormal);
   if (!gl_FrontFacing) n = -n;
   vec3 P = vWorldPos;
-  bool outside = P.x < -0.06 || P.x > 20.06 || P.z < -0.06 || P.z > 16.06 || P.y > 7.15;
+  bool outside = isOut(P);
   vec3 light = outside ? uOutAmb : (P.y < -0.35 ? vec3(0.008, 0.008, 0.01) : vec3(0.015, 0.015, 0.018));
   vec3 L = uFlashPos - P; float d = length(L); L /= max(d, 0.0001);
   float c = dot(-L, uFlashDir);
@@ -388,18 +447,15 @@ void main(){
   float att = 1.0 / (1.0 + 0.09 * d + 0.035 * d * d);
   float lam = max(dot(n, L), 0.0) * 0.85 + 0.15;
   light += vec3(1.0, 0.9, 0.72) * uFlashI * spot * att * lam;
-  if (uFlash2I > 0.01){   // partner's flashlight
-    vec3 L2 = uFlash2Pos - P; float d2 = length(L2); L2 /= max(d2, 0.0001);
-    float c2 = dot(-L2, uFlash2Dir);
-    float s2 = smoothstep(uFlashCos.x, uFlashCos.y, c2) + 0.06 * smoothstep(uFlashCos.x - 0.3, uFlashCos.x, c2);
-    light += vec3(1.0, 0.9, 0.72) * uFlash2I * s2 / (1.0 + 0.09 * d2 + 0.035 * d2 * d2) * (max(dot(n, L2), 0.0) * 0.85 + 0.15);
+  for (int i = 0; i < 2; i++){   // partners' flashlights and lamps
+    if (uRI[i] > 0.01) light += vec3(1.0, 0.88, 0.68) * uRI[i] * spotL(uRPos[i], uRDir[i], uRCos[i], P, n);
   }
   light += uNV * vec3(0.3) * (1.0 - smoothstep(6.0, 18.0, vDepth));   // camcorder night mode
-  float myL = lvl(P.y);
+  float myL = lvl(P);
   for (int i = 0; i < ${NL}; i++){
     vec3 Lp = uPLPos[i] - P; float dp = length(Lp);
     float a = clamp(1.0 - dp / max(uPLRad[i], 0.001), 0.0, 1.0); a *= a;
-    float m = (i == 0) ? (outside ? 1.0 : 0.0) : ((!outside && lvl(uPLPos[i].y) == myL) ? 1.0 : 0.0);
+    float m = (i == 0) ? (outside ? 1.0 : 0.0) : ((!outside && lvl(uPLPos[i]) == myL) ? 1.0 : 0.0);
     light += m * uPLCol[i] * a * (max(dot(n, Lp / max(dp, 0.001)), 0.0) * 0.7 + 0.3);
   }
   vec3 col = base * light + base * uEmissive;
@@ -526,17 +582,14 @@ const G = 0, H1 = 3.4, U = 3.6, H2 = 6.8, B = -3.2, Y = -0.9;
 
 // ----- exterior -----
 box(-40, Y - 0.1, -30, 60, Y, -0.14, M.ground, { collide: false });
-box(-40, Y - 0.1, -0.14, -0.14, Y, 40, M.ground, { collide: false });
-box(20.14, Y - 0.1, -0.14, 60, Y, 40, M.ground, { collide: false });
 box(-40, Y - 0.08, -30, 60, Y + 0.01, -13, M.asphalt, { collide: false });
 box(9.2, Y - 0.05, -13, 10.8, Y + 0.02, -3.7, M.stone, { collide: false });
-floorZone(-40, 60, -40, -0.14, Y); floorZone(-40, -0.14, -0.14, 40, Y); floorZone(20.14, 60, -0.14, 40, Y);
 grassField(700, [-11, 31, -8.8, -0.3], Y, (x, z) => (x > 9 && x < 11) || (x > 7.3 && x < 12.7 && z > -2.8) || (x > 17.6 && z > -2.6));
 (function(){ const bars = []; for (let x = -12; x < 32; x += 0.22){ if (x > 9.2 && x < 10.8) continue; bars.push([x, Y, -9, 0.04, 2.2 + (Math.round(x / 0.22) % 2) * 0.15, 0.04]); } bars.push([-1.4, Y + 2.0, -9, 21.2, 0.06, 0.05]); bars.push([-1.4, Y + 0.25, -9, 21.2, 0.06, 0.05]); bars.push([21.4, Y + 2.0, -9, 21.2, 0.06, 0.05]); bars.push([21.4, Y + 0.25, -9, 21.2, 0.06, 0.05]); mergedBoxes(bars, M.metal); })();
 for (const gx of [9.2, 10.8]) box(gx - 0.15, Y, -9.15, gx + 0.15, Y + 2.6, -8.85, M.stone);
 prop(8.6, Y, -8.4, 1.0, 2.0, 0.05, M.metal, { ry: -0.9 }); prop(11.4, Y, -8.5, 1.0, 2.0, 0.05, M.metal, { ry: 1.1 });
 solids.push({ x0: -40, x1: 9.05, y0: -5, y1: 10, z0: -9.1, z1: -8.9 }, { x0: 10.95, x1: 60, y0: -5, y1: 10, z0: -9.1, z1: -8.9 }, { x0: -40, x1: 60, y0: -5, y1: 10, z0: -14.2, z1: -13.8 });
-box(-12, Y, -0.6, -0.14, Y + 2.4, 0.4, M.stone); box(22.4, Y, -0.6, 32, Y + 2.4, 0.4, M.stone);
+box(-12, Y, -0.25, -9.5, Y + 2.4, 0.25, M.stone); box(-7.3, Y, -0.25, -0.14, Y + 2.4, 0.25, M.stone); box(22.4, Y, -0.25, 26.7, Y + 2.4, 0.25, M.stone); box(28.9, Y, -0.25, 32, Y + 2.4, 0.25, M.stone);
 box(-12.6, Y, -9, -11.8, Y + 2.0, 0.4, M.hedge); box(31.4, Y, -9, 32.2, Y + 2.0, 0.4, M.hedge);
 function tree(x, z, h){ cyl(x, Y, z, 0.25, h, M.dark, 6); for (let i = 0; i < 5; i++){ const a = R(0, 6.28); prop(x + Math.cos(a) * 0.7, Y + h * R(.55, .9), z + Math.sin(a) * 0.7, 1.6, 0.1, 0.1, M.dark, { ry: -a, rz: R(.3, .8) }); } solids.push({ x0: x - .3, x1: x + .3, y0: Y, y1: Y + h, z0: z - .3, z1: z + .3 }); }
 tree(3, -5, 5.5); tree(-6, -3, 6.5); tree(25, -6, 6); tree(16.5, -6.5, 4.5);
@@ -550,7 +603,6 @@ wallX(16.07, -0.14, 20.14, Y, 7.2, M.brick, M.brick, [], 0.14);
 wallZ(-0.07, 0, 16, Y, 7.2, M.brick, M.brick, [], 0.14); wallZ(20.07, 0, 16, Y, 7.2, M.brick, M.brick, [], 0.14);
 box(-0.2, Y, -0.22, 9.4, G + 0.2, -0.13, M.stone, { collide: false }); box(10.6, Y, -0.22, 20.2, G + 0.2, -0.13, M.stone, { collide: false });
 box(-0.25, 3.4, -0.25, 20.25, 3.65, -0.13, M.stone, { collide: false });
-box(-0.3, 7.0, -0.3, 20.3, 7.3, 16.3, M.stone, { collide: false });
 (function(){
   const ra = Math.atan2(3, 8), L = Math.hypot(8, 3) + 0.5;
   const f = new THREE.Mesh(new THREE.BoxGeometry(21, 0.18, L, 12, 1, 6), M.roof); f.position.set(10, 8.8, 3.9); f.rotation.x = -ra; scene.add(f);
@@ -594,7 +646,6 @@ box(0, -0.34, 0, 20, -0.29, 10.6, M.joists, { collide: false }); box(0, -0.34, 1
 box(0, B - 0.2, 0, 20, B, 16, M.concrete, { collide: false });
 function slab(x0, z0, x1, z1, top){ box(x0, H1, z0, x1, H1 + 0.05, z1, M.ceil, { collide: false }); box(x0, H1 + 0.05, z0, x1, U, z1, top, { collide: false }); }
 slab(0, 0, 7, 8, M.carpet); slab(0, 8, 7, 16, M.wood); slab(7, 0, 11.2, 16, M.parquet); slab(11.2, 0, 13, 3, M.parquet); slab(11.2, 8.4, 13, 16, M.parquet); slab(13, 0, 20, 8, M.parquet); slab(13, 8, 20, 16, M.lino);
-box(0, H2, 0, 20, H2 + 0.2, 16, M.ceil, { collide: false });
 
 // ----- ground floor walls -----
 const tt = 0.1;
@@ -632,7 +683,7 @@ mergedBoxes([[8, U + 1.45, 12.3, 1.6, 0.14, 0.2, 0, 0, 0.6], [11.5, U + 1.0, 12.
 rubble(10, U, 12.3, 1.6, 22);
 
 // ----- basement walls -----
-wallX(0.05, 0, 20, B, -0.29, M.concrete, M.concrete, [], tt); wallX(15.95, 0, 20, B, -0.29, M.concrete, M.concrete, [], tt);
+wallX(0.05, 0, 20, B, -0.29, M.concrete, M.concrete, [], tt); wallX(15.95, 0, 20, B, -0.29, M.concrete, M.concrete, [{ a: 13.6, b: 15.4 }], tt);
 wallZ(0.05, 0, 16, B, -0.29, M.concrete, M.concrete, [], tt); wallZ(19.95, 0, 16, B, -0.29, M.concrete, M.concrete, [], tt);
 wallX(11, 8.9, 20, B, -0.29, M.brick, M.brick, [{ a: 12, b: 14 }]);
 for (const [px, pz] of [[4, 4], [4, 9], [16, 4], [16, 9]]) box(px - 0.2, B, pz - 0.2, px + 0.2, -0.29, pz + 0.2, M.brick);
@@ -663,6 +714,8 @@ function initAudio(){
   AU.rain = loop(white, 'bandpass', 2600, 0, 0.4);
   AU.rainLow = loop(brown, 'lowpass', 900, 0);
   AU.static = loop(white, 'highpass', 1800, 0);
+  AU.radio = loop(white, 'bandpass', 1300, 0, 0.9);
+  AU.cart = loop(brown, 'lowpass', 140, 0);
   const droneG = C.createGain(); droneG.gain.value = 0.04; const df = C.createBiquadFilter(); df.type = 'lowpass'; df.frequency.value = 260; droneG.connect(df); df.connect(master); AU.droneF = df;
   [43.65, 46.25, 65.4, 69.3].forEach(f => { const o = C.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; const og = C.createGain(); og.gain.value = 0.25; o.connect(og); og.connect(droneG); o.start(); });
   AU.drone = droneG;
@@ -730,11 +783,12 @@ const S = {
   creakT: 8, dripT: 2, heartT: 0, whisperT: 30, slamT: 50, lightT: 5, flash: 0, thunderQ: [],
   gramo: false, gramoT: 0, gramoI: 0, musicBox: false, mbT: 0, mbI: 0, horseT: 0, phoneRing: false, phoneT: 0, phoneDone: false, ringT: 0, ringLeft: 0,
   checkpoint: new V3(10, Y, -7), gamma: 1.55, noise: 0, wanderAt: 0,
-  role: 'solo', nv: false, captured: null, out: false
+  role: 'solo', nv: false, captured: null, out: false,
+  seat: -1, seatIdx: 0, power: false, hatch: false, hasHandle: false, radio: false, radioK: 0, blackout: 0, shake: 0, faceT: 0, shutter: 0
 };
-// co-op: NET is the connection, RP is the partner as last reported over the network
-const NET = { on: false, host: false, links: [], rooms: [], partnerId: null, seq: 0, seen: new Set(), applying: false, sendT: 0, lastRx: 0, ePos: new V3(), eYaw: 0, eFrozen: false, eMoving: false, started: false };
-const RP = { ok: false, pos: new V3(10, Y, -11.5), tpos: new V3(10, Y, -11.5), yaw: Math.PI, pitch: 0, crouch: false, flash: false, nv: false, noise: 0, hide: -1, hideSeen: false, cap: false, role: '', eye: new V3(), fwd: new V3(0, 0, 1), stepAcc: 0 };
+// co-op: NET is the connection, PEERS are the others as last reported over the network
+const NET = { on: false, host: false, me: '', hostId: null, roster: [], prefs: {}, presence: new Map(), links: [], rooms: [], seq: 0, seen: new Set(), applying: false, from: null, sendT: 0, lastRx: 0, ePos: new V3(), eYaw: 0, eFrozen: false, eMoving: false, started: false, rideT: undefined, log: [] };
+const PEERS = new Map();
 function netSend(m){ if (!NET.links.length) return; m.q = ++NET.seq; for (const l of NET.links) try { l.send(m); } catch (e){} }
 const player = { pos: new V3(10, Y, -11.5), vy: 0, yaw: Math.PI, pitch: 0, stamina: 1, bob: 0, stepAcc: 0, eye: 1.6 };
 const keys = {};
@@ -777,17 +831,24 @@ for (const k in DOORS) DOORS[k].key = k;
 prop(11, G, 15.88, 1.0, 2.3, 0.08, M.door); mergedBoxes([[11, 0.4, 15.8, 1.4, 0.15, 0.05, 0, 0, 0.2], [11, 1.3, 15.8, 1.4, 0.15, 0.05, 0, 0, -0.25], [11, 1.9, 15.8, 1.4, 0.15, 0.05]], M.planks);
 
 /* ================= candles & lights ================= */
-const lightGroups = {};
-function lightGroup(name, slot, x, y, z, col, rad, on = true){ const g = { slot, pos: new V3(x, y, z), col: new V3(...col), rad, on, flames: [], amp: 0.25 }; lightGroups[name] = g; shared.uPLPos.value[slot].copy(g.pos); shared.uPLRad.value[slot] = rad; return g; }
+const lightGroups = {}, LG = [];
+function lightGroup(name, x, y, z, col, rad, on = true){ const g = { idx: LG.length, pos: new V3(x, y, z), col: new V3(...col), rad, on, flames: [], amp: 0.25 }; lightGroups[name] = g; LG.push(g); return g; }
+function lvlOf(p){ if (p.x < -3.0 && p.z > 33.0 && p.y > -1.05) return 1; return (p.y < -1.0 && p.z > 15.98) ? -1 : (p.y < -0.2 ? 0 : (p.y < 3.5 ? 1 : (p.y < 6.95 ? 2 : 3))); }
+// the shader has ten lamp slots: give them to the lit groups nearest the camera, preferring the camera's floor
+function assignLights(){
+  const lv = lvlOf(camPos);
+  const cand = LG.filter(g => g.on).map(g => ({ g, k: g.pos.distanceTo(camPos) - g.rad + (lvlOf(g.pos) === lv ? 0 : 12) })).sort((a, b) => a.k - b.k);
+  for (let i = 1; i <= 10; i++){ const c = cand[i - 1]; if (c){ shared.uPLPos.value[i].copy(c.g.pos); shared.uPLRad.value[i] = c.g.rad; c.g.slot = i; } else { shared.uPLPos.value[i].set(0, -50, 0); shared.uPLCol.value[i].set(0, 0, 0); } }
+  for (const g of LG) if (!cand.slice(0, 10).some(c => c.g === g)) g.slot = 0;
+}
 function candle(x, y, z, group){ const h = R(0.08, 0.26); cyl(x, y, z, 0.025, h, M.wax, 5); const f = prop(x, y + h, z, 0.02, 0.05, 0.02, M.flame); if (group) lightGroups[group].flames.push(f); return f; }
 function candleRing(cx, y, cz, r, n, group){ for (let i = 0; i < n; i++){ const a = i / n * 6.283; candle(cx + Math.cos(a) * r, y, cz + Math.sin(a) * r, group); } }
-lightGroup('hearth', 1, 0.7, 0.5, 3.8, [0.55, 0.16, 0.05], 4.5);
-lightGroup('dining', 2, 3.5, 1.3, 11.5, [0.55, 0.32, 0.12], 5.0);
-lightGroup('study', 3, 16.5, U + 0.4, 4.2, [0.6, 0.3, 0.1], 5.0);
-lightGroup('ritual', 4, 10, B + 0.5, 6, [0.75, 0.32, 0.1], 7.5);
-lightGroup('nursery', 5, 1.2, U + 0.6, 15, [0.45, 0.03, 0.02], 4.5);
-lightGroup('bath', 6, 19.2, U + 1.2, 12, [0.5, 0.28, 0.1], 4.0);
-// slot 7: lightning inside (follows the player); slot 0: outside only
+lightGroup('hearth', 0.7, 0.5, 3.8, [0.55, 0.16, 0.05], 4.5);
+lightGroup('dining', 3.5, 1.3, 11.5, [0.55, 0.32, 0.12], 5.0);
+lightGroup('study', 16.5, U + 0.4, 4.2, [0.6, 0.3, 0.1], 5.0);
+lightGroup('ritual', 10, B + 0.5, 6, [0.75, 0.32, 0.1], 7.5);
+lightGroup('nursery', 1.2, U + 0.6, 15, [0.45, 0.03, 0.02], 4.5);
+lightGroup('bath', 19.2, U + 1.2, 12, [0.5, 0.28, 0.1], 4.0);
 
 /* ================= rooms ================= */
 // ----- foyer: fallen chandelier, phone, portrait -----
@@ -885,6 +946,241 @@ box(17.2, B, 13.2, 19.5, B + 1.8, 15.5, M.metal); for (let i = 0; i < 4; i++){ c
 box(19.4, B, 11.4, 19.9, B + 2, 12.8, M.planks); rubble(14, B, 14, 1.0, 14);
 for (let i = 0; i < 5; i++){ cyl(2.5 + i * 1.2, -1.3, 8.5, 0.01, 1.0, M.metal, 3); prop(2.5 + i * 1.2, -2.0, 8.5, 0.3, 0.75, 0.25, i % 2 ? M.sheet : M.meat, { rz: R(-.2, .2) }); }
 
+/* ================= v5: the garden, the attic, the ride under the garden ================= */
+const A = 7.3, D = -6.5, DC = -3.0;   // attic floor, ride floor, ride ceiling
+Object.assign(M, {
+  mface: mat(T.mface, { uv: true, warp: 0.01 }), cmask: mat(T.cmask, { uv: true }), edgar: mat(T.edgar, { uv: true }),
+  clown: mat(T.clown, { uv: true, emissive: 0 }), sign: mat(T.sign, { uv: true, emissive: 0 }), rdoor: mat(T.rdoor, { uv: true }),
+  velvet: mat(T.velvet, { scale: [1 / 1.2, 1 / 2.4] }), check: mat(T.check, { scale: [1 / 2, 1 / 2] }), hell: mat(T.hell, { scale: WS }),
+  mirror2: mat(T.mirror2, { uv: true, emissive: 0.04 }), panelE: mat(T.panelE, { uv: true }), grave: mat(T.grave, { uv: true }),
+  crypt: mat(T.crypt, { uv: true }), rust: mat(T.rust, { scale: [1 / 0.8, 1 / 0.8] }),
+  skin: mat(T.white, { tint: 0xa89c86 }), iron: mat(T.metal, { scale: [1 / 0.5, 1 / 0.5], tint: 0x707070 }),
+  bulbR: mat(T.white, { tint: 0xff3020, emissive: 0 }), bulbY: mat(T.white, { tint: 0xffd050, emissive: 0 }),
+  rope: mat(T.white, { tint: 0x3a3020 })
+});
+const powerMats = [M.bulbR, M.bulbY, M.clown, M.sign];
+// a box with a rectangular hole in it (stairwells, hatches)
+function boxHole(x0, y0, z0, x1, y1, z1, hx0, hz0, hx1, hz1, m, o){
+  box(x0, y0, z0, x1, y1, hz0, m, o); box(x0, y0, hz1, x1, y1, z1, m, o);
+  box(x0, y0, hz0, hx0, y1, hz1, m, o); box(hx1, y0, hz0, x1, y1, hz1, m, o);
+}
+// animatronic figures: cultists in robes, shop mannequins, wrapped bodies, dolls, the preacher
+function figure(kind, x, y, z, ry, o = {}){
+  const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = ry || 0; scene.add(g);
+  const body = new THREE.Group(); g.add(body);
+  const f = { g, body, kind };
+  const robe = kind === 'robe' || kind === 'preacher';
+  const skinM = kind === 'body' ? M.sheet : (robe ? M.robe : M.skin);
+  if (kind === 'body'){
+    prop(0, 0, 0, 0.36, 1.45, 0.28, M.sheet, { parent: body }); prop(0, 0, 0.0, 0.3, 0.08, 0.3, M.meat, { parent: body });
+    const head = new THREE.Group(); head.position.set(0, 1.45, 0); body.add(head); prop(0, 0, 0, 0.24, 0.3, 0.24, M.sheet, { parent: head }); prop(0, 0.08, 0.121, 0.16, 0.12, 0.01, M.meat, { parent: head });
+    f.head = head; return f;
+  }
+  if (robe){ prop(0, 0, 0, 0.52, 1.45, 0.36, M.robe, { parent: body }); prop(0, 1.0, 0, 0.62, 0.4, 0.4, M.robe, { parent: body }); }
+  else { prop(-0.1, 0, 0, 0.13, 0.85, 0.15, skinM, { parent: body }); prop(0.1, 0, 0, 0.13, 0.85, 0.15, skinM, { parent: body }); prop(0, 0.85, 0, 0.42, 0.6, 0.22, skinM, { parent: body }); }
+  const head = new THREE.Group(); head.position.set(0, robe ? 1.45 : 1.48, 0); body.add(head);
+  if (robe){ prop(0, 0, -0.02, 0.36, 0.42, 0.34, M.robe, { parent: head }); const face = prop(0, 0.05, 0.155, 0.24, 0.3, 0.02, kind === 'preacher' ? M.edgar : M.cmask, { parent: head }); f.face = face; }
+  else { prop(0, 0, 0, 0.22, 0.28, 0.24, skinM, { parent: head }); prop(0, 0.0, 0.122, 0.2, 0.24, 0.01, kind === 'doll' ? dm('doll') : M.mface, { parent: head }); }
+  if (kind === 'preacher'){ f.jaw = prop(0, -0.12, 0.17, 0.16, 0.08, 0.03, M.edgar, { parent: head }); }
+  f.head = head;
+  for (const s of [-1, 1]){
+    const arm = new THREE.Group(); arm.position.set(s * (robe ? 0.31 : 0.26), robe ? 1.3 : 1.38, 0); body.add(arm);
+    prop(0, -0.62, 0, 0.1, 0.62, 0.1, robe ? M.robe : skinM, { parent: arm }); prop(0, -0.76, 0, 0.07, 0.14, 0.09, robe ? M.skin : skinM, { parent: arm });
+    f[s < 0 ? 'armL' : 'armR'] = arm;
+  }
+  if (o.scale) g.scale.setScalar(o.scale);
+  if (o.collide){ const r = 0.3 * (o.scale || 1); solids.push({ x0: x - r, x1: x + r, y0: y, y1: y + 1.9, z0: z - r, z1: z + r }); }
+  return f;
+}
+
+// ----- the garden behind the house -----
+box(-40, Y - 0.1, -0.14, -0.14, Y, 35.5, M.ground, { collide: false }); box(-40, Y - 0.1, 37.5, -0.14, Y, 60, M.ground, { collide: false });
+box(-40, Y - 0.1, 35.5, -7, Y, 37.5, M.ground, { collide: false }); box(-3.5, Y - 0.1, 35.5, -0.14, Y, 37.5, M.ground, { collide: false });
+box(20.14, Y - 0.1, -0.14, 60, Y, 60, M.ground, { collide: false }); box(-0.14, Y - 0.1, 16.14, 20.14, Y, 60, M.ground, { collide: false });
+floorZone(-40, 60, -40, -0.14, Y);
+floorZone(-40, -0.14, -0.14, 35.5, Y); floorZone(-40, -0.14, 37.5, 60, Y); floorZone(-40, -7, 35.5, 37.5, Y); floorZone(-3.5, -0.14, 35.5, 37.5, Y);
+floorZone(20.14, 60, -0.14, 60, Y); floorZone(-0.14, 20.14, 16.14, 60, Y);
+box(-12.6, Y, 0.4, -11.8, Y + 2.2, 55.8, M.hedge); box(31.4, Y, 0.4, 32.2, Y + 2.2, 55.8, M.hedge); box(-12.6, Y, 55, 32.2, Y + 2.2, 55.8, M.hedge);
+// side gates in the garden walls
+prop(-9.0, Y, 0.0, 0.05, 1.9, 1.4, M.iron, { ry: 0.9 }); prop(28.6, Y, 0.0, 0.05, 1.9, 1.4, M.iron, { ry: -0.9 });
+for (const gx of [-9.35, -7.45, 26.85, 28.75]) box(gx - 0.15, Y, -0.25, gx + 0.15, Y + 2.7, 0.25, M.stone);
+grassField(900, [-11.5, 31, 0.6, 54], Y, (x, z) => (x > -0.4 && x < 20.4 && z < 16.4) || (x > -11.2 && x < -3.3 && z > 33.8 && z < 39.2));
+tree(-3, 22, 6); tree(24, 20, 5.5); tree(6, 44, 7); tree(27, 41, 6); tree(-8, 48, 5);
+// graves of the congregation: eleven stones with no names
+(function(){ const spots = [[-9, 14], [-7.4, 14.6], [-5.6, 14.1], [-9.2, 18], [-7.2, 18.6], [-5.4, 18.2], [3, 24], [5, 24.6], [7, 24], [9, 24.5], [11, 24]];
+  spots.forEach(([gx, gz], i) => { const st = decal(M.grave, gx, Y + 0.55, gz, 0.6, 0.9, rnd() < 0.5 ? R(-0.3, 0.3) : Math.PI + R(-0.3, 0.3)); st.rotation.z = R(-0.15, 0.15); const back = decal(M.grave, gx, Y + 0.55, gz - 0.02, 0.6, 0.9, st.rotation.y + Math.PI); back.rotation.z = -st.rotation.z; solids.push({ x0: gx - 0.3, x1: gx + 0.3, y0: Y, y1: Y + 1, z0: gz - 0.1, z1: gz + 0.1 }); box(gx - 0.35, Y, gz + 0.15, gx + 0.35, Y + 0.08, gz + 1.3, M.debris, { collide: false }); }); })();
+// the old ride sign and a rusted car, left in the grass
+(function(){ for (const px of [12, 16]) cyl(px, Y, 46, 0.07, 3.0, M.iron, 5); const s = decal(M.sign, 14, Y + 2.6, 46, 4.2, 1.05, Math.PI); s.rotation.z = 0.12; const s2 = decal(M.sign, 14, Y + 2.6, 46.02, 4.2, 1.05, 0); s2.rotation.z = -0.12;
+  prop(20, Y, 44, 1.2, 0.6, 2.2, M.rust, { ry: 0.5, rz: 0.15, collide: true }); prop(20, Y + 0.6, 44, 1.0, 0.5, 0.1, M.rust, { ry: 0.5 }); })();
+// the Holloway mausoleum: the way out of the ride
+(function(){
+  const x0 = -11, x1 = -3.5, z0 = 34, z1 = 39, top = Y + 3.2;
+  wallX(z0, x0, x1, Y, top, M.stone, M.stone, [{ a: -9.5, b: -8.1, top: 2.4 }], 0.3);
+  wallX(z1, x0, x1, Y, top, M.stone, M.stone, [], 0.3); wallZ(x0, z0, z1, Y, top, M.stone, M.stone, [], 0.3); wallZ(x1, z0, z1, Y, top, M.stone, M.stone, [], 0.3);
+  box(x0 - 0.3, top, z0 - 0.4, x1 + 0.3, top + 0.35, z1 + 0.3, M.stone, { collide: false });
+  box(-9.9, top + 0.35, z0 - 0.35, -7.7, top + 1.1, z0 - 0.15, M.stone, { collide: false });
+  decal(M.crypt, -8.8, top - 0.25, z0 - 0.16, 2.2, 0.55, Math.PI);
+  floorZone(x0, -7, z0, z1, Y); floorZone(-7, x1, z0, 35.5, Y); floorZone(-7, x1, 37.5, z1, Y);
+  box(x0, Y - 0.1, z0, -7, Y + 0.02, z1, M.stone, { collide: false }); box(-7, Y - 0.1, z0, x1, Y + 0.02, 35.5, M.stone, { collide: false }); box(-7, Y - 0.1, 37.5, x1, Y + 0.02, z1, M.stone, { collide: false });
+  // parapet around the stairwell
+  box(-7, Y, 35.35, x1, Y + 0.9, 35.5, M.stone); box(-7, Y, 37.5, x1, Y + 0.9, 37.65, M.stone);
+  for (const nz of [35, 38]) for (const nx of [-10.6, -10.0]) box(nx - 0.25, Y, nz - 0.5, nx + 0.25, Y + 0.6, nz + 0.5, M.stone);
+  lightGroup('crypt', -9, Y + 1.2, 36.5, [0.45, 0.28, 0.12], 5.5);
+  candle(-10.6, Y + 0.6, 35, 'crypt'); candle(-10.0, Y + 0.6, 38.2, 'crypt');
+  DOORS.crypt = makeDoor(-9.5, 34, 'x', 1.4, 2.4, Y, { locked: true, id: 'crypt', mat: M.iron }); DOORS.crypt.key = 'crypt';
+})();
+
+// ----- the attic: Holloway's workshop -----
+boxHole(0, H2, 0, 20, H2 + 0.2, 16, 11.6, 11.0, 12.6, 15.6, M.ceil, { collide: false });
+boxHole(-0.3, 7.0, -0.3, 20.3, 7.3, 16.3, 11.6, 11.0, 12.6, 15.6, M.stone, { collide: false });
+box(0.3, A - 0.02, 4.95, 19.7, A + 0.01, 11.05, M.planks, { collide: false });
+box(0.3, A, 4.85, 19.7, A + 1.85, 5.0, M.joists); box(0.3, A, 11.0, 11.6, A + 1.85, 11.15, M.joists); box(12.6, A, 11.0, 19.7, A + 1.85, 11.15, M.joists);
+box(0.15, A, 5, 0.35, 10.3, 11, M.planks); box(19.65, A, 5, 19.85, 10.3, 11, M.planks);
+for (let x = 1; x < 20; x += 2.2) box(x - 0.08, A + 1.85, 4.9, x + 0.08, A + 2.0, 11.1, M.dkwood, { collide: false });
+const ATTIC = { x0: 0.4, x1: 19.6, z0: 5.1, z1: 10.9 };
+floorZone(0.35, 19.65, 5.0, 11.0, A);
+// crates, a carousel horse, spare heads, the workbench
+[[3.5, 5.6, 1.0], [5.2, 10.3, 0.8], [8.4, 5.5, 0.9], [10.5, 10.2, 1.1], [15.0, 5.6, 0.8], [18.6, 9.9, 1.0], [1.4, 10.0, 0.9]].forEach(([cx, cz, s]) => prop(cx, A, cz, s, s * 0.8, s, M.planks, { ry: R(-.3, .3), collide: true, occlude: true }));
+(function(){ const h = new THREE.Group(); h.position.set(6.3, A, 8.6); h.rotation.y = 1.2; scene.add(h); h.add(cyl(0, 0, 0, 0.04, 2.3, M.brass, 5)); prop(0, 0.7, 0, 0.3, 0.35, 1.0, M.enamel, { parent: h }); prop(0, 1.0, 0.45, 0.2, 0.45, 0.22, M.enamel, { parent: h }); prop(0, 1.35, 0.6, 0.14, 0.16, 0.32, M.enamel, { parent: h }); })();
+for (let i = 0; i < 4; i++){ const hd = prop(12.5 + i * 0.45, A + 0.85, 5.3, 0.26, 0.3, 0.26, M.skin, { ry: R(-1, 1) }); prop(12.5 + i * 0.45, A + 0.88, 5.3 + 0.14, 0.2, 0.22, 0.01, M.mface, { ry: hd.rotation.y }); }
+prop(13.2, A, 5.3, 2.0, 0.85, 0.5, M.dkwood, { collide: true });
+prop(17.4, A, 5.6, 2.2, 0.85, 0.9, M.dkwood, { collide: true });
+decal(dm('blueprint'), 17.0, A + 0.86, 5.7, 0.9, 0.6, 0, -Math.PI / 2);
+decal(M.sign, 9.0, A + 1.0, 5.02, 2.4, 0.6, 0);
+lightGroup('attic', 12, A + 1.9, 8, [0.45, 0.36, 0.2], 6.5);
+prop(12, A + 1.95, 8, 0.08, 0.1, 0.08, M.flame); cyl(12, A + 2.05, 8, 0.005, 0.8, M.rope, 3);
+// the hatch and the pull-down ladder (hidden until someone pulls it)
+const hatch = new THREE.Group(); hatch.position.set(11.6, H2 - 0.01, 15.6); scene.add(hatch);
+prop(0.5, -0.03, -2.3, 1.0, 0.04, 4.6, M.planks, { parent: hatch });
+const ladder = new THREE.Group(); ladder.visible = false; scene.add(ladder);
+(function(){ const ang = Math.atan2(A - U, 15.6 - 11.0), L = Math.hypot(A - U, 4.6);
+  for (const lx of [11.65, 12.55]){ const r = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, L, 1, 1, 4), M.dkwood); r.position.set(lx, (U + A) / 2, 13.3); r.rotation.x = ang; ladder.add(r); }
+  for (let i = 1; i < 14; i++){ const k = i / 14; const r = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.04, 0.12), M.dkwood); r.position.set(12.1, U + (A - U) * (1 - k) + 0.02, 11.0 + 4.6 * k); ladder.add(r); } })();
+const LADDER_ZONE = { x0: 11.6, x1: 12.6, z0: 11.0, z1: 15.6, y: U, ramp: { axis: 'z', a0: 11.0, a1: 15.6, y0: A, y1: U } };
+// mannequins: they only move while nobody is looking at them
+const MANNEQ = [[14.2, 6.4, 2.6], [9.2, 9.9, -2.2], [7.0, 6.2, 0.4], [4.4, 9.4, 2.8], [2.4, 6.6, 1.2], [16.4, 9.8, -1.6]].map(([mx, mz, ry]) => {
+  const f = figure('pale', mx, A, mz, ry); f.armL.rotation.z = -0.25; f.armR.rotation.x = -R(0.3, 1.2);
+  return { f, home: new V3(mx, A, mz), pos: new V3(mx, A, mz), tpos: new V3(mx, A, mz), yaw: ry, homeYaw: ry, stepT: 0, cool: 0, moving: false };
+});
+
+// ----- basement: the power panel and the bricked-up way to the ride -----
+decal(M.panelE, 16, B + 1.4, 11.07, 0.64, 0.8, 0);
+const panelLever = prop(16.0, B + 1.25, 11.12, 0.06, 0.3, 0.06, M.metal); panelLever.visible = false; panelLever.rotation.x = 0.6;
+(function(){ const w = []; for (let x = 16; x < 19.5; x += 0.5) w.push([x, B + 2.6, 11.1, 0.5, 0.03, 0.03]); w.push([19.4, B, 13, 0.03, 2.6, 0.03]); mergedBoxes(w, M.dark); })();
+const shutter = box(13.6, B, 15.88, 15.4, B + 2.3, 16.02, M.rust); const shutterSolid = solids[solids.length - 1];
+
+// ----- the ride: down from the basement, under the garden -----
+const RIDE = { x0: 0.5, x1: 20, z0: 16, z1: 40 };
+floorZone(13.6, 15.4, 15.95, 22.05, B, { axis: 'z', a0: 16.1, a1: 21.9, y0: B, y1: D });
+for (let i = 0; i < 16; i++){ const z0 = 16 + i * 6 / 16, top = B + (D - B) * (i + 0.5) / 16; box(13.65, top - 0.4, z0, 15.35, top, z0 + 6 / 16, M.stone, { collide: false }); }
+wallZ(13.6, 15.95, 22, D, -1.3, M.brick, M.brick, [], 0.14); wallZ(15.4, 15.95, 22, D, -1.3, M.brick, M.brick, [], 0.14);
+box(13.5, -1.3, 15.95, 15.5, -1.02, 22, M.concrete, { collide: false });
+box(0.5, D - 0.2, 22, 20, D, 33, M.check, { collide: false }); box(0.5, D - 0.2, 33, 20, D, 40, M.stone, { collide: false });
+floorZone(0.5, 20, 22, 40, D);
+box(0.5, DC, 22, 20, DC + 0.3, 33, M.joists, { collide: false }); box(0.5, -1.4, 33, 20, -1.1, 40, M.concrete, { collide: false });
+const DOOR_TOP = 2.6;
+wallX(22, 0.5, 20, D, DC, M.brick, M.hell, [{ a: 13.6, b: 15.4, top: DC - D }]);
+wallX(40, 0.5, 20, D, -1.4, M.brick, M.brick);
+wallZ(0.5, 22, 33, D, DC, M.brick, M.damask); wallZ(0.5, 33, 40, D, -1.4, M.brick, M.brick, [{ a: 35.5, b: 37.5, top: 2.8 }]);
+wallZ(20, 22, 33, D, DC, M.hell, M.brick); wallZ(20, 33, 40, D, -1.4, M.brick, M.brick);
+wallZ(11, 22, 27, D, DC, M.damask, M.hell, [{ a: 23.7, b: 25.3, top: DOOR_TOP }]);
+wallX(27, 0.5, 20, D, DC, M.damask, M.nursery, [{ a: 1.7, b: 3.3, top: DOOR_TOP }]);
+wallZ(7, 27, 33, D, DC, M.nursery, M.velvet, [{ a: 29.2, b: 30.8, top: DOOR_TOP }]);
+wallZ(13, 27, 33, D, DC, M.velvet, M.tileK, [{ a: 29.2, b: 30.8, top: DOOR_TOP }]);
+wallX(33, 0.5, 20, D, DC, M.tileK, M.brick, [{ a: 16.2, b: 17.8, top: DOOR_TOP }]); wallX(33, 0.5, 20, DC, -1.4, M.brick, M.brick);
+// the track and the car's state
+const ride = { state: 'idle', t: 0, s: 0, fired: 0, mb: false, talk: 0, eShown: false };
+const TRACK = [[18, 24.5], [11, 24.5], [3.5, 24.5], [2.5, 25.5], [2.5, 27], [2.5, 29], [3.5, 30], [7, 30], [13, 30], [16, 30], [17, 31], [17, 33], [17, 35], [16, 36.5], [12.5, 36.5]].map(([x, z]) => new V3(x, D, z));
+const TRACK_S = [0]; for (let i = 1; i < TRACK.length; i++) TRACK_S.push(TRACK_S[i - 1] + TRACK[i].distanceTo(TRACK[i - 1]));
+const TRACK_LEN = TRACK_S[TRACK_S.length - 1];
+function trackAt(s, out){
+  s = clamp(s, 0, TRACK_LEN); let i = 1; while (i < TRACK.length - 1 && TRACK_S[i] < s) i++;
+  const a = TRACK[i - 1], b = TRACK[i], k = (s - TRACK_S[i - 1]) / (TRACK_S[i] - TRACK_S[i - 1] || 1);
+  out.copy(a).lerp(b, k); return Math.atan2(b.x - a.x, b.z - a.z);
+}
+(function(){ const rails = [], ties = [];
+  for (let i = 1; i < TRACK.length; i++){ const a = TRACK[i - 1], b = TRACK[i], L = a.distanceTo(b), ry = Math.atan2(b.x - a.x, b.z - a.z), cx = (a.x + b.x) / 2, cz = (a.z + b.z) / 2; const px = Math.cos(ry), pz = -Math.sin(ry);
+    for (const s of [-0.42, 0.42]) rails.push([cx + px * s, D, cz + pz * s, 0.06, 0.08, L + 0.1, 0, ry, 0]);
+    for (let t = 0.3; t < L; t += 0.6){ const k = t / L; ties.push([a.x + (b.x - a.x) * k, D, a.z + (b.z - a.z) * k, 1.1, 0.05, 0.14, 0, ry, 0]); } }
+  mergedBoxes(rails, M.iron); mergedBoxes(ties, M.dkwood); })();
+// the car: three seats, one behind another
+const cart = new THREE.Group(); scene.add(cart);
+(function(){ prop(0, 0.12, 0, 1.15, 0.45, 2.5, mat(T.white, { tint: 0x5a0e0a }), { parent: cart }); prop(0, 0.57, 1.18, 1.15, 0.5, 0.14, M.robe, { parent: cart });
+  const face = decal(M.clown, 0, 0, 0, 0.9, 0.8, 0); cart.add(face); face.position.set(0, 0.6, 1.26);
+  for (let i = 0; i < 3; i++){ prop(0, 0.57, 0.75 - i * 0.8, 1.0, 0.1, 0.5, M.velvet, { parent: cart }); prop(0, 0.67, 0.47 - i * 0.8, 1.0, 0.55, 0.08, M.velvet, { parent: cart }); prop(0, 0.95, 0.95 - i * 0.8, 1.0, 0.05, 0.05, M.metal, { parent: cart }); }
+  for (const s of [-1, 1]) for (const z of [-0.9, 0.9]) cart.add(cyl(s * 0.5, 0, z, 0.12, 0.08, M.iron, 6)); })();
+const cartPos = new V3(); cart.rotation.y = trackAt(0, cartPos); cart.position.copy(cartPos);
+const SEAT_Z = [0.7, -0.1, -0.9];
+function seatPos(i, out){ const yaw = cart.rotation.y; const z = SEAT_Z[i] || 0; return out.set(cart.position.x + Math.sin(yaw) * z, cart.position.y + 0.55, cart.position.z + Math.cos(yaw) * z); }
+// swinging doors between the scenes: solid until the car pushes through
+const RDOORS = [];
+function rideDoor(cx, cz, axis, s, dir){
+  const d = { s, dir, leaves: [], ang: 0, solid: axis === 'z' ? { x0: cx - 0.06, x1: cx + 0.06, y0: D, y1: D + DOOR_TOP, z0: cz - 0.8, z1: cz + 0.8 } : { x0: cx - 0.8, x1: cx + 0.8, y0: D, y1: D + DOOR_TOP, z0: cz - 0.06, z1: cz + 0.06 } };
+  for (const sd of [-1, 1]){
+    const p = new THREE.Object3D(); if (axis === 'z') p.position.set(cx, D, cz + sd * 0.8); else p.position.set(cx + sd * 0.8, D, cz); scene.add(p);
+    const leaf = new THREE.Mesh(new THREE.BoxGeometry(axis === 'x' ? 0.78 : 0.06, DOOR_TOP - 0.05, axis === 'z' ? 0.78 : 0.06, 1, 2, 1), M.rdoor);
+    if (axis === 'z') leaf.position.set(0, (DOOR_TOP - 0.05) / 2, -sd * 0.4); else leaf.position.set(-sd * 0.4, (DOOR_TOP - 0.05) / 2, 0);
+    p.add(leaf); occluders.push(leaf); d.leaves.push({ p, sd, axis });
+  }
+  solids.push(d.solid); RDOORS.push(d); return d;
+}
+rideDoor(11, 24.5, 'z', TRACK_S[1], -1); rideDoor(2.5, 27, 'x', TRACK_S[4], 1); rideDoor(7, 30, 'z', TRACK_S[7], 1); rideDoor(13, 30, 'z', TRACK_S[8], 1); rideDoor(17, 33, 'x', TRACK_S[11], 1);
+// station: the demon's mouth, the sign, coloured bulbs, the laughing lady in her booth
+decal(M.clown, 11.08, D + 1.75, 24.5, 4.4, 3.5, Math.PI / 2);
+decal(M.sign, 15.5, D + 2.6, 22.08, 3.6, 0.9, 0);
+(function(){ const r = [], y = []; let k = 0; for (let x = 11.3; x < 19.9; x += 0.45){ (k++ % 2 ? r : y).push([x, DC - 0.08, 22.15, 0.06, 0.06, 0.06]); (k % 2 ? r : y).push([x, DC - 0.08, 26.85, 0.06, 0.06, 0.06]); }
+  for (let z = 23.5; z < 25.6; z += 0.4){ (k++ % 2 ? r : y).push([11.15, D + 3.15, z, 0.06, 0.06, 0.06]); }
+  mergedBoxes(r, M.bulbR); mergedBoxes(y, M.bulbY); })();
+box(11.1, D, 22.1, 19.9, D + 0.25, 23.5, M.planks, { collide: false }); floorZone(11.1, 19.9, 22.1, 23.5, D + 0.25);
+box(11.1, D, 25.5, 19.9, D + 0.25, 26.9, M.planks, { collide: false }); floorZone(11.1, 19.9, 25.5, 26.9, D + 0.25);
+const sal = figure('pale', 19.2, D + 0.25, 26.2, -2.4); sal.g.scale.set(1.25, 1.05, 1.4); sal.armL.rotation.z = -1.0; sal.armR.rotation.z = 1.0;
+(function(){ const fr = []; for (const [fx, fz] of [[18.5, 25.6], [19.9, 25.6], [18.5, 26.9]]) fr.push([fx, D + 0.25, fz, 0.06, 2.4, 0.06]); fr.push([19.2, D + 2.65, 26.25, 1.5, 0.08, 1.4]); mergedBoxes(fr, M.brass); prop(19.2, D + 0.25, 26.25, 1.4, 0.7, 1.3, M.velvet, { collide: true }); })();
+lightGroup('rstation', 15.5, D + 2.2, 24.5, [0.65, 0.22, 0.12], 8, false);
+// scene 1: supper of the eleven
+lightGroup('rdinner', 7, D + 1.4, 26.0, [0.6, 0.34, 0.12], 6, false);
+(function(){ prop(7, D, 26.0, 6.2, 0.75, 0.8, M.dkwood, { collide: true }); prop(7, D + 0.75, 26.0, 6.4, 0.03, 0.9, M.sheet);
+  for (let i = 0; i < 7; i++) prop(4.4 + i * 0.85, D + 0.78, 25.9 + R(-.1, .1), 0.22, 0.02, 0.22, M.enamel); for (let i = 0; i < 5; i++) prop(4.6 + i * 1.2, D + 0.8, 26.0, 0.14, 0.08, 0.16, M.meat);
+  for (const cx of [5, 7, 9]){ prop(cx, D + 0.78, 26.1, 0.05, 0.3, 0.05, M.brass); for (const ox of [-0.12, 0, 0.12]) candle(cx + ox, D + 1.08, 26.1, 'rdinner'); } })();
+const DINERS = [];
+for (let i = 0; i < 9; i++) DINERS.push(figure('robe', 4.1 + i * 0.72, D, 26.72, Math.PI));
+DINERS.push(figure('robe', 3.5, D, 26.0, Math.PI / 2)); DINERS.push(figure('robe', 10.5, D, 26.0, -Math.PI / 2));
+DINERS.forEach(f => { f.baseYaw = f.g.rotation.y; f.head.rotation.x = 0.35; });
+decal(dm('portrait'), 7, D + 2.1, 26.92, 1.2, 1.5, Math.PI);
+// scene 2: the dolls' room
+const DOLLS = [];
+[[1.2, 23.5], [4.5, 28.2], [5.5, 31.8], [1.3, 31.6], [4.6, 30.9], [6.3, 28.4], [3.8, 32.2], [1.4, 29.6], [6.0, 32.4], [5.0, 27.6]].forEach(([dx, dz], i) => {
+  if (dz < 27) return; const hgt = R(0.6, 1.4); const f = figure('doll', dx, D + hgt, dz, R(0, 6.28), { scale: 0.42 }); cyl(dx, D + hgt + 0.75, dz, 0.004, DC - D - hgt - 0.75, M.rope, 3); DOLLS.push(f); });
+const bigDoll = figure('doll', 2.0, DC - 0.2, 29.25, 0.9, { scale: 0.85 }); bigDoll.g.rotation.x = Math.PI; bigDoll.g.visible = false; const bigDollRope = cyl(2.0, DC - 0.6, 29.25, 0.006, 0.6, M.rope, 3); bigDollRope.visible = false;
+(function(){ const cx = 5.6, cz = 32.2; prop(cx, D, cz, 1.4, 0.15, 0.8, M.dkwood); const sl = []; for (let i = 0; i <= 10; i++){ sl.push([cx - 0.7 + i * 0.14, D + 0.15, cz - 0.4, 0.03, 0.8, 0.03]); sl.push([cx - 0.7 + i * 0.14, D + 0.15, cz + 0.4, 0.03, 0.8, 0.03]); } mergedBoxes(sl, M.dkwood); })();
+decal(dm('hands'), 0.57, D + 1.4, 31.5, 1.4, 1.4, Math.PI / 2); decal(dm('pentaW'), 6.93, D + 1.8, 28.0, 1.0, 1.0, -Math.PI / 2);
+lightGroup('rdolls', 3.5, D + 2.0, 30.0, [0.6, 0.2, 0.26], 6.5, false);
+// scene 3: the hall of mirrors
+for (let x = 7.6; x < 13; x += 0.9){ decal(M.mirror2, x, D + 1.35, 27.07, 0.8, 1.9, 0); decal(M.mirror2, x, D + 1.35, 32.93, 0.8, 1.9, Math.PI); }
+lightGroup('rmirror', 10, D + 2.4, 30, [0.45, 0.48, 0.56], 6.5, false);
+// scene 4: the slaughterhouse
+const HANGED = [];
+(function(){ const rail = []; rail.push([16.5, DC - 0.15, 28.3, 7, 0.08, 0.08], [16.5, DC - 0.15, 31.7, 7, 0.08, 0.08]); mergedBoxes(rail, M.iron);
+  for (const [hx, hz] of [[14, 28.3], [15.5, 28.3], [17, 28.3], [18.6, 28.3], [14, 31.7], [15.1, 31.7], [18.9, 31.7], [19.4, 30.0]]){ const f = figure('body', hx, D + 0.75, hz, R(0, 6.28)); cyl(hx, D + 2.4, hz, 0.01, DC - D - 2.55, M.rope, 3); f.ph = R(0, 6); HANGED.push(f); } })();
+const dropBody = figure('body', 15.6, DC - 0.3, 29.4, 1.2); dropBody.g.rotation.x = Math.PI; dropBody.g.visible = false;
+decal(dm('hands'), 13.07, D + 1.2, 31.8, 1.2, 1.2, Math.PI / 2); decal(dm('g2'), 19.93, D + 1.9, 28.6, 2.0, 1.0, -Math.PI / 2);
+lightGroup('rslaughter', 16.5, D + 2.2, 30, [0.75, 0.1, 0.06], 7, false);
+// scene 5: the circle of the eleven and the preacher
+lightGroup('rhall', 8.5, D + 0.8, 36.5, [0.75, 0.3, 0.1], 9, false);
+floorDecal(dm('penta'), 8.5, D + 0.012, 36.5, 6.2, 0);
+candleRing(8.5, D, 36.5, 2.2, 15, 'rhall');
+box(7.9, D, 36.05, 9.1, D + 0.9, 36.95, M.stone); goatSkull(8.5, D + 0.9, 36.2, Math.PI / 2);
+const ELEVEN = []; for (let i = 0; i < 11; i++){ const a = 0.55 + i / 10 * (6.283 - 1.1), fx = 8.5 + Math.cos(a) * 3.1, fz = 36.5 + Math.sin(a) * 3.1; const f = figure('robe', fx, D, fz, Math.atan2(8.5 - fx, 36.5 - fz), { collide: true }); f.baseYaw = f.g.rotation.y; ELEVEN.push(f); }
+const preacher = figure('preacher', 15.4, D + 0.6, 38.9, Math.atan2(16.3 - 15.4, 36.0 - 38.9), { scale: 1.15 }); preacher.armR.rotation.x = -1.4;
+box(14.7, D, 38.5, 16.1, D + 0.6, 39.6, M.dkwood); prop(15.25, D + 0.6, 38.45, 1.0, 0.75, 0.1, M.dkwood, { ry: preacher.g.rotation.y });
+decal(dm('g5'), 10, D + 3.2, 39.9, 3.0, 1.5, Math.PI); decal(dm('cross'), 19.93, D + 3.0, 37.2, 1.2, 2.4, -Math.PI / 2);
+decal(M.velvet, 0.57, D + 2.5, 33.8, 1.0, 5.0, Math.PI / 2); decal(M.velvet, 0.57, D + 2.5, 39.2, 1.0, 5.0, Math.PI / 2);
+lightGroup('rpulpit', 15.6, D + 2.8, 38.0, [0.55, 0.32, 0.22], 4.5, false);
+// the way out: stairs up into the mausoleum
+floorZone(-7, 0.6, 35.5, 37.5, Y, { axis: 'x', a0: -7, a1: 0.5, y0: Y, y1: D });
+for (let i = 0; i < 18; i++){ const x0 = -7 + i * 7.5 / 18, top = Y + (D - Y) * (i + 0.5) / 18; box(x0, top - 0.4, 35.5, x0 + 7.5 / 18, top, 37.5, M.stone, { collide: false }); }
+wallX(35.5, -7, 0.5, D, -1.0, M.stone, M.stone, [], 0.14); wallX(37.5, -7, 0.5, D, -1.0, M.stone, M.stone, [], 0.14);
+box(-3.5, -1.3, 35.4, 0.5, -1.02, 37.6, M.stone, { collide: false });
+
 /* ================= interactables ================= */
 const inter = [];
 function addInter(o){ if (Array.isArray(o.pos)) o.pos = new V3(...o.pos); inter.push(o); return o; }
@@ -907,13 +1203,16 @@ addItem('find', 0.42, 1.55, 3.6, 0.2, 0.25, 0.03, T.photo, 'Семейный п�
 addItem('find', 16.5, G + 1.1, 4.4, 0.32, 0.08, 0.24, T.tome, 'Liber Stellae Matutinae', 'Рукописная книга. Обряды, имена одиннадцати членов общины и в конце: «Отдай Ему дом, и Он будет жить в нём вечно».', () => bookScare());
 addItem('find', 10.0, U + 0.9, 15.1, 0.16, 0.05, 0.16, T.film, 'Плёнка 8 мм', 'Подпись на коробке: «XI · 21.12.1979». Кто-то заснял последнюю службу. Последний кадр засвечен.');
 addItem('find', 3.5, U + 0.18, 14.6, 0.14, 0.22, 0.1, T.doll, 'Кукла', 'Глаза зашиты красной нитью. В спине записка детским почерком: «Он говорит, мама теперь внизу».', () => { S.musicBox = true; S.mbT = 0; S.mbI = 0; S.horseT = 12; });
-addItem('find', 10.0, B + 0.95, 2.1, 0.32, 0.03, 0.08, T.dagger, 'Ритуальный нож', 'Тяжёлый, холодный. Лезвие в чёрной корке. Едва ты берёшь его, свечи гаснут разом.', () => startFinal());
+addItem('find', 10.0, B + 0.95, 2.1, 0.2, 0.02, 0.1, T.ticket, 'Билет «Поездка в Ад»', 'Жёлтый картонный билет парка Юклид-Бич. Пробит одиннадцать раз. На обороте карандашом: «Последний рейс — 21.12.79. Вход за котлом».', () => ticketScare());
+addItem('find', 17.0, A + 0.86, 5.7, 0.5, 0.01, 0.36, T.blueprint, 'Чертёж аттракциона', 'Холлоуэй, 1971. Трасса под садом: станция, ужин, куклы, зеркала, бойня, проповедь, круг. Вагонетка на троих. На полях: «Трое смотрят вперёд, и никто не оглядывается. Он всегда садится четвёртым».');
+addItem('tool', 1.4, A + 0.72, 10.0, 0.3, 0.06, 0.08, T.handle, 'Ручка рубильника', '');
+addItem('find', 8.5, D + 0.9, 36.6, 0.32, 0.03, 0.08, T.dagger, 'Ритуальный нож', 'Тяжёлый, холодный. Лезвие в чёрной корке. Едва ты берёшь его, все свечи гаснут разом.', () => startFinal());
 addItem('battery', 7.6, G + 0.8, 6.3, 0.12, 0.05, 0.05, T.battery, 'Батарейки', '');
 addItem('battery', 19.5, G + 0.95, 9.4, 0.12, 0.05, 0.05, T.battery, 'Батарейки', '');
 addItem('battery', 14.2, U + 0.45, 15.4, 0.12, 0.05, 0.05, T.battery, 'Батарейки', '');
 addItem('battery', 19.5, B + 1.0, 12.0, 0.12, 0.05, 0.05, T.battery, 'Батарейки', '');
 addItem('battery', 12.5, U, 1.0, 0.12, 0.05, 0.05, T.battery, 'Батарейки', '');
-const FINDS_TOTAL = items.filter(i => i.kind === 'find').length;
+const FINDS_TOTAL = 7;
 const keyMesh = prop(5.9, U + 0.62, 7.12, 0.12, 0.02, 0.05, mat(T.key, { uv: true, emissive: 0.3 })); keyMesh.visible = false;
 addInter({ pos: [18.5, U + 0.8, 1.5], label: () => 'прочитать записи', act: () => note('Записи на столе', '«Ему не нужны глаза, Он слышит шаги. Он не выносит огня: пока на Него светят, Он стоит неподвижно. Но долго смотреть на Него нельзя — Он приходит сзади».') });
 addInter({ pos: [13.1, 1.6, 14.6], label: () => 'прочитать записку', act: () => note('Записка на стене кухни', '«Мясо для общины — в подвал. Ключ от подвала у Хозяйки, в её комоде наверху. Детей наверх не пускать».') });
@@ -927,7 +1226,7 @@ addInter({ pos: [7.4, G + 0.9, 6.4], label: () => S.phoneRing ? 'снять тр
 addInter({ pos: [0.7, G + 0.6, 3.8], label: () => 'посмотреть в камин', act: () => note('Камин', 'Угли ещё тлеют. В золе — обгоревшие детские фотографии и зубы.') });
 addInter({ pos: [1.2, U + 0.7, 15.2], label: () => S.musicBox ? 'закрыть шкатулку' : 'открыть шкатулку', act: () => { S.musicBox = !S.musicBox; S.mbT = 0; S.mbI = 0; } });
 addInter({ pos: [5.6, U + 0.5, 12.2], label: () => 'качнуть лошадку', act: () => { S.horseT = 4; } });
-addInter({ pos: [16.5, U + 0.5, 15.2], label: () => 'заглянуть в ванну', act: () => { note('Ванна', 'Вода чёрная и густая. Со дна поднимаются пузыри, как будто там кто-то дышит.'); SFX.bubbles(); } });
+addInter({ pos: [16.5, U + 0.5, 15.2], label: () => 'заглянуть в ванну', act: () => { note('Ванна', 'Вода чёрная и густая. Со дна поднимаются пузыри, как будто там кто-то дышит.'); SFX.bubbles(); if (!S.flags.tubLook) S.flags.tubLook = 1; } });
 addInter({ pos: [19.85, U + 1.6, 12], label: () => 'посмотреть в зеркало', act: () => mirrorScare() });
 addInter({ pos: [9.2, G + 1.4, 0.15], label: () => 'щёлкнуть выключателем', act: () => { SFX.click(); if (!S.flags.switch){ S.flags.switch = 1; S.flicker = 0.6; setTimeout(() => SFX.steps(6, 0.5), 600); voice('Света нет. А шаги наверху есть.', 3); } } });
 addInter({ pos: [3.5, G + 1.0, 11.75], label: () => lightGroups.dining.on ? 'задуть свечи' : null, act: () => { lightGroups.dining.on = false; SFX.whisper(1.2, R(-.5, .5), 0.25); } });
@@ -949,35 +1248,59 @@ function enterHide(h){
 }
 function exitHide(){ const h = S.hiding; if (!h) return; S.hiding = null; player.pos.copy(h.out); player.vy = 0; SFX.creak(0.6, 0, 0.6); $('slats').hidden = true; }
 
-/* ================= co-op: rescue, partner avatar, night-mode marks ================= */
 const ALTAR_SPOT = new V3(10, B, 6.2);
-addInter({ pos: [10, B + 1.0, 6.2], noLos: true, local: true, label: () => (NET.on && RP.cap && !S.captured) ? 'разорвать круг' : null, act: () => {
-  RP.cap = false; netSend({ t: 'free' }); SFX.whisper(1.2, 0, 0.5); SFX.slam(0.5); voice('Круг разорван. Уходим!', 2.5);
+/* ================= v5 interactables: the attic hatch, the power, the ride, the circle ================= */
+addInter({ pos: [12.1, H2 - 0.35, 14.3], noLos: true, label: () => S.hatch ? null : 'потянуть люк на чердак', act: () => openHatch() });
+addInter({ pos: [16, B + 1.35, 11.35], label: () => S.power ? null : (S.hasHandle ? 'вставить ручку и дать ток' : 'осмотреть щиток'), act: () => {
+  if (!S.hasHandle && !NET.applying){ note('Щиток', '«ПОЕЗДКА В АД · ПИТАНИЕ». Ручку рубильника вырвали. Под щитком мелом: «НЕ ВКЛЮЧАЙТЕ. ОН КАТАЕТСЯ С НАМИ».'); objective('Найди ручку рубильника'); S.flags.panelSeen = 1; return; }
+  powerOn();
 } });
-// interactions that only matter to the one who does them are not mirrored to the partner
+addInter({ pos: [14.5, B + 1.2, 15.7], label: () => S.power ? null : 'осмотреть ставню', local: true, act: () => { SFX.rattle(); voice(S.flags.panelSeen ? 'Железная ставня. Наверное, её поднимает тот рубильник.' : 'Железная ставня на замке. Из щели тянет сквозняком... и пахнет воском.', 3.5); } });
+// the car: sit down, and when everyone is in, pull the lever
+addInter({ pos: cart.position, noLos: true, local: true, label: () => (ride.state === 'idle' && S.seat < 0 && S.power) ? 'сесть в вагонетку' : null, act: () => sitDown() });
+// circle at the basement altar: anyone free can break it
+addInter({ pos: [10, B + 1.0, 6.2], noLos: true, local: true, label: () => (NET.on && mates().some(r => r.cap) && !S.captured) ? 'разорвать круг' : null, act: () => {
+  for (const r of mates()) if (r.cap){ r.cap = false; netSend({ t: 'free', who: r.id }); }
+  SFX.whisper(1.2, 0, 0.5); SFX.slam(0.5); voice('Круг разорван. Уходим!', 2.5);
+} });
+addInter({ pos: [19.2, D + 1.6, 26.2], label: () => S.power ? 'посмотреть на хохотунью' : null, local: true, act: () => { SFX.laugh(0.5, 0.8, 0.6); sal.armR.rotation.z = 1.6; S.scare = 0.4; note('Хохотунья', 'Табличка на будке: «Мама Холлоуэй смеётся за всех нас». Под париком настоящие волосы.'); } });
+addInter({ pos: [15.4, D + 2.3, 38.9], label: () => ride.state === 'done' ? 'посмотреть на проповедника' : null, local: true, act: () => note('Проповедник', 'Механическая кукла в рясе. Лицо — гипсовая маска Эдгара Холлоуэя, снятая с живого: на внутренней стороне остались ресницы.') });
+for (const f of ELEVEN) addInter({ pos: f.g.position.clone().add(new V3(0, 1.5, 0)), label: () => 'приподнять капюшон', local: true, act: () => { note('Один из одиннадцати', pick(['Под маской — не манекен. Кожа сухая, как бумага. На шее — бейдж прихожанина Церкви Утренней Звезды.', 'Маска пришита к лицу. Глаза открыты.', 'Пусто. Ряса стоит сама, как будто внутри всё ещё кто-то есть.'])); S.scare = 0.5; } });
+addInter({ pos: [-8.8, Y + 1.2, 34.2], label: () => DOORS.crypt.locked ? 'решётка склепа' : null, local: true, act: () => { SFX.rattle(); voice('Заперто снаружи. За решёткой сад и наш дом.', 3); } });
+// interactions that only matter to the one who does them are not mirrored to the others
 const LOCAL_ACTS = ['прочитать', 'трубку', 'камин', 'ванну', 'зеркало', 'выключателем', 'череп', 'капюшон', 'спрятаться'];
 inter.forEach((it, i) => { it.idx = i; let l = ''; try { l = it.label() || ''; } catch (e){} if (it.door || LOCAL_ACTS.some(w => l.includes(w))) it.local = true; });
-const avatar = new THREE.Group(); avatar.visible = false; scene.add(avatar);
-const AV = (function(){
-  const jacket = mat(T.white, { tint: 0x3a4048, emissive: 0.06 }), jeans = mat(T.white, { tint: 0x23262e, emissive: 0.06 }), skin = mat(T.white, { tint: 0x8a7a68, emissive: 0.05 });
-  const body = new THREE.Group(); avatar.add(body);
+
+/* ================= co-op: the others' bodies, night-mode marks ================= */
+const JACKETS = [0x3a4048, 0x48382c, 0x2c4038];
+function makeAvatar(i){
+  const g = new THREE.Group(); g.visible = false; scene.add(g);
+  const jacket = mat(T.white, { tint: JACKETS[i % 3], emissive: 0.06 }), jeans = mat(T.white, { tint: 0x23262e, emissive: 0.06 }), skin = mat(T.white, { tint: 0x8a7a68, emissive: 0.05 });
+  const body = new THREE.Group(); g.add(body);
   prop(-0.11, 0, 0, 0.15, 0.82, 0.17, jeans, { parent: body }); prop(0.11, 0, 0, 0.15, 0.82, 0.17, jeans, { parent: body });
   prop(0, 0.82, 0, 0.46, 0.62, 0.26, jacket, { parent: body });
   prop(-0.28, 0.95, 0, 0.1, 0.5, 0.12, jacket, { parent: body });
   prop(0, 1.44, 0, 0.12, 0.08, 0.12, skin, { parent: body });
-  const head = prop(0, 1.5, 0, 0.22, 0.26, 0.24, skin, { parent: body }); prop(0, 1.72, 0.01, 0.24, 0.07, 0.26, jeans, { parent: body });
+  const head = prop(0, 1.5, 0, 0.22, 0.26, 0.24, skin, { parent: body }); prop(0, 1.72, 0.01, 0.24, 0.07, 0.26, i === 1 ? jacket : jeans, { parent: body });
   const arm = new THREE.Group(); arm.position.set(0.26, 1.32, 0); body.add(arm);
   prop(0, -0.08, -0.18, 0.1, 0.1, 0.38, jacket, { parent: arm });
   const cam = new THREE.Group(); arm.add(cam); prop(0, -0.08, -0.42, 0.12, 0.13, 0.24, M.plastic, { parent: cam }); prop(0.04, 0.02, -0.5, 0.025, 0.025, 0.025, M.redlamp, { parent: cam });
   const lamp = new THREE.Group(); arm.add(lamp); const lc = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.26, 6), M.metal); lc.rotation.x = Math.PI / 2; lc.position.set(0, -0.06, -0.42); lamp.add(lc); prop(0, -0.1, -0.555, 0.07, 0.07, 0.01, M.flame, { parent: lamp });
-  return { body, arm, cam, lamp, head };
-})();
+  const radio = new THREE.Group(); arm.add(radio); prop(0, -0.14, -0.4, 0.22, 0.14, 0.1, M.dkwood, { parent: radio }); prop(0.07, -0.02, -0.4, 0.01, 0.3, 0.01, M.metal, { parent: radio, rz: -0.3 });
+  const lantern = new THREE.Group(); lantern.position.set(-0.3, 0.75, -0.05); body.add(lantern); prop(0, 0, 0, 0.12, 0.18, 0.12, M.brass, { parent: lantern }); prop(0, 0.04, 0, 0.06, 0.08, 0.06, M.flame, { parent: lantern });
+  return { g, body, arm, cam, lamp, radio, lantern, head };
+}
 const nvMarks = [];
 function nvMark(text, x, y, z, ry){ const t = textTex(128, 64, null, (g) => spray(g, text, 4, 40, 22, '#d8e0c0')); const m = decal(mat(t, { uv: true, emissive: 0.9 }), x, y, z, 1.6, 0.8, ry); m.visible = false; nvMarks.push(m); }
 nvMark('ОН ИДЁТ НА ЗВУК', 7.07, 1.5, 4.4, Math.PI / 2);
 nvMark('НЕ РАЗДЕЛЯЙТЕСЬ', 12.93, 1.5, 14.2, -Math.PI / 2);
 nvMark('ОН СЗАДИ', 12.5, -1.4, 0.11, 0);
 nvMark('XI ЖДУТ ВНИЗУ', 9.0, U + 1.5, 15.9 - 0.02, Math.PI);
+nvMark('СМОТРИ НА НИХ', 9.0, A + 1.1, 10.98, Math.PI);
+nvMark('ЧЕТВЁРТЫЙ ВСЕГДА С ВАМИ', 15.5, D + 1.4, 26.93, Math.PI);
+nvMark('ВЫХОД ЧЕРЕЗ СКЛЕП', 0.57, D + 1.6, 34.6, Math.PI / 2);
+// in night mode the empty seats of the car are not empty
+const ghosts = [0, 1, 2].map(i => { const f = figure('pale', 0, 0, 0, 0, { scale: 0.62 }); scene.remove(f.g); cart.add(f.g); f.g.position.set(0, 0.45, SEAT_Z[i] - 0.1); f.g.visible = false; f.armL.rotation.x = -1.2; f.armR.rotation.x = -1.2; f.head.rotation.z = 0.5; return f; });
 
 /* ================= the thing ================= */
 const E = { g: new THREE.Group(), pos: new V3(), yaw: 0, mode: 'hidden', t: 0, dispT: 0, path: [], pathT: 0, seenT: 0, litT: 0, lastKnown: null, lostT: 0, target: -1, appearSeen: 1.4, crawl: null, sndT: 0, litOnce: false };
@@ -1020,10 +1343,14 @@ const NODES = {
   G8: [13, G, 3.1], G9: [16.5, G, 2.8], G10: [16.6, G, 8], G11: [17.5, G, 13.2], G12: [13, G, 12.6], G13: [11, G, 12.6], G14: [10.2, G, 9],
   G15: [12, G, 2.4], G16: [12, U, 8.9], G17: [8.9, G, 9.9], G18: [8, G, 9.9], G19: [8, B, 15.3], G20: [9.6, B, 15.4], G21: [10, G, -1.4],
   U0: [9, U, 8.8], U1: [9, U, 2], U11: [12, U, 1.6], U2: [7, U, 5.6], U3: [3.5, U, 4.5], U4: [7, U, 10.6], U5: [4, U, 11.5], U6: [13, U, 1.8], U7: [16, U, 1.8], U8: [13, U, 10.6], U9: [16.2, U, 12], U10: [10, U, 14],
-  B1: [14, B, 13.5], B2: [13, B, 11], B3: [13, B, 7], B4: [6.5, B, 6.5], B5: [16.5, B, 2.5], B6: [5, B, 13.2], B7: [6.5, B, 10.5]
+  B1: [14, B, 13.5], B2: [13, B, 11], B3: [13, B, 7], B4: [6.5, B, 6.5], B5: [16.5, B, 2.5], B6: [5, B, 13.2], B7: [6.5, B, 10.5],
+  B8: [14.5, B, 15.0], R0: [14.5, D, 22.6], R1: [16, D + 0.25, 23.0], R13: [13.5, D, 38.2], R14: [5, D, 38.6], R15: [1.2, D, 36.5], R16: [-3, D + (Y - D) * 4 / 7.5, 36.5], R17: [-7.6, Y, 36.5],
+  R18: [-8.8, Y, 32.8], Y1: [-6, Y, 20], Y2: [-6, Y, 4], Y3: [-8.4, Y, 0], Y4: [-6, Y, -5], Y5: [9, Y, -6.5]
 };
+// nodes outside the house only open up as the story gets there
+const nodeOpen = id => id[0] !== 'R' && id[0] !== 'Y' ? true : (id[0] === 'Y' || ['R13', 'R14', 'R15', 'R16', 'R17', 'R18'].includes(id) ? S.final : S.power);
 const nodeIds = Object.keys(NODES); const nodes = nodeIds.map(k => new V3(...NODES[k])); const NI = {}; nodeIds.forEach((k, i) => NI[k] = i);
-const EDGES = 'G0-G1 G0-G15 G0-G21 G1-G2 G1-G3 G1-G8 G1-G15 G2-G14 G2-G7 G3-G4 G4-G5 G5-G6 G6-G7 G7-G1 G8-G9 G9-G10 G10-G11 G11-G12 G12-G13 G13-G14 G13-G17 G17-G18 G18-G19 G19-G20 G15-G16 G16-U0 U0-U1 U1-U11 U11-U6 U6-U7 U1-U2 U0-U2 U2-U3 U0-U4 U4-U5 U0-U8 U8-U9 U0-U10 G20-B1 B1-B2 B2-B3 B3-B4 B3-B5 B4-B7 B7-B6 B4-B5'.split(' ').map(s => s.split('-').map(k => NI[k]));
+const EDGES = 'G0-G1 G0-G15 G0-G21 G1-G2 G1-G3 G1-G8 G1-G15 G2-G14 G2-G7 G3-G4 G4-G5 G5-G6 G6-G7 G7-G1 G8-G9 G9-G10 G10-G11 G11-G12 G12-G13 G13-G14 G13-G17 G17-G18 G18-G19 G19-G20 G15-G16 G16-U0 U0-U1 U1-U11 U11-U6 U6-U7 U1-U2 U0-U2 U2-U3 U0-U4 U4-U5 U0-U8 U8-U9 U0-U10 G20-B1 B1-B2 B2-B3 B3-B4 B3-B5 B4-B7 B7-B6 B4-B5 B1-B8 B8-R0 R0-R1 R13-R14 R14-R15 R15-R16 R16-R17 R17-R18 R18-Y1 Y1-Y2 Y2-Y3 Y3-Y4 Y4-Y5 Y5-G21'.split(' ').map(s => s.split('-').map(k => NI[k]));
 const adj = nodes.map(() => []); EDGES.forEach(([a, b]) => { adj[a].push(b); adj[b].push(a); });
 function bfs(a, b){ const prev = new Array(nodes.length).fill(-1); const q = [a]; prev[a] = a; while (q.length){ const n = q.shift(); if (n === b) break; for (const m of adj[n]) if (prev[m] < 0){ prev[m] = n; q.push(m); } } if (prev[b] < 0) return [a]; const p = [b]; while (p[0] !== a) p.unshift(prev[p[0]]); return p; }
 const ray = new THREE.Raycaster(); const _d = new V3();
@@ -1034,11 +1361,11 @@ function nearestNode(p){
   if (best < 0) for (let i = 0; i < nodes.length; i++){ const d = nodes[i].distanceToSquared(p) + Math.abs(nodes[i].y - p.y) * 20; if (d < bd){ bd = d; best = i; } }
   return best;
 }
-function farNode(from, minHops, maxHops){ const pn = nearestNode(from); const cands = []; for (let i = 0; i < nodes.length; i++){ if (nodeIds[i] === 'G21') continue; const h = bfs(pn, i).length; if (h >= minHops && h <= maxHops) cands.push(i); } return cands.length ? pick(cands) : 0; }
+function farNode(from, minHops, maxHops){ const pn = nearestNode(from); const cands = []; for (let i = 0; i < nodes.length; i++){ if (nodeIds[i] === 'G21' || !nodeOpen(nodeIds[i])) continue; const h = bfs(pn, i).length; if (h >= minHops && h <= maxHops) cands.push(i); } return cands.length ? pick(cands) : 0; }
 
 /* ================= HUD ================= */
 const $ = id => document.getElementById(id);
-function voice(text, dur = 4.5, force){ if (NET.applying && !force) return; const v = $('voice'); v.textContent = text; v.style.opacity = 1; S.voiceT = dur; }
+function voice(text, dur = 4.5, force, spirit){ if (NET.applying && !force) return; const v = $('voice'); v.textContent = text; v.classList.toggle('spirit', !!spirit); v.style.opacity = 1; S.voiceT = dur; }
 function note(title, text){ if (NET.applying) return; const n = $('note'); n.querySelector('h3').textContent = title; n.querySelector('p').textContent = text; n.style.opacity = 1; S.noteT = 7; }
 function objective(t){ $('objective').textContent = t; }
 function hudUpdate(){
@@ -1049,11 +1376,10 @@ function hudUpdate(){
   bars.forEach((b, i) => b.classList.toggle('off', i >= lit));
   $('batt').classList.toggle('low', S.battery < 0.25);
   $('finds').textContent = `УЛИКИ ${S.finds}/${FINDS_TOTAL}`;
-  $('stance').hidden = !S.crouch; $('keyMark').hidden = !S.hasKey;
+  $('stance').hidden = !S.crouch; $('keyMark').hidden = !S.hasKey && !(S.hasHandle && !S.power); $('keyMark').textContent = S.hasKey ? 'КЛЮЧ ОТ ПОДВАЛА' : 'РУЧКА РУБИЛЬНИКА';
   $('nvTag').hidden = !S.nv;
   const mt = $('mate'); mt.hidden = !NET.on;
-  if (NET.on) mt.textContent = RP.cap ? `НАПАРНИК В КРУГЕ У АЛТАРЯ · ${Math.max(0, Math.ceil(RP.capT || 0))}` : `НАПАРНИК · ${RP.role === 'cam' ? 'КАМЕРА' : 'ФОНАРЬ'} · ${floorName(RP.pos).toUpperCase()} · ${Math.round(RP.pos.distanceTo(player.pos))} М`;
-  mt.style.color = RP.cap ? 'var(--rec)' : '';
+  if (NET.on){ S.mateT = (S.mateT || 0) - 1; if (S.mateT <= 0){ S.mateT = 6; mt.innerHTML = ''; for (const r of mates()){ const d = document.createElement('div'); d.textContent = r.cap ? `${ROLE_UP[r.role] || 'НАПАРНИК'} В КРУГЕ У АЛТАРЯ · ${Math.max(0, Math.ceil(r.capT || 0))}` : `${ROLE_UP[r.role] || 'НАПАРНИК'} · ${floorName(r.pos).toUpperCase()} · ${Math.round(r.pos.distanceTo(player.pos))} М`; if (r.cap) d.className = 'cap'; mt.appendChild(d); } } }
 }
 
 /* ================= post-processing & resize ================= */
@@ -1137,7 +1463,8 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
-function toggleFlash(){ if (S.captured || S.hiding) return; if (S.battery <= 0){ voice(S.role === 'cam' ? 'Камера села. Нужны батарейки.' : 'Фонарь сел. Нужны батарейки.', 2.5); return; } if (S.role === 'cam') S.nv = !S.nv; else S.flashOn = !S.flashOn; SFX.click(); }
+const GEAR = { cam: 'Камера', medium: 'Приёмник', light: 'Фонарь', solo: 'Фонарь' };
+function toggleFlash(){ if (S.captured || S.hiding) return; if (S.battery <= 0){ voice(GEAR[S.role] + ' сел. Нужны батарейки.', 2.5); return; } if (S.role === 'cam') S.nv = !S.nv; else if (S.role === 'medium'){ S.radio = !S.radio; if (S.radio) noiseHit(0.3, 'bandpass', 1300, 1, 0.2); } else S.flashOn = !S.flashOn; SFX.click(); }
 function toggleCrouch(){ if (S.crouch && !canStand()){ voice('Здесь не встать.', 1.5); return; } S.crouch = !S.crouch; if (isTouch) $('tbC').classList.toggle('on', S.crouch); }
 if (isTouch){
   $('ctlDesk').hidden = true; $('ctlTouch').hidden = false;
@@ -1165,13 +1492,15 @@ $('bright').addEventListener('input', e => setGamma(e.target.value));
 $('bright2').addEventListener('input', e => setGamma(e.target.value));
 function beginGame(role, fromNet){
   initAudio(); if (AU.ctx && AU.ctx.resume) AU.ctx.resume();
-  S.role = role; S.flashOn = role !== 'cam'; S.nv = false;
-  $('batt').querySelector('span').textContent = role === 'cam' ? 'КАМЕРА' : 'ФОНАРЬ';
-  $('title').hidden = true; $('hud').hidden = false; if (isTouch){ $('touch').hidden = false; $('tbF').textContent = role === 'cam' ? 'НОЧЬ' : 'ФОНАРЬ'; }
+  S.role = role; S.flashOn = role === 'light' || role === 'solo'; S.nv = false; S.radio = false;
+  $('batt').querySelector('span').textContent = GEAR[role].toUpperCase();
+  shared.uFlashCos.value.copy(role === 'medium' ? LAMP_COS : FLASH_COS);
+  $('title').hidden = true; $('hud').hidden = false; if (isTouch){ $('touch').hidden = false; $('tbF').textContent = role === 'cam' ? 'НОЧЬ' : (role === 'medium' ? 'ЭФИР' : 'ФОНАРЬ'); }
   S.started = true; NET.started = true; if (!fromNet) requestLock();
   objective('Войди в особняк');
   if (role === 'solo') voice('Особняк Холлоуэев. Юклид-авеню, 1417. Последний раз здесь кто-то жил в семьдесят девятом.', 5.5);
   else if (role === 'cam') voice('Я снимаю. [F] — ночной режим: вижу в темноте, но не свечу. Остановить его может только фонарь напарника.' + (fromNet && !isTouch ? ' Кликни по экрану.' : ''), 7);
+  else if (role === 'medium') voice('У меня лампа и приёмник. [F] — эфир: чем громче помехи, тем Он ближе. Иногда в эфире говорят мёртвые.' + (fromNet && !isTouch ? ' Кликни по экрану.' : ''), 7);
   else voice('У меня фонарь. Пока я свечу на Него, Он стоит. Но долго светить нельзя: Он зайдёт сзади.' + (fromNet && !isTouch ? ' Кликни по экрану.' : ''), 7);
 }
 $('start').addEventListener('click', () => beginGame('solo'));
@@ -1185,18 +1514,18 @@ function endGame(win, text){
   $('endEyebrow').textContent = win ? 'Запись сохранена · ' + tc : 'Сигнал потерян · ' + tc;
   $('endTitle').textContent = win ? 'ТЫ ВЫБРАЛСЯ' : 'ЗАПИСЬ ОБОРВАНА';
   $('endText').textContent = win
-    ? `На плёнке ${S.finds} из ${FINDS_TOTAL} улик. На последних кадрах, снятых уже с улицы, во всех окнах второго этажа стоят люди в рясах. Их одиннадцать.`
+    ? `На плёнке ${S.finds} из ${FINDS_TOTAL} улик. На последних кадрах, снятых уже с улицы, во всех окнах второго этажа стоят люди в рясах. Их было одиннадцать. Теперь двенадцать: двенадцатый держит видеокамеру.`
     : (text || 'Последние секунды записи: перевёрнутое лицо очень близко к объективу. Потом темнота и чьё-то дыхание. Плёнку можно перемотать.');
   $('rewind').hidden = win; $('again').textContent = win ? 'Записать заново' : 'Начать заново';
   setTimeout(() => { $('end').hidden = false; $('hud').hidden = true; $('touch').hidden = true; }, win ? 700 : 1500);
 }
 function respawn(fromNet){
   if (NET.on && !fromNet) netSend({ t: 'rw' });
-  S.captured = null; RP.cap = false; S.out = false; $('capTag').hidden = true; S.nv = false;
+  S.captured = null; for (const r of mates()) r.cap = false; S.out = false; $('capTag').hidden = true; S.nv = false; S.seat = -1; S.blackout = 0;
   $('end').hidden = true; $('hud').hidden = false; if (isTouch) $('touch').hidden = false;
   S.over = false; S.hurt = 0; S.fear = 0; S.scare = 0; post.material.uniforms.uBlack.value = 0;
   player.pos.copy(S.checkpoint); player.vy = 0; player.yaw = Math.PI; player.pitch = 0; S.crouch = false;
-  S.battery = Math.max(S.battery, 0.6); S.flashOn = S.role !== 'cam';
+  S.battery = Math.max(S.battery, 0.6); S.flashOn = S.role === 'light' || S.role === 'solo';
   if (!NET.on || NET.host){ const n = farNode(player.pos, 7, 40); E.pos.copy(nodes[n]); E.path = []; E.mode = 'wander'; E.wanderT = 0; E.notice = 0; E.lastKnown = null; E.target = -1; E.litT = 0; E.lostT = 0; E.g.visible = true; }
   S.hiding = null; $('slats').hidden = true;
   voice('Плёнка перемотана. Он где-то в доме.', 3, true);
@@ -1204,10 +1533,11 @@ function respawn(fromNet){
 }
 
 /* ================= co-op networking (WebRTC via Trystero: Nostr relays, BitTorrent trackers, MQTT brokers) ================= */
-// both players join the same room on all three public signalling networks at once; whichever finds the partner first carries the game
+// everyone joins the same room on all three public signalling networks at once; up to three players, the room's creator is the host
 const E_MODES = ['hidden', 'appear', 'crawl', 'rise', 'wander', 'hunt'];
 const APP_ID = 'dom1417-holloway-mansion';
-// fixed lists, so both players are guaranteed to meet on the same servers
+const MAX_PLAYERS = 3;
+// fixed lists, so all players are guaranteed to meet on the same servers
 const RELAYS = {
   nostr: ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.primal.net', 'wss://nostr.mom', 'wss://relay.nostr.band', 'wss://offchain.pub'],
   torrent: ['wss://tracker.webtorrent.dev', 'wss://tracker.openwebtorrent.com', 'wss://tracker.btorrent.xyz', 'wss://tracker.files.fm:7073/announce'],
@@ -1216,6 +1546,10 @@ const RELAYS = {
 const NET_NAMES = { nostr: 'Nostr', torrent: 'торренты', mqtt: 'MQTT' };
 // public best-effort TURN relay for networks that block direct connections
 const TURN = [{ urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' }];
+const ROLE_NAME = { cam: 'оператор', light: 'фонарщик', medium: 'медиум', solo: 'ты' };
+const ROLE_UP = { cam: 'КАМЕРА', light: 'ФОНАРЬ', medium: 'МЕДИУМ', solo: '' };
+const ROLE_WANT = { cam: 'оператором', light: 'с фонарём', medium: 'медиумом' };
+const capFirst = t => t.charAt(0).toUpperCase() + t.slice(1);
 function netStatus(t){ $('netStatus').textContent = t; }
 function myRole(){ const r = document.querySelector('input[name=role]:checked'); return r ? r.value : 'cam'; }
 function relayUrls(kind){
@@ -1225,16 +1559,34 @@ function relayUrls(kind){
 }
 function makeCode(){ const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let c = ''; for (let i = 0; i < 5; i++) c += A[Math.floor(Math.random() * A.length)]; return c; }
 function lobbyLock(on){ $('host').disabled = on; $('join').disabled = on; $('joinCode').disabled = on; }
+function sendTo(id, m){ m.q = ++NET.seq; for (const l of NET.links) try { l.sendTo(id, m); } catch (e){} }
+function makePeer(id){
+  if (PEERS.has(id)) return PEERS.get(id);
+  const r = { id, ok: true, seen: false, pos: new V3(10, Y, -11.5), tpos: new V3(10, Y, -11.5), yaw: Math.PI, pitch: 0, crouch: false, flash: false, lamp: false, nv: false, radio: false, noise: 0,
+    hide: -1, hideSeen: false, cap: false, capT: 0, role: '', seat: -1, eye: new V3(10, Y + 1.6, -11.5), fwd: new V3(0, 0, 1), stepAcc: 0, av: makeAvatar(PEERS.size + 1) };
+  PEERS.set(id, r); return r;
+}
+function dropPeer(id){ const r = PEERS.get(id); if (!r) return; scene.remove(r.av.g); PEERS.delete(id); }
+function mates(){ return [...PEERS.values()]; }
+function mateName(r){ return r.role ? ROLE_NAME[r.role] : 'напарник'; }
+function lobbyUpdate(){
+  const ul = $('lobby'); ul.innerHTML = '';
+  if (!NET.roster.length) return;
+  NET.roster.forEach((id, i) => { const li = document.createElement('li'); const me = id === NET.me; const want = NET.prefs[id];
+    li.textContent = (me ? 'Ты' : 'Игрок ' + (i + 1)) + (i === 0 ? ' (создатель)' : '');
+    const sp = document.createElement('span'); sp.textContent = want ? ' · хочет быть ' + ROLE_WANT[want] : ''; li.appendChild(sp); ul.appendChild(li); });
+}
+function sendRoster(){ if (NET.host) netSend({ t: 'roster', ids: NET.roster, prefs: NET.prefs }); }
 function linkUp(){
+  NET.lastRx = performance.now(); clearTimeout(NET.waitT);
   if (NET.on) return;
-  NET.on = true; RP.ok = true; NET.lastRx = performance.now(); clearTimeout(NET.waitT);
-  $('start').hidden = true;
-  if (NET.host){ netStatus('Напарник подключился.'); $('startCoop').hidden = false; }
-  else netStatus('Подключено. Роль выберет создатель комнаты. Ждём, пока он начнёт.');
+  NET.on = true; $('start').hidden = true;
+  if (!NET.host) netStatus('Подключено. Роли распределит создатель комнаты, когда начнёт.');
   netSend({ t: 'hello', role: myRole() });
 }
 function joinAll(code){
-  const P = window.P2P; NET.rooms = []; NET.links = []; NET.partnerId = null;
+  const P = window.P2P; NET.rooms = []; NET.links = []; NET.me = P.selfId; NET.presence = new Map();
+  if (NET.host){ NET.roster = [NET.me]; NET.hostId = NET.me; NET.prefs = { [NET.me]: myRole() }; lobbyUpdate(); }
   for (const kind of ['nostr', 'torrent', 'mqtt']){
     const urls = relayUrls(kind); if (urls === false) continue;
     try {
@@ -1242,19 +1594,10 @@ function joinAll(code){
       if (!urls) cfg.turnConfig = TURN;
       const room = P[kind](cfg, 'room-' + code.toLowerCase(), { onJoinError: d => { NET.joinErr = (d && d.error) || 'webrtc'; console.warn('p2p join error', kind, d); } });
       const act = room.makeAction('m');
-      const link = { kind, room, peer: null, send: m => act.send(m, { target: link.peer }) };
-      room.onPeerJoin = id => {
-        if (NET.partnerId && id !== NET.partnerId) return;   // a third player is ignored
-        NET.partnerId = id; link.peer = id; if (!NET.links.includes(link)) NET.links.push(link); linkUp();
-      };
-      room.onPeerLeave = id => { if (id !== link.peer) return; link.peer = null; NET.links = NET.links.filter(l => l !== link); if (!NET.links.length) onNetLost(); };
-      act.onMessage = (data, meta) => {
-        const id = meta && meta.peerId;
-        if (id && !NET.partnerId) room.onPeerJoin(id);   // a message can beat the join event
-        if (id && id !== NET.partnerId) return;
-        if (id && !link.peer){ link.peer = id; if (!NET.links.includes(link)) NET.links.push(link); }
-        onNetMsg(data);
-      };
+      NET.links.push({ kind, send: m => act.send(m), sendTo: (id, m) => act.send(m, { target: id }) });
+      room.onPeerJoin = id => peerSeen(id, kind);
+      room.onPeerLeave = id => peerGone(id, kind);
+      act.onMessage = (data, meta) => { const id = meta && meta.peerId; if (!id) return; peerSeen(id, kind); onNetMsg(id, data); };   // a message can beat the join event
       NET.rooms.push(room);
     } catch (e){ console.warn('p2p ' + kind, e); }
   }
@@ -1263,9 +1606,35 @@ function joinAll(code){
   clearInterval(NET.diagT); NET.diagT = setInterval(() => lobbyDiag(code), 1000);
   return true;
 }
+function peerSeen(id, kind){
+  let s = NET.presence.get(id); if (!s){ s = new Set(); NET.presence.set(id, s); } s.add(kind);
+  if (!NET.host || NET.roster.includes(id)) return;
+  if (NET.started || NET.roster.length >= MAX_PLAYERS){ sendTo(id, { t: 'full' }); return; }
+  NET.roster.push(id); makePeer(id); linkUp(); sendRoster(); lobbyUpdate();
+  netStatus(NET.roster.length >= MAX_PLAYERS ? 'Все в сборе. Можно начинать.' : 'Игрок подключился. Можно начинать или подождать третьего.');
+  $('startCoop').hidden = false;
+}
+function peerGone(id, kind){
+  const s = NET.presence && NET.presence.get(id); if (!s) return; s.delete(kind); if (s.size) return;
+  NET.presence.delete(id); if (NET.roster.includes(id)) leaveRoster(id);
+}
+function leaveRoster(id){
+  const wasHost = id === NET.hostId, r = PEERS.get(id);
+  NET.roster = NET.roster.filter(x => x !== id); dropPeer(id);
+  if (!S.started){
+    if (NET.host){ sendRoster(); lobbyUpdate(); if (NET.roster.length < 2){ $('startCoop').hidden = true; netStatus('Игрок отключился. Ждём…'); } }
+    else if (wasHost){ onNetLost(); netStatus('Создатель комнаты отключился.'); }
+    return;
+  }
+  // the host left mid-game: the next player in the list takes over the monster
+  if (wasHost){ NET.hostId = NET.roster[0]; NET.host = NET.hostId === NET.me; }
+  if (r && !S.over) voice(capFirst(mateName(r)) + ' пропал со связи.', 3.5, true);
+  if (NET.roster.length <= 1) onNetLost();
+  else if (S.captured || mates().some(m => m.cap)) checkAllCaptured();
+}
 // while waiting: how many signalling servers this browser actually reached, and what went wrong
 function lobbyDiag(code){
-  if (NET.on || S.started){ clearInterval(NET.diagT); $('netDiag').textContent = ''; return; }
+  if (NET.started || S.started){ clearInterval(NET.diagT); $('netDiag').textContent = ''; return; }
   const P = window.P2P, parts = [];
   for (const k of ['nostr', 'torrent', 'mqtt']){
     let n = 0, tot = 0;
@@ -1273,14 +1642,34 @@ function lobbyDiag(code){
     if (relayUrls(k) !== false) parts.push(NET_NAMES[k] + ' ' + n + '/' + (tot || RELAYS[k].length));
   }
   $('netDiag').textContent = 'Серверы знакомства: ' + parts.join(' · ');
+  if (NET.on) return;
   const waited = (performance.now() - NET.waitStart) / 1000;
-  if (NET.joinErr) netStatus('Друг найден, но прямое соединение между вами не проходит: сеть одного из вас блокирует WebRTC. Попробуйте другую сеть (например, раздать интернет с телефона).');
-  else if (waited > 25) netStatus(NET.host ? 'Пока никого. Код: ' + code + '. Проверь, что друг ввёл именно его.' : 'Пока никого с кодом ' + code + '. Проверь код и что создатель комнаты не закрыл страницу.');
+  if (NET.joinErr) netStatus('Друг найден, но прямое соединение не проходит: сеть одного из вас блокирует WebRTC. Попробуйте другую сеть (например, раздать интернет с телефона).');
+  else if (waited > 25) netStatus(NET.host ? 'Пока никого. Код: ' + code + '. Проверь, что друзья ввели именно его.' : 'Пока никого с кодом ' + code + '. Проверь код и что создатель комнаты не закрыл страницу.');
 }
-function onNetMsg(m){
+function onNetMsg(via, m){
   if (!m || typeof m !== 'object') return;
-  if (m.q){ if (NET.seen.has(m.q)) return; NET.seen.add(m.q); if (NET.seen.size > 600){ const keep = [...NET.seen].slice(-300); NET.seen = new Set(keep); } }
-  onNet(m);
+  // guests do not always reach each other directly: the host passes their messages on, marked with who sent them
+  const id = (m.fw && via === NET.hostId) ? m.fw : via;
+  if (m.q){ const k = id + ':' + m.q; if (NET.seen.has(k)) return; NET.seen.add(k); if (NET.seen.size > 1500) NET.seen = new Set([...NET.seen].slice(-800)); }
+  if (NET.host && !m.fw && m.t !== 'roster' && m.t !== 'full' && NET.roster.includes(id) && NET.roster.length > 2){
+    const f = Object.assign({}, m, { fw: id });
+    for (const other of NET.roster) if (other !== id && other !== NET.me) for (const l of NET.links) try { l.sendTo(other, f); } catch (e){}
+  }
+  const pr = PEERS.get(id); if (pr) pr.rx = performance.now();
+  if (m.t !== 'p'){ NET.log.push(m.t + ':' + String(id).slice(0, 4) + (m.fw ? '(fw)' : '')); if (NET.log.length > 80) NET.log.shift(); }
+  if (m.t === 'roster'){
+    if (NET.host || (NET.hostId && NET.hostId !== id) || !Array.isArray(m.ids)) return;
+    if (!m.ids.includes(NET.me)){ if (!NET.on) netStatus('Комната заполнена: там уже трое.'); return; }
+    NET.hostId = id; NET.roster = m.ids.slice(0, MAX_PLAYERS); NET.prefs = m.prefs || {};
+    for (const pid of NET.roster) if (pid !== NET.me) makePeer(pid);
+    for (const pid of [...PEERS.keys()]) if (!NET.roster.includes(pid)) dropPeer(pid);
+    linkUp(); lobbyUpdate(); return;
+  }
+  if (m.t === 'full'){ if (!NET.on){ netStatus('Комната заполнена: там уже трое.'); lobbyLock(false); for (const r of NET.rooms) try { r.leave(); } catch (e){} NET.rooms = []; NET.links = []; } return; }
+  if (!NET.roster.includes(id)) return;
+  NET.lastRx = performance.now();
+  onNet(id, m);
 }
 $('host').addEventListener('click', () => {
   if (!window.P2P){ netStatus('Не загрузился сетевой модуль (p2p.min.js).'); return; }
@@ -1288,7 +1677,7 @@ $('host').addEventListener('click', () => {
   const code = makeCode(); NET.host = true;
   if (!joinAll(code)) return;
   $('roomCode').hidden = false; $('roomCode').textContent = code;
-  netStatus('Передай код другу. Ждём напарника…');
+  netStatus('Передай код друзьям (можно двоим). Ждём…');
 });
 $('join').addEventListener('click', () => {
   const code = $('joinCode').value.trim().toUpperCase();
@@ -1297,87 +1686,424 @@ $('join').addEventListener('click', () => {
   initAudio(); lobbyLock(true); NET.host = false;
   if (joinAll(code)) netStatus('Ищу комнату ' + code + '…');
 });
-$('startCoop').addEventListener('click', () => {
-  const role = myRole();
-  netSend({ t: 'start', role: role === 'cam' ? 'light' : 'cam' });
-  beginGame(role);
-});
-function onNetLost(){
-  if (!NET.on) return;
-  for (const r of NET.rooms) try { r.leave(); } catch (e){}
-  NET.rooms = []; NET.links = [];
-  NET.on = false; RP.ok = false; avatar.visible = false; shared.uFlash2I.value = 0; $('mate').hidden = true;
-  if (S.captured) freeLocal();
-  RP.cap = false;
-  if (S.started && !S.over) voice('Связь с напарником потеряна. Дальше одному.', 4, true);
-  else if (!S.started){ netStatus('Напарник отключился.'); $('startCoop').hidden = true; $('start').hidden = false; lobbyLock(false); }
+document.querySelectorAll('input[name=role]').forEach(el => el.addEventListener('change', () => {
+  if (!NET.rooms.length || S.started) return;
+  if (NET.host){ NET.prefs[NET.me] = myRole(); sendRoster(); lobbyUpdate(); } else netSend({ t: 'hello', role: myRole() });
+}));
+// the host hands out roles: everyone gets what they asked for if it is free, the creator choosing first
+function assignRoles(){
+  const roles = {}, free = ['cam', 'light', 'medium'];
+  for (const id of NET.roster){ const w = NET.prefs[id] || 'cam'; const i = free.indexOf(w); if (i >= 0){ roles[id] = w; free.splice(i, 1); } }
+  for (const id of NET.roster) if (!roles[id]) roles[id] = free.shift();
+  return roles;
 }
-function onNet(m){
-  NET.lastRx = performance.now();
+$('startCoop').addEventListener('click', () => {
+  if (NET.roster.length < 2) return;
+  const roles = assignRoles();
+  netSend({ t: 'start', roles, ids: NET.roster });
+  startCoopGame(roles, NET.roster, false);
+});
+function startCoopGame(roles, ids, fromNet){
+  NET.started = true; NET.roster = ids.slice(0, MAX_PLAYERS);
+  for (const id of ids) if (id !== NET.me){ const r = makePeer(id); r.role = roles[id] || r.role; }
+  S.seatIdx = Math.max(0, ids.indexOf(NET.me)) % 3;
+  beginGame(roles[NET.me] || 'cam', fromNet);
+}
+function onNetLost(){
+  if (!NET.on && !NET.rooms.length) return;
+  for (const r of NET.rooms) try { r.leave(); } catch (e){}
+  NET.rooms = []; NET.links = []; NET.roster = []; NET.on = false; NET.host = false; NET.hostId = null;
+  for (const id of [...PEERS.keys()]) dropPeer(id);
+  for (let i = 0; i < 2; i++) shared.uRI.value[i] = 0;
+  $('mate').hidden = true;
+  if (S.captured) freeLocal();
+  if (S.started && !S.over) voice('Связь потеряна. Дальше одному.', 4, true);
+  else if (!S.started){ netStatus('Связь потеряна.'); $('startCoop').hidden = true; $('start').hidden = false; lobbyLock(false); lobbyUpdate(); }
+}
+function onNet(id, m){
+  const r = PEERS.get(id) || makePeer(id);
+  const fromHost = id === NET.hostId && !NET.host;
   switch (m.t){
-    case 'hello': RP.role = m.role; if (NET.host && m.role === myRole()){ /* the guest takes whichever role is left */ } break;
-    case 'start': if (!S.started) beginGame(m.role === 'light' ? 'light' : 'cam', true); break;
+    case 'hello': NET.prefs[id] = m.role in ROLE_WANT ? m.role : 'cam'; if (NET.host){ sendRoster(); lobbyUpdate(); } break;
+    case 'start': if (!S.started && fromHost && m.roles && Array.isArray(m.ids)) startCoopGame(m.roles, m.ids, true); break;
     case 'p': {
-      RP.tpos.set(+m.x || 0, +m.y || 0, +m.z || 0); RP.yaw = +m.yw || 0; RP.pitch = +m.pt || 0; RP.crouch = !!m.c; RP.flash = !!m.f; RP.nv = !!m.nv; RP.noise = +m.n || 0;
-      RP.hide = (m.h >= 0 && m.h < HIDES.length) ? m.h : -1; RP.hideSeen = !!m.hs; RP.role = m.r || RP.role;
-      const cap = !!m.cap; if (cap && !RP.cap) RP.capT = CAPTURE_TIME; RP.cap = cap;
-      if (!RP.seen){ RP.seen = true; RP.pos.copy(RP.tpos); }
-      if (m.e && !NET.host){
+      r.tpos.set(+m.x || 0, +m.y || 0, +m.z || 0); r.yaw = +m.yw || 0; r.pitch = +m.pt || 0; r.crouch = !!m.c; r.flash = !!m.f; r.lamp = !!m.lp; r.nv = !!m.nv; r.radio = !!m.rd; r.noise = +m.n || 0;
+      r.hide = (m.h >= 0 && m.h < HIDES.length) ? m.h : -1; r.hideSeen = !!m.hs; r.role = m.r || r.role; r.seat = m.st >= 0 ? m.st : -1;
+      const cap = !!m.cap; if (cap && !r.cap) r.capT = CAPTURE_TIME; r.cap = cap;
+      if (!r.seen){ r.seen = true; r.pos.copy(r.tpos); }
+      if (fromHost && m.e){
         const md = E_MODES[m.e[4]] || 'hidden';
         if (E.mode === 'hidden' && md !== 'hidden') E.pos.set(m.e[0], m.e[1], m.e[2]);
-        E.mode = md; E.g.visible = !!m.e[5] && md !== 'hidden';
+        if (ride.state !== 'run'){ E.mode = md; E.g.visible = !!m.e[5] && md !== 'hidden'; }
         NET.ePos.set(m.e[0], m.e[1], m.e[2]); NET.eYaw = m.e[3]; NET.eFrozen = !!m.e[6]; NET.eMoving = !!m.e[7];
-        if (m.fin && !S.final){ /* the final always arrives through the dagger action */ }
       }
+      if (fromHost && Array.isArray(m.mq)) MANNEQ.forEach((q, i) => { if (m.mq[i * 3] !== undefined){ q.tpos.set(m.mq[i * 3], A, m.mq[i * 3 + 1]); q.yaw = m.mq[i * 3 + 2]; } });
+      if (fromHost && m.rt !== undefined && ride.state === 'run') NET.rideT = +m.rt;
       break;
     }
-    case 'act': { const it = inter[m.i]; if (it && !it.taken){ NET.applying = true; try { it.act(); } catch (e){} NET.applying = false; } break; }
-    case 'door': { const d = DOORS[m.k]; if (!d) break; NET.applying = true; d.locked = !!m.l; if (m.k === 'basement' && !m.l) S.hasKey = false; setDoor(d, !!m.o, RP.pos, !!m.s); NET.applying = false; break; }
-    case 'showE': if (NET.host && Array.isArray(m.a) && (E.mode === 'hidden' || E.mode === 'appear')){ NET.applying = true; showE(+m.a[0], +m.a[1], +m.a[2], m.a[3], m.a[4] || {}); NET.applying = false; } break;
+    case 'act': { const it = inter[m.i]; if (it && !it.taken){ NET.applying = true; NET.from = id; try { it.act(); } catch (e){ console.warn(e); } NET.applying = false; } break; }
+    case 'door': { const d = DOORS[m.k]; if (!d) break; NET.applying = true; d.locked = !!m.l; if (m.k === 'basement' && !m.l) S.hasKey = false; setDoor(d, !!m.o, r.pos, !!m.s); NET.applying = false; break; }
+    case 'showE': if (NET.host && Array.isArray(m.a) && (E.mode === 'hidden' || E.mode === 'appear') && ride.state !== 'run'){ NET.applying = true; NET.from = id; showE(+m.a[0], +m.a[1], +m.a[2], m.a[3], m.a[4] || {}); NET.applying = false; } break;
     case 'fx':
+      if (m.who !== NET.me) break;
       if (m.k === 'scare') S.scare = Math.max(S.scare, +m.v || 0.7);
-      else if (m.k === 'sting'){ SFX.stinger(0.9); S.scare = 1; S.flicker = 0.6; }
+      else if (m.k === 'sting'){ SFX.stinger(0.9); S.scare = 1; S.flicker = 0.6; S.shake = 0.5; }
       else if (m.k === 'behind'){ SFX.crack(0.6, 0); SFX.whisper(1.0, 0, 0.4); S.flicker = 0.6; }
+      else if (m.k === 'mq') mannequinGrabbed();
       break;
-    case 'cap': captureLocal(); break;
-    case 'free': freeLocal(); break;
-    case 'lost': endGame(false, 'Круг замкнулся. На последних кадрах вас двое, оба в рясах, стоите у алтаря. Плёнку можно перемотать.'); break;
+    case 'cap': if (m.who === NET.me) captureLocal(); else { const c = PEERS.get(m.who); if (c && !c.cap){ c.cap = true; c.capT = CAPTURE_TIME; } } break;
+    case 'free': if (m.who === NET.me) freeLocal(); else { const c = PEERS.get(m.who); if (c) c.cap = false; } break;
+    case 'lost': endGame(false, LOST_TEXT()); break;
     case 'rw': respawn(true); break;
+    case 'ride': if (NET.host) rideStart(); break;
+    case 'rgo': if (!NET.host && ride.state === 'idle') rideGo(+m.t || 0); break;
   }
 }
 function netTick(dt){
   if (!NET.on) return;
+  // someone who has gone silent for a long time has left, even if no network said so
+  if (NET.started){ const now = performance.now(); for (const r of mates()) if (r.rx && now - r.rx > 12000) leaveRoster(r.id); }
+  if (!NET.on) return;
   NET.sendT -= dt; if (NET.sendT > 0) return; NET.sendT = 1 / 15;
   const p = player.pos;
-  const m = { t: 'p', x: +p.x.toFixed(3), y: +p.y.toFixed(3), z: +p.z.toFixed(3), yw: +player.yaw.toFixed(3), pt: +player.pitch.toFixed(3), c: S.crouch ? 1 : 0,
-    f: (S.flashOn && S.battery > 0 && shared.uFlashI.value > 0.5) ? 1 : 0, nv: S.nv ? 1 : 0, n: S.noise, h: S.hiding ? HIDES.indexOf(S.hiding) : -1, hs: S.hiding && S.hiding.seen ? 1 : 0, cap: S.captured ? 1 : 0, r: S.role };
-  if (NET.host) m.e = [+E.pos.x.toFixed(3), +E.pos.y.toFixed(3), +E.pos.z.toFixed(3), +E.yaw.toFixed(3), Math.max(0, E_MODES.indexOf(E.mode)), E.g.visible ? 1 : 0, NET.eFrozen ? 1 : 0, NET.eMoving ? 1 : 0];
+  const m = { t: 'p', x: +p.x.toFixed(3), y: +p.y.toFixed(3), z: +p.z.toFixed(3), yw: +camera.rotation.y.toFixed(3), pt: +player.pitch.toFixed(3), c: (S.crouch || S.seat >= 0) ? 1 : 0,
+    f: (S.flashOn && S.battery > 0 && shared.uFlashI.value > 0.5 && S.role !== 'medium') ? 1 : 0, lp: (S.role === 'medium' && !S.hiding && !S.captured && !S.blackout) ? 1 : 0,
+    nv: S.nv ? 1 : 0, rd: S.radio ? 1 : 0, n: S.noise, h: S.hiding ? HIDES.indexOf(S.hiding) : -1, hs: S.hiding && S.hiding.seen ? 1 : 0, cap: S.captured ? 1 : 0, r: S.role, st: S.seat };
+  if (NET.host){
+    m.e = [+E.pos.x.toFixed(3), +E.pos.y.toFixed(3), +E.pos.z.toFixed(3), +E.yaw.toFixed(3), Math.max(0, E_MODES.indexOf(E.mode)), E.g.visible ? 1 : 0, NET.eFrozen ? 1 : 0, NET.eMoving ? 1 : 0];
+    if (MANNEQ.some(q => q.pos.distanceTo(q.home) > 0.01)){ m.mq = []; for (const q of MANNEQ) m.mq.push(+q.pos.x.toFixed(2), +q.pos.z.toFixed(2), +q.yaw.toFixed(2)); }
+    if (ride.state === 'run') m.rt = +ride.t.toFixed(2);
+  }
   netSend(m);
 }
-// the partner in the world: smoothed body, their flashlight, their footsteps
+// the others in the world: smoothed bodies, their flashlights and lamps, their footsteps
+const FLASH_COS = new THREE.Vector2(0.87, 0.958), LAMP_COS = new THREE.Vector2(-0.35, 0.45);
 function updateRemote(dt){
-  if (!NET.on || !RP.ok){ avatar.visible = false; shared.uFlash2I.value = 0; return; }
-  const prev = RP.pos.clone();
-  RP.pos.lerp(RP.tpos, Math.min(1, dt * 12)); if (RP.pos.distanceTo(RP.tpos) > 4) RP.pos.copy(RP.tpos);
-  const eyeH = RP.cap ? 1.0 : (RP.crouch ? 0.9 : 1.6);
-  RP.eye.set(RP.pos.x, RP.pos.y + eyeH, RP.pos.z);
-  RP.fwd.set(-Math.sin(RP.yaw) * Math.cos(RP.pitch), Math.sin(RP.pitch), -Math.cos(RP.yaw) * Math.cos(RP.pitch));
-  avatar.visible = RP.hide < 0;
-  avatar.position.copy(RP.pos); avatar.rotation.y = RP.yaw;
-  AV.body.scale.y += ((RP.crouch || RP.cap ? 0.62 : 1) - AV.body.scale.y) * Math.min(1, dt * 10);
-  AV.arm.rotation.x = RP.pitch; AV.cam.visible = RP.role === 'cam'; AV.lamp.visible = RP.role !== 'cam';
-  const on = RP.flash && RP.hide < 0 && !RP.cap;
-  shared.uFlash2Pos.value.copy(RP.eye).add(_tmp.set(Math.cos(RP.yaw), 0, -Math.sin(RP.yaw)).multiplyScalar(0.25)); shared.uFlash2Pos.value.y -= 0.25;
-  shared.uFlash2Dir.value.copy(RP.fwd);
-  shared.uFlash2I.value += ((on ? 2.0 : 0) - shared.uFlash2I.value) * Math.min(1, dt * 20);
-  const moved = Math.hypot(RP.pos.x - prev.x, RP.pos.z - prev.z);
-  if (moved > 0.0005 && RP.noise > 0){
-    RP.stepAcc += moved;
-    if (RP.stepAcc > (RP.noise > 8 ? 0.95 : 0.75)){ RP.stepAcc = 0; const v = clamp(1 - RP.pos.distanceTo(player.pos) / 14, 0, 1) * (RP.crouch ? 0.35 : (RP.noise > 8 ? 1.2 : 0.9)); if (v > 0.02) SFX.step(surfaceAt(RP.pos), v); }
+  let slot = 0;
+  for (const r of mates()){
+    const prev = r.pos.clone();
+    r.pos.lerp(r.tpos, Math.min(1, dt * 12)); if (r.pos.distanceTo(r.tpos) > 4) r.pos.copy(r.tpos);
+    const eyeH = r.seat >= 0 ? 1.15 : (r.cap ? 1.0 : (r.crouch ? 0.9 : 1.6));
+    r.eye.set(r.pos.x, r.pos.y + eyeH, r.pos.z);
+    r.fwd.set(-Math.sin(r.yaw) * Math.cos(r.pitch), Math.sin(r.pitch), -Math.cos(r.yaw) * Math.cos(r.pitch));
+    const av = r.av; av.g.visible = r.hide < 0 && r.seen;
+    av.g.position.copy(r.pos); av.g.rotation.y = r.yaw;
+    av.body.scale.y += ((r.crouch || r.cap ? 0.62 : 1) - av.body.scale.y) * Math.min(1, dt * 10);
+    av.arm.rotation.x = r.pitch; av.cam.visible = r.role === 'cam'; av.lamp.visible = r.role === 'light'; av.radio.visible = r.role === 'medium'; av.lantern.visible = r.role === 'medium';
+    if (slot < 2){
+      const on = r.hide < 0 && !r.cap && !S.blackout && (r.flash || r.lamp);
+      shared.uRPos.value[slot].copy(r.eye).add(_tmp.set(Math.cos(r.yaw), 0, -Math.sin(r.yaw)).multiplyScalar(0.25)); shared.uRPos.value[slot].y -= r.lamp ? 0.7 : 0.25;
+      shared.uRDir.value[slot].copy(r.fwd); shared.uRCos.value[slot].copy(r.lamp ? LAMP_COS : FLASH_COS);
+      shared.uRI.value[slot] += ((on ? (r.lamp ? 0.75 : 2.0) : 0) - shared.uRI.value[slot]) * Math.min(1, dt * 20);
+      slot++;
+    }
+    const moved = Math.hypot(r.pos.x - prev.x, r.pos.z - prev.z);
+    if (moved > 0.0005 && r.noise > 0){
+      r.stepAcc += moved;
+      if (r.stepAcc > (r.noise > 8 ? 0.95 : 0.75)){ r.stepAcc = 0; const v = clamp(1 - r.pos.distanceTo(player.pos) / 14, 0, 1) * (r.crouch ? 0.35 : (r.noise > 8 ? 1.2 : 0.9)); if (v > 0.02) SFX.step(surfaceAt(r.pos), v); }
+    }
+    if (r.cap && r.capT > 0) r.capT -= dt;
   }
-  if (RP.cap && RP.capT > 0) RP.capT -= dt;
+  for (; slot < 2; slot++) shared.uRI.value[slot] = 0;
 }
-function floorName(p){ return p.y < -1.5 ? 'подвал' : p.y > 3 ? '2 этаж' : (p.z < 0 || p.x < 0 || p.x > 20 || p.z > 16) ? 'снаружи' : '1 этаж'; }
+function floorName(p){
+  if (p.y > 6.9) return 'чердак';
+  if (p.z > 16 && p.y < -1.2) return 'аттракцион';
+  if (p.y < -1.5) return 'подвал';
+  if (p.x < -3 && p.z > 33.5 && p.z < 39.5 && p.x > -11.2) return 'склеп';
+  if (p.y > 3) return '2 этаж';
+  if (p.z < 0 || p.x < 0 || p.x > 20 || p.z > 16) return p.z > 16 ? 'сад' : 'снаружи';
+  return '1 этаж';
+}
+
+/* ================= v5: carnival sounds ================= */
+Object.assign(SFX, {
+  // a laugh from a broken speaker: voiced "ha" bursts through two formants
+  laugh(gain = 0.5, pitch = 1, pan = 0, n = 7){
+    const C = AU.ctx; if (!C) return; const t0 = C.currentTime; const step = 0.17 / Math.pow(pitch, 0.35);
+    for (let i = 0; i < n; i++){
+      const t = t0 + i * step, f = (230 - i * 11) * pitch;
+      const o = C.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(f * 1.2, t); o.frequency.exponentialRampToValueAtTime(f * 0.8, t + 0.12);
+      const f1 = C.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 760 * Math.sqrt(pitch); f1.Q.value = 4;
+      const f2 = C.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 1180 * Math.sqrt(pitch); f2.Q.value = 5;
+      const g = C.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + step * 0.8);
+      o.connect(f1); o.connect(f2); f1.connect(g); f2.connect(g); g.connect(panner(pan)); o.start(t); o.stop(t + step);
+      noiseHit(0.07, 'bandpass', 1900 * pitch, 1.5, gain * 0.35, pan, t - t0);
+    }
+  },
+  // the preacher's worn-out tape: syllables of a voice with no words in it
+  mutter(dur = 2.2, gain = 0.3, pan = 0, base = 105){
+    const C = AU.ctx; if (!C) return; const t0 = C.currentTime;
+    for (let t = 0; t < dur; t += R(0.11, 0.2)){
+      if (rnd() < 0.15) continue; const tt = t0 + t, f = base * R(0.85, 1.25), len = R(0.08, 0.17);
+      const o = C.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(f, tt); o.frequency.linearRampToValueAtTime(f * R(0.8, 1.1), tt + len);
+      const f1 = C.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = pick([400, 550, 700, 850]); f1.Q.value = 5;
+      const f2 = C.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = pick([1100, 1500, 1900, 2400]); f2.Q.value = 6;
+      const g = C.createGain(); g.gain.setValueAtTime(0, tt); g.gain.linearRampToValueAtTime(gain, tt + 0.02); g.gain.linearRampToValueAtTime(0, tt + len);
+      o.connect(f1); o.connect(f2); f1.connect(g); f2.connect(g); g.connect(panner(pan)); o.start(tt); o.stop(tt + len + 0.02);
+    }
+  },
+  bell(){ for (let i = 0; i < 2; i++){ tone('sine', 1320, 1310, 1.0, 0.1, i * 0.35); tone('triangle', 2640, 2630, 0.6, 0.04, i * 0.35); } },
+  whirr(gain = 0.08, pan = 0){ tone('square', 180, 720, 0.28, gain, 0, pan); noiseHit(0.25, 'bandpass', 2400, 2, gain * 0.6, pan); },
+  blast(){ noiseHit(1.3, 'highpass', 700, 0.5, 0.7); noiseHit(0.9, 'lowpass', 300, 0.7, 0.5); },
+  clack(gain = 0.2){ noiseHit(0.04, 'bandpass', 1400, 2, gain); noiseHit(0.05, 'lowpass', 250, 0.7, gain * 0.8, 0, 0.05); },
+  breath(gain = 0.25, pan = 0){ noiseHit(0.9, 'bandpass', 700, 1.2, gain, pan); noiseHit(0.8, 'bandpass', 500, 1.2, gain * 0.8, pan, 1.2); },
+  scream(gain = 0.5){ const C = AU.ctx; if (!C) return; const t = C.currentTime; const o = C.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(520, t); o.frequency.linearRampToValueAtTime(880, t + 0.25); o.frequency.linearRampToValueAtTime(610, t + 1.1); const lf = C.createOscillator(); lf.frequency.value = 9; const lg = C.createGain(); lg.gain.value = 30; lf.connect(lg); lg.connect(o.frequency); const f = C.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1300; f.Q.value = 3; const g = C.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.05); g.gain.linearRampToValueAtTime(0, t + 1.2); o.connect(f); f.connect(g); g.connect(AU.master); o.start(t); lf.start(t); o.stop(t + 1.3); lf.stop(t + 1.3); noiseHit(1.0, 'bandpass', 2600, 1, gain * 0.4); }
+});
+// the calliope of the ride, out of tune: plays from the station speaker, or from the car while it runs
+const NOTE = n => 440 * Math.pow(2, (n - 69) / 12);
+const CALLI = [67, 72, 76, 79, 78, 79, 76, 72, 74, 77, 81, 84, 83, 84, 81, 77, 76, 79, 84, 88, 87, 88, 84, 79, 81, 77, 74, 71, 72, 0, 72, 0].map(n => n ? NOTE(n) : 0);
+const CALLI_BASS = [48, 55, 50, 55, 52, 55, 47, 43].map(NOTE);
+const calli = { on: false, t: 0, i: 0, pos: new V3(15.5, D + 2.5, 23) };
+function updateCalliope(dt){
+  if (!calli.on || !AU.ctx) return;
+  calli.t -= dt; if (calli.t > 0) return;
+  const fast = S.final ? 1.35 : 1, wob = 0.96 + Math.sin(S.time * 0.9) * 0.035 - (S.final ? 0.08 : 0);
+  calli.t = 0.2 / fast;
+  const src = ride.state === 'run' ? cart.position : calli.pos;
+  let v = clamp(1 - camPos.distanceTo(src) / (ride.state === 'run' ? 30 : 22), 0, 1);
+  if (camPos.z < 16 && camPos.y > -1.5) v *= 0.15;   // upstairs you can only just hear it
+  v *= 0.09;
+  if (v > 0.002){
+    const f = CALLI[calli.i % CALLI.length];
+    if (f){ SFX.note(f * wob, v, 'square', 0.18); SFX.note(f * wob * 1.007, v * 0.6, 'triangle', 0.22); }
+    if (calli.i % 2 === 0) SFX.note(CALLI_BASS[(calli.i >> 2) % CALLI_BASS.length] * wob, v * 1.4, 'triangle', 0.3);
+    else if (calli.i % 4 === 1) noiseHit(0.04, 'highpass', 5000, 0.7, v * 0.5);
+  }
+  calli.i++;
+}
+
+/* ================= v5: the attic hatch and the mannequins ================= */
+const fallDoll = figure('doll', 12.1, H2 - 0.3, 14.6, 0.4, { scale: 0.42 }); fallDoll.g.visible = false; fallDoll.vy = 0; fallDoll.active = false;
+function openHatch(){
+  if (S.hatch) return; S.hatch = true;
+  hatch.visible = false; ladder.visible = true; floors.push(LADDER_ZONE);
+  SFX.creak(1.2, 0, 1); SFX.thump(0.1, 0.5);
+  if (!NET.applying){ fallDoll.g.visible = true; fallDoll.active = true; fallDoll.vy = 0; setTimeout(() => SFX.laugh(0.25, 2.3, 0, 5), 500); S.scare = Math.max(S.scare, 0.6); voice('Сверху упала кукла... Лестница на чердак.', 3); }
+}
+function updateFallDoll(dt){
+  if (!fallDoll.active) return;
+  fallDoll.vy -= 12 * dt; fallDoll.g.position.y += fallDoll.vy * dt; fallDoll.g.rotation.x += dt * 5;
+  if (fallDoll.g.position.y <= U){ fallDoll.g.position.y = U; fallDoll.g.rotation.x = -Math.PI / 2; fallDoll.active = false; SFX.thump(0, 0.4); }
+}
+// they move only when nobody is looking: host decides, everyone sees
+function seesPoint(a, P, maxD){
+  const to = _tmp.copy(P).sub(a.eye); const d = to.length(); if (d > maxD) return false;
+  to.normalize(); if (to.dot(a.fwd) < 0.64) return false;
+  const lit = a.light || a.lamp || a.nv; if (!lit && d > 2.6) return false;
+  return los(a.eye, P);
+}
+const _mh = new V3();
+function updateMannequins(dt){
+  const local = !NET.on || NET.host;
+  for (const q of MANNEQ){
+    if (!local){
+      const was = q.pos.clone(); q.pos.lerp(q.tpos, Math.min(1, dt * 12)); if (q.pos.distanceTo(q.tpos) > 3) q.pos.copy(q.tpos);
+      q.moving = was.distanceTo(q.pos) > 0.002;
+    } else {
+      q.moving = false; q.cool = Math.max(0, q.cool - dt);
+      const AG = agents().filter(a => !a.cap && !a.hide && a.pos.y > 6.5);
+      if (!AG.length || q.cool > 0) continue;
+      _mh.set(q.pos.x, A + 1.45, q.pos.z);
+      if (AG.some(a => seesPoint(a, _mh, 16))) continue;
+      let T = AG[0]; for (const a of AG) if (a.pos.distanceTo(q.pos) < T.pos.distanceTo(q.pos)) T = a;
+      const dx = T.pos.x - q.pos.x, dz = T.pos.z - q.pos.z, dl = Math.hypot(dx, dz);
+      if (dl < 0.75){ mannequinGrab(q, T); continue; }
+      const step = Math.min(dl, 2.4 * dt); const nx = q.pos.x + dx / dl * step, nz = q.pos.z + dz / dl * step;
+      q.pos.x = clamp(nx, ATTIC.x0 + 0.3, ATTIC.x1 - 0.3); q.pos.z = clamp(nz, ATTIC.z0 + 0.3, ATTIC.z1 - 0.3);
+      q.yaw = Math.atan2(dx, dz); q.moving = true;
+    }
+    q.f.g.position.copy(q.pos); q.f.g.rotation.y = q.yaw;
+    if (q.moving){ q.stepT -= dt; if (q.stepT <= 0){ q.stepT = R(0.25, 0.5); const v = clamp(1 - q.pos.distanceTo(player.pos) / 12, 0, 1); if (v > 0.02){ SFX.crack(0.25 * v, 0); if (rnd() < 0.4) SFX.thump(0, 0.15 * v); } q.f.head.rotation.z = R(-0.5, 0.5); q.f.armR.rotation.x = -R(0.2, 1.6); } }
+  }
+}
+function mannequinGrab(q, a){
+  q.pos.copy(q.home); q.yaw = q.homeYaw; q.cool = 4;
+  if (a.id === 'L') mannequinGrabbed(); else netSend({ t: 'fx', who: a.id, k: 'mq' });
+}
+function mannequinGrabbed(){
+  SFX.stinger(1.3); SFX.scream(0.35); S.scare = 1; S.hurt = 0.7; S.shake = 1; S.faceT = 0.45;
+  S.battery = Math.max(0.05, S.battery - 0.25);
+  voice('Оно схватило меня! Не отворачивайтесь от них!', 3, true);
+}
+// a face pressed against the lens: used for the mannequins
+const scareFace = new THREE.Group(); scene.add(scareFace); scareFace.visible = false;
+prop(0, -0.2, 0, 0.5, 0.62, 0.4, M.skin, { parent: scareFace }); prop(0, -0.18, 0.205, 0.46, 0.56, 0.01, M.mface, { parent: scareFace });
+
+/* ================= v5: power, the ride ================= */
+function powerOn(){
+  if (S.power) return; S.power = true;
+  panelLever.visible = true; panelLever.rotation.x = -0.6;
+  SFX.thump(0, 0.8); noiseHit(0.6, 'bandpass', 120, 2, 0.5); SFX.whirr(0.12, 0.3);
+  for (const m of powerMats) m.uniforms.uEmissive.value = m === M.clown ? 0.35 : (m === M.sign ? 0.9 : 1.6);
+  for (const k of ['rstation', 'rdinner', 'rdolls', 'rmirror', 'rslaughter', 'rhall', 'rpulpit']) lightGroups[k].on = true;
+  S.shutter = 0.001; S.flicker = 1.2; S.scare = Math.max(S.scare, 0.5);
+  setTimeout(() => { calli.on = true; SFX.laugh(0.35, 0.85, 0.4, 9); }, 1600);
+  voice('Ток пошёл... Ставня поднимается. Внизу заиграла музыка.', 4);
+  objective('Спустись к аттракциону за ставней');
+  if (!NET.on || NET.host){ if (E.mode === 'hidden') S.wanderAt = S.time + 6; }
+}
+function mySeat(){ return NET.on ? (S.seatIdx || 0) : 0; }
+function allSeated(){ return S.seat >= 0 && mates().every(r => r.seat >= 0 && !r.cap); }
+function sitDown(){
+  if (ride.state !== 'idle' || S.seat >= 0) return;
+  if (S.hiding) exitHide();
+  S.seat = mySeat(); S.crouch = false; player.yaw = 0; player.pitch = -0.05;
+  SFX.creak(0.4, 0, 0.5);
+  voice(allSeated() || !NET.on ? 'Все на местах. [E] — рычаг.' : 'Сел. Ждём остальных: [E] — встать.', 3);
+}
+function standUp(){ if (S.seat < 0) return; S.seat = -1; player.yaw += cart.rotation.y + Math.PI; player.pos.set(16 - mySeat() * 0.8, D + 0.25, 23.0); player.vy = 0; }
+function rideLever(){
+  if (!allSeated()){ const wait = mates().filter(r => r.seat < 0 || r.cap).map(mateName); voice('Ждём: ' + wait.join(', ') + '.', 2.5); standUp(); return; }
+  SFX.thump(0, 0.5); SFX.clack(0.4);
+  if (!NET.on || NET.host) rideStart(); else netSend({ t: 'ride' });
+}
+function rideStart(){
+  if (ride.state !== 'idle') return;
+  rideGo(0); netSend({ t: 'rgo', t0: 0 });
+}
+function rideGo(t){
+  ride.state = 'run'; ride.t = t; ride.fired = 0; NET.rideT = undefined;
+  if (!NET.on || NET.host){ hideE(false); S.wanderAt = 0; }
+  E.g.visible = false; E.mode = 'hidden';
+  objective('Держитесь');
+}
+const RIDE_KEYS = [[0, 0], [4, 6.3], [4.6, 7.6], [7, 9.5], [10, 9.5], [13, 14.5], [14.5, 17.4], [16, 19.0], [17.5, 19.0], [19.5, 24.3], [21, 26.0], [23.5, 26.4], [24.3, 29.5], [26, 30.8], [28, 31.8], [30, 31.8], [31, 33.6], [36, 33.6], [37.2, 38.74], [39, 40.0], [48.5, 40.0], [52, TRACK_LEN]];
+const RIDE_END = 52;
+function rideS(t){
+  for (let i = 1; i < RIDE_KEYS.length; i++){ const [t1, s1] = RIDE_KEYS[i]; if (t <= t1){ const [t0, s0] = RIDE_KEYS[i - 1]; const k = (t - t0) / (t1 - t0); return s0 + (s1 - s0) * (k * k * (3 - 2 * k) * 0.35 + k * 0.65); } }
+  return TRACK_LEN;
+}
+const anims = [];   // small tweens for the ride's animatronics
+function tween(dur, fn, done){ anims.push({ t: 0, dur, fn, done }); }
+function updateAnims(dt){ for (let i = anims.length - 1; i >= 0; i--){ const a = anims[i]; a.t += dt; const k = Math.min(1, a.t / a.dur); a.fn(k); if (k >= 1){ anims.splice(i, 1); if (a.done) a.done(); } } }
+function scenePan(x, z){ const d = _tmp.set(x - camPos.x, 0, z - camPos.z).normalize(); return clamp(d.dot(new V3(Math.cos(camera.rotation.y), 0, -Math.sin(camera.rotation.y))), -1, 1); }
+function rideVoice(t, d = 2.6){ voice(t, d, true); }
+const SERMON = ['Добро пожаловать в Поездку в Ад, дети мои.', 'Вы боитесь. Это хорошо. Страх — самая честная молитва.', 'Я отдал Ему свой дом. Свою жену. Свою дочь. Теперь я и есть дом.', 'Одиннадцать ждут в круге. Возьмите нож — и увидите Его лицо.'];
+const RIDE_EV = [
+  [0.1, () => { SFX.bell(); SFX.clack(0.4); calli.on = true; }],
+  [3.4, () => { SFX.laugh(0.6, 0.75, 0, 10); S.shake = 0.25; M.clown.uniforms.uEmissive.value = 0.9; }],
+  [4.5, () => { SFX.slam(0.6); M.clown.uniforms.uEmissive.value = 0.35; }],
+  [6.6, () => { lightGroups.rdinner.dim = 0.4; }],
+  [7.7, () => { DINERS.forEach(f => { f.head.rotation.y = Math.atan2(cart.position.x - f.g.position.x, cart.position.z - f.g.position.z) - f.g.rotation.y; f.head.rotation.x = 0; }); for (let i = 0; i < 6; i++) SFX.crack(0.4, R(-1, 1)); SFX.stinger(0.45); lightGroups.rdinner.dim = 1; }],
+  [8.8, () => { const f = DINERS[10]; const z0 = f.g.position.z; SFX.whirr(0.12, scenePan(f.g.position.x, z0)); SFX.stinger(1.1); SFX.groan(0.5, 0); S.scare = 1; S.shake = 0.6; tween(0.18, k => { f.g.position.z = z0 - k * 0.9; f.armR.rotation.x = -k * 1.8; f.armL.rotation.x = -k * 1.5; }); }],
+  [9.4, () => SFX.laugh(0.45, 0.8, -0.3)],
+  [10.0, () => { lightGroups.rdinner.dim = 0.1; S.flicker = 0.4; }],
+  [11.0, () => { lightGroups.rdinner.dim = 1; }],
+  [14.3, () => SFX.slam(0.6)],
+  [14.8, () => { ride.mb = true; ride.mbT = 0; ride.mbI = 0; }],
+  [16.0, () => { bigDoll.g.visible = true; bigDollRope.visible = true; const y0 = DC - 0.2; SFX.thump(0, 0.8); SFX.creak(0.5, -0.4, 1); SFX.stinger(0.9); SFX.laugh(0.35, 2.4, -0.5, 6); S.scare = 1; S.shake = 0.7; tween(0.22, k => { bigDoll.g.position.y = y0 - k * (y0 - (D + 2.25)); bigDollRope.scale.y = 1 + k * 1.6; bigDollRope.position.y = DC - 0.6 - k * 1.0; }); }],
+  [19.3, () => { SFX.slam(0.6); ride.mb = false; }],
+  [21.0, () => { lightGroups.rmirror.dim = 0; S.blackout = 1.6; const P = new V3(); const yw = trackAt(28.6, P); showRideE(P, yw + Math.PI); SFX.breath(0.3, 0); }],
+  [22.6, () => { lightGroups.rmirror.dim = 1; S.flicker = 0.5; SFX.stinger(0.5); }],
+  [24.15, () => { hideRideE(); SFX.stinger(1.5); SFX.groan(0.9, 0); SFX.scream(0.3); S.hurt = 0.6; S.scare = 1; S.shake = 1; S.flicker = 0.8; }],
+  [25.0, () => SFX.slam(0.6)],
+  [27.0, () => { SFX.blast(); S.shake = 0.6; S.flicker = 0.5; HANGED.forEach(f => f.kick = 1); }],
+  [28.0, () => { dropBody.g.visible = true; const y0 = DC - 0.3; SFX.thump(0, 1); SFX.creak(0.8, scenePan(15.6, 29.4), 1); SFX.stinger(0.8); S.scare = 0.9; S.shake = 0.5; tween(0.25, k => { dropBody.g.position.y = y0 + k * 0.0 - k * 0.0; dropBody.g.position.y = y0 - k * (y0 - (D + 2.35)); }); }],
+  [29.5, () => { dropBody.head.rotation.x = -0.9; SFX.scream(0.4); S.scare = 1; }],
+  [31.0, () => { lightGroups.rslaughter.dim = 0; S.blackout = 5.0; ride.circle = 0; }],
+  [31.6, () => SFX.breath(0.35, 0.8)],
+  [33.2, () => rideVoice('«…трое… как раз трое…»', 2.4)],
+  [34.2, () => SFX.breath(0.45, -0.6)],
+  [35.5, () => { SFX.laugh(0.9, 0.7, 0, 12); SFX.scream(0.45); S.scare = 1; S.shake = 1.2; S.hurt = 0.4; lightGroups.rslaughter.dim = 1.6; ride.circle = -1; }],
+  [36.6, () => { lightGroups.rslaughter.dim = 1; SFX.slam(0.7); }],
+  [39.4, () => sermon(0)], [41.8, () => sermon(1)], [44.2, () => sermon(2)], [46.6, () => sermon(3)],
+  [48.6, () => { ELEVEN.forEach(f => { f.head.rotation.y = 0; }); for (let i = 0; i < 8; i++) SFX.crack(0.35, R(-1, 1)); SFX.bell(); }],
+  [RIDE_END, () => rideEnd()]
+];
+function sermon(i){ rideVoice('«' + SERMON[i] + '»', 2.4); SFX.mutter(2.1, 0.28, scenePan(15.4, 38.9)); ride.talk = 2.2; }
+function showRideE(P, yaw){ E.g.position.copy(P); E.g.rotation.set(0, yaw, 0); E.g.visible = true; enemyPose(false, true); ride.eShown = true; }
+function hideRideE(){ E.g.visible = false; ride.eShown = false; }
+function rideEnd(){
+  ride.state = 'done'; ride.mb = false; ride.talk = 0; hideRideE();
+  if (S.seat >= 0){ const i = S.seat; S.seat = -1; player.pos.set(13.6 - i * 0.9, D, 38.0); player.vy = 0; player.yaw = Math.PI / 2 - 0.3; }
+  S.checkpoint.set(13.0, D, 38.2);
+  objective('Возьми нож с алтаря в круге');
+  voice('Приехали. Круг одиннадцати... На алтаре нож.', 4);
+}
+function updateRide(dt){
+  if (ride.state === 'run'){
+    ride.t += dt;
+    if (NET.rideT !== undefined){ if (Math.abs(NET.rideT - ride.t) > 0.35) ride.t = NET.rideT; NET.rideT = undefined; }
+    while (ride.fired < RIDE_EV.length && ride.t >= RIDE_EV[ride.fired][0]){ const ev = RIDE_EV[ride.fired++]; try { ev[1](); } catch (e){ console.warn('ride event', e); } }
+    const s = rideS(ride.t), prevS = ride.s; ride.s = s;
+    cart.rotation.y = trackAt(s, cart.position);
+    if (Math.floor(s / 0.9) !== Math.floor(prevS / 0.9)) SFX.clack(clamp(1 - cart.position.distanceTo(camPos) / 14, 0, 1) * 0.25);
+    if (AU.ctx) AU.cart.g.gain.setTargetAtTime(Math.abs(s - prevS) > 0.0005 ? clamp(1 - cart.position.distanceTo(camPos) / 16, 0, 1) * 0.12 : 0, AU.ctx.currentTime, 0.1);
+    if (ride.mb){ ride.mbT -= dt; if (ride.mbT <= 0){ const mel = [1318.5, 1174.7, 1046.5, 987.8, 1046.5, 880, 0, 784, 880, 987.8, 1046.5, 0]; const f = mel[ride.mbI % mel.length]; if (f) SFX.note(f * (1 - ride.mbI * 0.004), 0.06, 'sine', 0.9); ride.mbI++; ride.mbT = 0.36 + ride.mbI * 0.01; } }
+    if (ride.circle >= 0 && ride.circle !== undefined){ ride.circle += dt; ride.cT = (ride.cT || 0) - dt; if (ride.cT <= 0){ ride.cT = 0.55; const a = ride.circle * 1.6; const pan = Math.sin(a); SFX.thump(0, 0.35 + 0.1 * Math.cos(a), pan); if (rnd() < 0.4) SFX.crack(0.3, pan); } }
+    if (ride.talk > 0){ ride.talk -= dt; preacher.jaw.position.y = -0.12 - (Math.sin(S.time * 22) > 0 ? 0.05 : 0); preacher.head.rotation.y = Math.sin(S.time * 0.8) * 0.25; preacher.armR.rotation.x = -1.4 + Math.sin(S.time * 3) * 0.3; } else if (preacher.jaw) preacher.jaw.position.y = -0.12;
+    if (ride.eShown && rnd() < 0.3) enemyPose(false, true);
+    if (bigDoll.g.visible){ bigDoll.g.rotation.z = Math.sin(S.time * 2.1) * 0.25; }
+  } else if (AU.ctx && AU.cart) AU.cart.g.gain.setTargetAtTime(0, AU.ctx.currentTime, 0.2);
+  for (const d of RDOORS){ const open = ride.state === 'run' && Math.abs(ride.s - d.s) < 1.5; d.ang += ((open ? 1.35 : 0) - d.ang) * Math.min(1, dt * (open ? 9 : 3)); for (const l of d.leaves) l.p.rotation.y = (l.axis === 'z' ? -d.dir : d.dir) * l.sd * d.ang; }
+  for (const f of HANGED){ f.kick = Math.max(0, (f.kick || 0) - dt * 0.4); f.g.rotation.z = Math.sin(S.time * 1.3 + f.ph) * (0.05 + f.kick * 0.35); f.g.rotation.x = Math.cos(S.time * 1.1 + f.ph) * (0.04 + f.kick * 0.2); }
+  const occ = new Set(); if (S.seat >= 0) occ.add(S.seat); for (const r of mates()) if (r.seat >= 0) occ.add(r.seat);
+  ghosts.forEach((g, i) => { g.g.visible = S.nv && ride.state === 'run' && !occ.has(i); });
+  if (S.power){ sal.body.rotation.z = Math.sin(S.time * 3.1) * 0.12; sal.head.rotation.y = Math.sin(S.time * 1.7) * 0.5; sal.armL.rotation.z = -1.0 + Math.sin(S.time * 5) * 0.4; sal.armR.rotation.z = 1.0 + Math.sin(S.time * 4.3) * 0.4;
+    S.salT = (S.salT || 8) - dt; if (S.salT <= 0){ S.salT = R(9, 16); const v = clamp(1 - camPos.distanceTo(sal.g.position) / 18, 0, 1); if (v > 0.05 && camPos.z > 15) SFX.laugh(0.5 * v, 0.85, scenePan(19.2, 26.2), 8); } }
+  if (S.shutter > 0 && S.shutter < 1){ S.shutter = Math.min(1, S.shutter + dt / 3); shutter.position.y = B + 1.15 + S.shutter * 2.2; if (rnd() < 0.2) SFX.clack(0.15); if (S.shutter >= 1){ const i = solids.indexOf(shutterSolid); if (i >= 0) solids.splice(i, 1); } }
+}
+
+/* ================= v5: the medium's radio ================= */
+const SPIRITS = [
+  { p: [7.4, G, 6.4], r: 3, t: '«…мы звонили… линия молчала… никто не приехал…»' },
+  { p: [3.5, G, 3.5], r: 3, t: '«…папа строил страшные комнаты… для чужих детей… потом для нас…»' },
+  { p: [5.9, U, 7.0], r: 2.6, t: '«…ключ… у мамы… в комоде…»', c: () => !S.keyTaken },
+  { p: [3.5, U, 13], r: 3, t: '«…мама внизу… смеётся… а папа теперь везде…»' },
+  { p: [12.1, U, 14.5], r: 3, t: '«…под крышей… ручка… они стоят и ждут, пока ты отвернёшься…»', c: () => !S.hasHandle },
+  { p: [16.5, U, 4.2], r: 3, t: '«…одиннадцать имён… и пустая строчка… для тебя…»' },
+  { p: [16.5, G, 12], r: 3, t: '«…мясо для общины… не ешь… не ешь…»' },
+  { p: [16, B, 12.5], r: 3.5, t: '«…включи свет… мы хотим прокатиться ещё раз…»', c: () => !S.power },
+  { p: [10, B, 6.2], r: 3, t: '«…не стой в круге… он чувствует, кто в круге…»' },
+  { p: [16, D, 24.5], r: 4, t: '«…садитесь по трое… четвёртое место всегда занято…»' },
+  { p: [10, D, 36.5], r: 4, t: '«…не бери нож… нет… бери… пусть он выйдет…»', c: () => ride.state === 'done' },
+  { p: [-8, Y, 36.5], r: 4, t: '«…через сад… калитка слева… беги…»' }
+].map(s => Object.assign(s, { pos: new V3(...s.p), done: false }));
+function updateRadio(dt){
+  const show = S.role === 'medium'; $('radio').hidden = !show; if (!show) return;
+  const on = S.radio && S.battery > 0 && !S.captured;
+  let k = 0;
+  if (E.mode !== 'hidden' && E.mode !== 'appear' && E.mode !== 'crawl') k = clamp(1 - E.pos.distanceTo(player.pos) / 22, 0, 1);
+  for (const q of MANNEQ) if (q.moving) k = Math.max(k, clamp(1 - q.pos.distanceTo(player.pos) / 10, 0, 1) * 0.8);
+  if (ride.eShown) k = 1;
+  S.radioK += (k - S.radioK) * Math.min(1, dt * 3);
+  const lit = on ? Math.round(S.radioK * 8 + (rnd() < 0.3 ? 1 : 0)) : 0;
+  $('radio').querySelectorAll('b').forEach((b, i) => { b.classList.toggle('on', i < lit); b.classList.toggle('hot', i < lit && i >= 5); });
+  $('radioTxt').textContent = !on ? 'ВЫКЛ [F]' : (S.radioK > 0.75 ? 'ОН РЯДОМ' : S.radioK > 0.4 ? 'БЛИЗКО' : S.radioK > 0.08 ? 'ПОМЕХИ' : 'ТИХО');
+  if (AU.ctx) AU.radio.g.gain.setTargetAtTime(on ? (0.012 + S.radioK * 0.1) * R(0.5, 1.3) : 0, AU.ctx.currentTime, 0.03);
+  if (!on) return;
+  if (S.radioK > 0.6 && rnd() < dt * 0.6) SFX.whisper(1.0, R(-1, 1), 0.2 + S.radioK * 0.2);
+  for (const s of SPIRITS){ if (s.done || (s.c && !s.c())) continue; if (s.pos.distanceTo(player.pos) < s.r && Math.abs(s.pos.y - player.pos.y) < 2){ s.done = true; voice(s.t, 5, true, true); SFX.whisper(2.2, 0, 0.35); } }
+}
+
+/* ================= v5: house animatronics ================= */
+// the library's watcher turns its head after you; up close it lunges
+const watcher = figure('robe', 18.7, G, 6.9, -2.6); watcher.armL.rotation.x = -0.3;
+// a body drops from the kitchen ceiling
+const kitchenBody = figure('body', 15.6, H1 + 1.9, 10.2, 0.4); kitchenBody.g.rotation.x = Math.PI; kitchenBody.g.visible = false;
+const kitchenRope = cyl(15.6, H1 - 0.2, 10.2, 0.008, 0.4, M.rope, 3); kitchenRope.visible = false;
+// something sits up in the bathtub once you have looked into it
+const tubBody = figure('pale', 16.5, U + 0.45, 15.2, -Math.PI / 2); tubBody.g.rotation.order = 'YXZ'; tubBody.g.rotation.x = -Math.PI / 2 + 0.05; tubBody.g.visible = false;
+function updatePoppers(dt){
+  const p = player.pos, F = S.flags;
+  if (p.y > -0.2 && p.y < 2 && p.x > 13 && p.z < 8){
+    const want = Math.atan2(camPos.x - watcher.g.position.x, camPos.z - watcher.g.position.z) - watcher.g.rotation.y;
+    watcher.head.rotation.y += (clamp(Math.atan2(Math.sin(want), Math.cos(want)), -1.2, 1.2) - watcher.head.rotation.y) * Math.min(1, dt * 1.5);
+    if (!F.watch && p.distanceTo(watcher.g.position) < 1.7){ F.watch = 1; const g = watcher.g, x0 = g.position.x, z0 = g.position.z, dx = p.x - x0, dz = p.z - z0, dl = Math.hypot(dx, dz) || 1; SFX.whirr(0.14, 0); SFX.stinger(1.0); S.scare = 1; S.shake = 0.6; tween(0.15, k => { g.position.x = x0 + dx / dl * 0.45 * k; g.position.z = z0 + dz / dl * 0.45 * k; watcher.armL.rotation.x = -0.3 - k * 1.5; watcher.armR.rotation.x = -k * 1.7; }); }
+  }
+  if (!F.kbody && p.y > -0.2 && p.y < 2 && p.x > 14.3 && p.x < 17 && p.z > 9.1 && p.z < 11.3){
+    F.kbody = 1; kitchenBody.g.visible = true; kitchenRope.visible = true; const g = kitchenBody.g; SFX.thump(0, 0.9); SFX.creak(0.9, 0, 1); SFX.stinger(0.9); S.scare = 1; S.shake = 0.5;
+    tween(0.2, k => { g.position.y = H1 + 1.9 - k * 2.05; }, () => { kitchenBody.swing = 1; });
+  }
+  if (kitchenBody.swing){ kitchenBody.swing = Math.max(0.08, kitchenBody.swing - dt * 0.15); kitchenBody.g.rotation.z = Math.sin(S.time * 2.4) * 0.3 * kitchenBody.swing; kitchenRope.position.y = H1 - 0.3; }
+  if (F.tubLook === 1){
+    const to = _tmp.set(16.5 - camPos.x, U + 0.6 - camPos.y, 15.2 - camPos.z); const d = to.length();
+    if (to.normalize().dot(camFwd) < 0.2 && d < 7){ F.tubLook = 2; tubBody.g.visible = true; tubBody.g.rotation.x = -0.25; tubBody.g.rotation.y = Math.atan2(camPos.x - 16.5, camPos.z - 15.2); SFX.bubbles(); }
+  } else if (F.tubLook === 2){
+    const to = _tmp.set(16.5 - camPos.x, U + 1.2 - camPos.y, 15.2 - camPos.z); if (to.normalize().dot(camFwd) > 0.85 && los(camPos, new V3(16.5, U + 1.2, 15.2))){ F.tubLook = 3; SFX.stinger(1.0); SFX.groan(0.5, 0); S.scare = 1; S.shake = 0.5; setTimeout(() => { tubBody.g.visible = false; }, 1600); }
+  }
+}
 
 /* ================= interaction ================= */
 let focus = null;
@@ -1390,16 +2116,19 @@ function findFocus(){
     const c = to.normalize().dot(camFwd); const need = d < 1.0 ? 0.75 : 0.92;
     if (c > need && c > best && (it.noLos || los(camPos, it.pos))){ best = c; focus = it; }
   }
+  if (S.seat >= 0 && ride.state === 'idle'){ focus = null; $('hint').textContent = (isTouch ? '' : '[E] ') + (allSeated() ? 'дёрнуть рычаг: поехали' : 'встать (ждём остальных)'); return; }
+  if (S.seat >= 0){ focus = null; $('hint').textContent = ''; return; }
   $('hint').textContent = focus ? (isTouch ? '' : '[E] ') + focus.label() : '';
 }
-function tryInteract(){ if (S.captured) return; if (S.hiding){ exitHide(); return; } if (focus){ const it = focus; it.act(); if (NET.on && !it.local) netSend({ t: 'act', i: it.idx }); } }
+function tryInteract(){ if (S.captured) return; if (S.hiding){ exitHide(); return; } if (S.seat >= 0){ if (ride.state === 'idle') rideLever(); return; } if (focus){ const it = focus; it.act(); if (NET.on && !it.local) netSend({ t: 'act', i: it.idx }); } }
 function takeItem(it){
-  const remote = NET.applying;
+  const remote = NET.applying, who = remote && PEERS.get(NET.from) ? capFirst(mateName(PEERS.get(NET.from))) : 'Напарник';
   it.taken = true; it.mesh.visible = false; if (!remote) SFX.pickup();
-  if (it.kind === 'battery'){ if (remote) return; S.battery = 1; if (S.role === 'cam') S.nv = true; else S.flashOn = true; note('Батарейки', S.role === 'cam' ? 'Свежие. Камере хватит надолго.' : 'Свежие. Фонарь снова светит в полную силу.'); return; }
-  S.finds++; if (remote) voice('Напарник нашёл: ' + it.name.toLowerCase() + '.', 3, true); else note(it.name, it.text);
+  if (it.kind === 'battery'){ if (remote) return; S.battery = 1; if (S.role === 'cam') S.nv = true; else if (S.role === 'medium') S.radio = true; else S.flashOn = true; note('Батарейки', 'Свежие. ' + GEAR[S.role] + ' снова работает в полную силу.'); return; }
+  if (it.kind === 'tool'){ S.hasHandle = true; if (remote) voice(who + ' нашёл ручку рубильника.', 3, true); else note(it.name, 'Тяжёлая эбонитовая ручка. На ней выцарапано: «ПОЕХАЛИ».'); objective('Включи ток: щиток в задней комнате подвала'); return; }
+  S.finds++; if (remote) voice(who + ' нашёл: ' + it.name.toLowerCase() + '.', 3, true); else note(it.name, it.text);
   if (it.onTake) it.onTake();
-  if (S.finds === FINDS_TOTAL - 1 && !S.final) objective('Последняя улика — в подвале');
+  if (S.finds === FINDS_TOTAL - 1 && !S.final) objective('Последняя улика — в конце аттракциона');
 }
 
 /* ================= scripted horror ================= */
@@ -1429,20 +2158,28 @@ function onKey(){
     voice('Что... что это было?', 3);
   }, 1500);
 }
+// the basement ticket: a laugh from behind the wall points the way to the ride
+function ticketScare(){
+  lightGroups.ritual.on = false; S.flicker = 1.2;
+  setTimeout(() => { SFX.laugh(0.4, 0.8, 0.7, 9); voice('Смех... из-за стены. Из задней комнаты.', 3.5); }, 900);
+  setTimeout(() => { lightGroups.ritual.on = true; }, 2600);
+  if (!S.power) objective(S.hasHandle ? 'Включи ток: щиток в задней комнате подвала' : 'Осмотри заднюю комнату подвала');
+}
 function startFinal(){
-  S.final = true; lightGroups.ritual.on = false; S.flicker = 2; SFX.stinger(1.2); S.scare = 1;
-  S.checkpoint.set(8, G, 9.9);
-  objective('Беги к входной двери');
+  S.final = true; lightGroups.rhall.on = false; lightGroups.rpulpit.on = false; S.flicker = 2; SFX.stinger(1.3); SFX.laugh(0.6, 0.6, 0, 12); S.scare = 1; S.shake = 0.6;
+  S.checkpoint.set(0.6, D, 36.5);
+  objective('Беги: лестница наверх, в склеп');
   voice('Беги. Беги!', 3);
-  setTimeout(() => { showE(10, B - 2.7, 6, 'rise'); SFX.groan(0.7, 0); }, 1300);
-  setTimeout(() => { DOORS.front.locked = false; setDoor(DOORS.front, true, new V3(10, 0, 5), true); }, 2500);
+  ELEVEN.forEach(f => { f.head.rotation.y = 0; });
+  setTimeout(() => { showE(8.5, D - 2.7, 36.5, 'rise', { riseY: D }); SFX.groan(0.7, 0); }, 1300);
+  setTimeout(() => { DOORS.crypt.locked = false; setDoor(DOORS.crypt, true, new V3(-9, Y, 36), true); }, 2500);
 }
 function zoneEvents(p, dt){
   const F = S.flags;
   const inFoyer = p.x > 7 && p.x < 13 && p.z > 2.2 && p.z < 9 && p.y > -0.2 && p.y < 2;
   if (!F.foyer && inFoyer){
     F.foyer = 1; DOORS.front.locked = true; setDoor(DOORS.front, false, null, true); S.scare = 0.6;
-    S.checkpoint.set(10, G, 4); objective('Найди пять улик культа');
+    S.checkpoint.set(10, G, 4); objective('Найди семь улик культа');
     setTimeout(() => voice('Дверь захлопнулась... Ладно. Найду другой выход.', 4), 900);
     S.phoneT = 14;
   }
@@ -1457,11 +2194,14 @@ function zoneEvents(p, dt){
     showE(9.5, H2, z0, 'crawl', { crawl: { z1, dir } }); SFX.crack(0.5, 0); SFX.groan(0.4, 0);
   }
   if (!F.beams && p.y > 3 && p.x > 7 && p.x < 13 && p.z > 10.6 && p.z < 12){ F.beams = 1; voice('Потолок обвалился. Пролезу только пригнувшись. [C]', 3.5); }
-  if (!F.base && p.y < -1.5){ F.base = 1; voice('Господи... Здесь они и молились.', 4); objective('Последняя улика — на алтаре'); }
+  if (!F.base && p.y < -1.5 && p.z < 16){ F.base = 1; voice('Господи... Здесь они и молились.', 4); if (!S.power) objective('Осмотри подвал: на алтаре что-то лежит'); }
+  if (!F.attic && p.y > 6.9){ F.attic = 1; voice('Мастерская Холлоуэя. Манекены... Не своди с них глаз. Только не в темноте.', 5); if (!S.hasHandle) objective('Найди на чердаке ручку рубильника'); }
+  if (!F.station && p.z > 21.5 && p.y < -5){ F.station = 1; voice('Это аттракцион. Прямо под садом. И он работает.', 4); objective(NET.on ? 'Садитесь в вагонетку все вместе' : 'Садись в вагонетку'); SFX.laugh(0.4, 0.85, scenePan(19.2, 26.2), 8); }
+  if (S.final && !F.outCrypt && p.z < 33.6 && p.x < -3 && p.z > 20){ F.outCrypt = 1; objective('К воротам! Через калитку слева от дома'); voice('Сад... Калитка слева от дома, потом к воротам!', 3.5); }
   if (!F.nurs && p.x < 7 && p.z > 8 && p.y > 3){ F.nurs = 1; S.horseT = 6; }
   if (S.final && p.z < -8.6 && !S.over && !S.captured){
-    if (!NET.on || RP.pos.z < -8.6) endGame(true);
-    else if (!S.out){ S.out = true; voice('Я снаружи. Где ты? Выходи!', 3); objective('Дождись напарника у ворот'); }
+    if (!NET.on || mates().every(r => r.pos.z < -8.6)) endGame(true);
+    else if (!S.out){ S.out = true; voice(mates().length > 1 ? 'Я снаружи. Где вы? Быстрее!' : 'Я снаружи. Где ты? Выходи!', 3); objective('Дождись остальных у ворот'); }
   }
 }
 
@@ -1496,6 +2236,12 @@ function updatePlayer(dt){
   const speed = S.crouch ? 1.05 : (running ? 4.1 : 2.0);
   const move = fwd.multiplyScalar(mz * speed * dt).add(right.multiplyScalar(mx * speed * dt));
   const p = player.pos;
+  if (S.seat >= 0){
+    S.noise = 0; S.crouch = false; player.vy = 0;
+    seatPos(S.seat, _tmp); p.set(_tmp.x, cart.position.y, _tmp.z);
+    player.eye += (1.15 - player.eye) * Math.min(1, dt * 6);
+    camera.position.set(p.x, p.y + player.eye + (ride.state === 'run' ? Math.sin(S.time * 19) * 0.008 : 0), p.z); player.yaw = clamp(player.yaw, -2.4, 2.4); camera.rotation.set(player.pitch, cart.rotation.y + Math.PI + player.yaw, 0); return;   // in the car you look around relative to the car
+  }
   if (S.captured){
     S.noise = 0; if (S.captured.phase === 1){ p.copy(ALTAR_SPOT); player.pitch = clamp(player.pitch, -0.9, 0.6); }
     player.eye += (1.0 - player.eye) * Math.min(1, dt * 4);
@@ -1530,12 +2276,13 @@ function enemyPose(moving, frozen){
 }
 // everyone the thing can perceive: you, and in co-op your partner as last reported
 function agents(){
-  const L = { id: 'L', pos: player.pos, eye: camPos, fwd: camFwd, noise: S.noise, crouch: S.crouch, light: S.flashOn && S.battery > 0, hide: S.hiding, cap: !!S.captured,
-    flashPos: shared.uFlashPos.value, flashDir: shared.uFlashDir.value, flashI: shared.uFlashI.value };
+  const L = { id: 'L', pos: player.pos, eye: camPos, fwd: camFwd, noise: S.noise, crouch: S.crouch, light: S.flashOn && S.battery > 0 && S.role !== 'medium', lamp: S.role === 'medium' && !S.blackout, nv: S.nv, hide: S.hiding, cap: !!S.captured, seat: S.seat >= 0,
+    flashPos: shared.uFlashPos.value, flashDir: shared.uFlashDir.value, flashI: S.role === 'medium' ? 0 : shared.uFlashI.value };
   const list = [L];
-  if (NET.on && RP.ok){
-    const h = RP.hide >= 0 ? Object.assign({}, HIDES[RP.hide], { seen: RP.hideSeen }) : null;
-    list.push({ id: 'R', pos: RP.pos, eye: RP.eye, fwd: RP.fwd, noise: RP.noise, crouch: RP.crouch, light: RP.flash, hide: h, cap: RP.cap, flashPos: RP.eye, flashDir: RP.fwd, flashI: RP.flash ? 2 : 0 });
+  if (NET.on) for (const r of mates()){
+    if (!r.seen) continue;
+    const h = r.hide >= 0 ? Object.assign({}, HIDES[r.hide], { seen: r.hideSeen }) : null;
+    list.push({ id: r.id, pos: r.pos, eye: r.eye, fwd: r.fwd, noise: r.noise, crouch: r.crouch, light: r.flash, lamp: r.lamp, nv: r.nv, hide: h, cap: r.cap, seat: r.seat >= 0, flashPos: r.eye, flashDir: r.fwd, flashI: r.flash ? 2 : 0 });
   }
   return list;
 }
@@ -1573,7 +2320,7 @@ function teleportBehind(a){
 }
 function scareFor(a, k){ if (a.id === 'L'){ S.scare = Math.max(S.scare, k); } else netSend({ t: 'fx', k: 'scare', v: k }); }
 function updateEnemy(dt){
-  if (E.mode === 'hidden') return;
+  if (E.mode === 'hidden' || ride.state === 'run') return;
   if (NET.on && !NET.host){ enemyClient(dt); return; }
   E.t += dt;
   _ch.set(E.g.position.x, E.g.position.y + (E.mode === 'crawl' ? -1.4 : 1.6), E.g.position.z);
@@ -1600,13 +2347,14 @@ function updateEnemy(dt){
     if ((E.crawl.dir > 0 && E.pos.z > E.crawl.z1) || (E.crawl.dir < 0 && E.pos.z < E.crawl.z1) || E.t > 6){ hideE(false); S.wanderAt = S.time + 12; return; }
   } else if (E.mode === 'rise'){
     let near = AG[0]; for (const a of AG) if (!a.cap && a.pos.distanceTo(E.pos) < near.pos.distanceTo(E.pos)) near = a;
-    E.pos.y = Math.min(B, E.pos.y + dt * 1.0); E.yaw = Math.atan2(near.eye.x - E.pos.x, near.eye.z - E.pos.z); frozen = true;
-    if (E.pos.y >= B){ E.mode = 'hunt'; E.tgt = near.id; E.lastKnown = near.pos.clone(); }
+    const ry = E.riseY === undefined ? B : E.riseY;
+    E.pos.y = Math.min(ry, E.pos.y + dt * 1.0); E.yaw = Math.atan2(near.eye.x - E.pos.x, near.eye.z - E.pos.z); frozen = true;
+    if (E.pos.y >= ry){ E.mode = 'hunt'; E.tgt = near.id; E.lastKnown = near.pos.clone(); }
   } else {
     if (!E.notice || typeof E.notice !== 'object') E.notice = {};
     let best = null;
     for (const a of AG){
-      if (a.cap) continue;
+      if (a.cap || a.seat) continue;
       const pd = E.pos.distanceTo(a.pos);
       const sameFloor = Math.abs(E.pos.y - a.pos.y) < 1.5;
       const clear = pd < 16 && sameFloor && los(new V3(E.pos.x, E.pos.y + 1.8, E.pos.z), a.eye);
@@ -1614,7 +2362,7 @@ function updateEnemy(dt){
       const hearR = a.noise * (!sameFloor ? 0.3 : (clear ? 1 : 0.45));
       // sight: a cone in front of it, limited by light; crouching in the dark makes you almost invisible
       const facing = new V3(Math.sin(E.yaw), 0, Math.cos(E.yaw)).dot(a.pos.clone().sub(E.pos).setY(0).normalize()) > 0.45;
-      const seeR = (a.light ? 12 : (a.crouch ? 2 : 5)) * (E.mode === 'hunt' ? 1.2 : 1);
+      const seeR = ((a.light || a.lamp) ? 12 : (a.crouch ? 2 : 5)) * (E.mode === 'hunt' ? 1.2 : 1);
       const sees = !a.hide && clear && pd < seeR && (facing || pd < 1.6);
       const hears = !a.hide && pd < hearR;
       E.notice[a.id] = sees ? (E.notice[a.id] || 0) + dt : Math.max(0, (E.notice[a.id] || 0) - dt * 0.5);
@@ -1661,7 +2409,7 @@ function enemyFx(dt, moving, frozen, dist, dirE){
     enemyPose(moving, frozen);
     for (const m of [M.flesh, M.ribs, M.eface]) m.uniforms.uWarp.value = frozen ? 0.07 : 0.03;
   }
-  E.sndT -= dt; const pan = clamp(dirE.dot(new V3(Math.cos(player.yaw), 0, -Math.sin(player.yaw))), -1, 1); const vol = clamp(1 - dist / 16, 0, 1);
+  E.sndT -= dt; const pan = clamp(dirE.dot(new V3(Math.cos(camera.rotation.y), 0, -Math.sin(camera.rotation.y))), -1, 1); const vol = clamp(1 - dist / 16, 0, 1);
   if (E.sndT <= 0 && vol > 0){ E.sndT = moving ? R(0.15, 0.5) : R(0.6, 1.6); SFX.crack(0.35 * vol, pan); if (moving && rnd() < 0.5) SFX.thump(0, 0.35 * vol, pan); if (rnd() < 0.05) SFX.groan(0.3 * vol, pan); }
   S.heartT -= dt; const near = clamp(1 - dist / 12, 0, 1);
   if ((E.mode === 'hunt' || E.mode === 'wander') && S.heartT <= 0 && near > 0){ SFX.heart(0.2 + near * 0.6); S.heartT = 1.3 - near * 0.8; }
@@ -1671,10 +2419,12 @@ function enemyFx(dt, moving, frozen, dist, dirE){
 // solo: the tape ends. Co-op: whoever is caught is dragged to the altar and the partner has a minute
 function capture(a){
   if (!NET.on){ if (S.hiding) exitHide(); caught(); return; }
-  if (a.id === 'L') captureLocal(); else { RP.cap = true; netSend({ t: 'cap' }); }
+  if (a.id === 'L') captureLocal(); else { const r = PEERS.get(a.id); if (r){ r.cap = true; r.capT = CAPTURE_TIME; } netSend({ t: 'cap', who: a.id }); }
   hideE(false); S.wanderAt = S.time + R(10, 14);
-  if ((S.captured || a.id === 'L') && RP.cap) loseCoop();
+  checkAllCaptured();
 }
+function checkAllCaptured(){ if (NET.on && (!NET.host ? false : (!!S.captured && mates().every(r => r.cap)))) loseCoop(); }
+const LOST_TEXT = () => mates().length > 1 ? 'Круг замкнулся. На последних кадрах вы все в рясах стоите у алтаря, и ваши лица пришиты к маскам. Плёнку можно перемотать.' : 'Круг замкнулся. На последних кадрах вас двое, оба в рясах, стоите у алтаря. Плёнку можно перемотать.';
 function jumpscare(){
   const f = camFwd.clone().setY(0).normalize();
   E.g.position.copy(camPos).add(f.multiplyScalar(0.8)); E.g.position.y = camPos.y - 2.4; E.g.rotation.set(0, Math.atan2(camPos.x - E.g.position.x, camPos.z - E.g.position.z), 0); E.g.visible = true; enemyPose(false, true);
@@ -1702,7 +2452,7 @@ function updateCaptured(dt){
   const tag = $('capTag'); tag.hidden = c.phase === 0;
   tag.innerHTML = 'ТЕБЯ ДЕРЖИТ КРУГ · ' + Math.ceil(c.t) + '<small>Напарник должен спуститься к алтарю и разорвать круг</small>';
 }
-function loseCoop(){ if (S.over) return; netSend({ t: 'lost' }); endGame(false, 'Круг замкнулся. На последних кадрах вас двое, оба в рясах, стоите у алтаря. Плёнку можно перемотать.'); }
+function loseCoop(){ if (S.over) return; netSend({ t: 'lost' }); endGame(false, LOST_TEXT()); }
 
 /* ================= main loop ================= */
 let last = performance.now();
@@ -1725,24 +2475,27 @@ function frame(now){
   if (active){
     S.time += dt;
     updatePlayer(dt);
+    if (S.shake > 0){ camera.rotation.x += (rnd() - 0.5) * S.shake * 0.07; camera.rotation.z += (rnd() - 0.5) * S.shake * 0.09; S.shake = Math.max(0, S.shake - dt * 1.6); }
     camera.updateMatrixWorld();
     camPos.copy(camera.position); camera.getWorldDirection(camFwd);
     flashDir.lerp(camFwd, Math.min(1, dt * 14)).normalize();
-    shared.uFlashPos.value.copy(camPos).add(_tmp.set(Math.cos(player.yaw), 0, -Math.sin(player.yaw)).multiplyScalar(0.12)); shared.uFlashPos.value.y -= 0.12;
+    shared.uFlashPos.value.copy(camPos).add(_tmp.set(Math.cos(camera.rotation.y), 0, -Math.sin(camera.rotation.y)).multiplyScalar(0.12)); shared.uFlashPos.value.y -= S.role === 'medium' ? 0.75 : 0.12;
     shared.uFlashDir.value.copy(flashDir);
-    if ((S.flashOn || S.nv) && S.battery > 0){ S.battery = Math.max(0, S.battery - dt / 200); if (S.battery === 0){ S.flashOn = false; S.nv = false; voice(S.role === 'cam' ? 'Камера села. Где-то были батарейки.' : 'Фонарь сел. Где-то были батарейки.', 3); } }
+    if ((S.flashOn || S.nv || S.radio) && S.battery > 0){ S.battery = Math.max(0, S.battery - dt / 200); if (S.battery === 0){ S.flashOn = false; S.nv = false; S.radio = false; voice(GEAR[S.role] + ' сел. Где-то были батарейки.', 3); } }
     shared.uNV.value = S.nv ? 1 : 0; post.material.uniforms.uNV.value = S.nv ? 1 : 0; for (const m of nvMarks) m.visible = S.nv; M.eface.uniforms.uEmissive.value = S.nv ? 0.6 : 0;
-    let fi = S.flashOn ? 2.3 * (0.55 + 0.45 * Math.min(1, S.battery * 3)) : 0;
+    let fi = S.role === 'medium' ? ((S.hiding || S.captured) ? 0 : 0.85) : (S.flashOn ? 2.3 * (0.55 + 0.45 * Math.min(1, S.battery * 3)) : 0);
+    if (S.blackout > 0){ fi = 0; S.blackout = Math.max(0, S.blackout - dt); }
     if (S.flashOn && (S.flicker > 0 || (S.battery < 0.2 && rnd() < 0.04))) fi *= rnd() < 0.5 ? 0.06 : 1;
     S.flicker = Math.max(0, S.flicker - dt);
     shared.uFlashI.value += (fi - shared.uFlashI.value) * Math.min(1, dt * 30);
-    const p = player.pos, inside = p.x > 0 && p.x < 20 && p.z > 0 && p.z < 16, base = p.y < -1.5;
+    const p = player.pos, zn = floorName(p), base = zn === 'подвал' || zn === 'аттракцион', inside = base || zn === 'склеп' || (p.x > 0 && p.x < 20 && p.z > 0 && p.z < 16);
     shared.uFogFar.value += ((inside ? (base ? 11 : 13) : 22) - shared.uFogFar.value) * dt;
     const fv = lightning(dt, inside, base);
-    shared.uPLPos.value[7].set(p.x, p.y + 2, p.z); shared.uPLRad.value[7] = 10;
-    shared.uPLCol.value[7].set(0.2, 0.22, 0.3).multiplyScalar(inside && !base ? fv : 0);
+    shared.uPLPos.value[11].set(p.x, p.y + 2, p.z); shared.uPLRad.value[11] = 10;
+    shared.uPLCol.value[11].set(0.2, 0.22, 0.3).multiplyScalar(inside && !base ? fv : 0);
     rain.uniforms.uCam.value.copy(camPos); rain.uniforms.uTime.value = S.time;
-    for (const k in lightGroups){ const g = lightGroups[k]; const f = g.on ? (1 - g.amp + g.amp * (0.6 + 0.4 * Math.sin(S.time * 13 + g.slot) * Math.sin(S.time * 7.3 + g.slot * 2)) * (rnd() < 0.03 ? 0.5 : 1)) : 0; shared.uPLCol.value[g.slot].copy(g.col).multiplyScalar(f); for (const fl of g.flames) fl.visible = g.on; }
+    assignLights();
+    for (const g of LG){ const f = g.on ? (1 - g.amp + g.amp * (0.6 + 0.4 * Math.sin(S.time * 13 + g.idx) * Math.sin(S.time * 7.3 + g.idx * 2)) * (rnd() < 0.03 ? 0.5 : 1)) * (g.dim === undefined ? 1 : g.dim) : 0; if (g.slot) shared.uPLCol.value[g.slot].copy(g.col).multiplyScalar(f); for (const fl of g.flames) fl.visible = g.on; }
     M.flame.uniforms.uEmissive.value = 1.3 + Math.sin(S.time * 17) * 0.3;
     if (AU.ctx){
       const T0 = AU.ctx.currentTime;
@@ -1764,11 +2517,14 @@ function frame(now){
     if (S.horseT > 0){ S.horseT -= dt; horse.rotation.x = Math.sin(S.time * 3.2) * 0.22 * Math.min(1, S.horseT); if (rnd() < 0.02) SFX.creak(0.3, -0.3, 0.4); }
     for (const b of fallBooks) if (b.active){ b.vy -= 12 * dt; b.m.position.y = Math.max(b.floor, b.m.position.y + b.vy * dt); b.m.position.x -= dt * 1.2; b.m.rotation.z += dt * 6; if (b.m.position.y === b.floor){ SFX.thump(0, 0.25, 0.5); b.active = false; } }
     if (S.final) robes.forEach(r => { r.rotation.y = Math.atan2(camPos.x - r.position.x, camPos.z - r.position.z); });
-    if (S.wanderAt && S.time > S.wanderAt && E.mode === 'hidden' && (!NET.on || NET.host)){ S.wanderAt = 0; const n = farNode(player.pos, 5, 9); showE(nodes[n].x, nodes[n].y, nodes[n].z, 'wander', { target: -1 }); }
+    if (S.final) for (const f of ELEVEN){ const a = Math.atan2(camPos.x - f.g.position.x, camPos.z - f.g.position.z) - f.g.rotation.y; f.head.rotation.y = clamp(Math.atan2(Math.sin(a), Math.cos(a)), -1.3, 1.3); }
+    if (S.wanderAt && S.time > S.wanderAt && E.mode === 'hidden' && (!NET.on || NET.host) && ride.state !== 'run'){ S.wanderAt = 0; const n = farNode(player.pos, 5, 9); showE(nodes[n].x, nodes[n].y, nodes[n].z, 'wander', { target: -1 }); }
     const pulse = 0.12 + 0.12 * Math.max(0, Math.sin(S.time * 3));
     for (const it of items) if (!it.taken) it.m.uniforms.uEmissive.value = S.nv ? 0.5 + pulse * 3 : pulse;
     S.fear = Math.max(0, S.fear - dt * 0.6);
     zoneEvents(p, dt);
+    updateRide(dt); updateMannequins(dt); updateRadio(dt); updatePoppers(dt); updateAnims(dt); updateCalliope(dt); updateFallDoll(dt);
+    if (S.faceT > 0){ S.faceT -= dt; scareFace.visible = true; scareFace.position.copy(camPos).addScaledVector(camFwd, 0.42); scareFace.position.y += 0.18; scareFace.rotation.set((rnd() - 0.5) * 0.2, Math.atan2(camPos.x - scareFace.position.x, camPos.z - scareFace.position.z), (rnd() - 0.5) * 0.3); } else scareFace.visible = false;
     updateRemote(dt);
     updateCaptured(dt);
     updateEnemy(dt);
@@ -1796,7 +2552,8 @@ function frame(now){
   renderer.setRenderTarget(null); post.material.uniforms.tDiffuse.value = rt.texture; renderer.render(postScene, postCam);
 }
 requestAnimationFrame(frame);
-window.__dom1417 = { netSend, shared, NET, RP, agents, capture, HIDES, avatar, S, player, items, E, DOORS, startFinal, showE, inter, nodes, nodeIds, bfs, solids, takeItem, keys, updatePlayer, updateEnemy, floorH };
+window.__dom1417 = { netSend, shared, NET, PEERS, mates, agents, capture, HIDES, S, player, items, E, DOORS, startFinal, showE, inter, nodes, nodeIds, bfs, solids, takeItem, keys, updatePlayer, updateEnemy, floorH,
+  ride, cart, MANNEQ, powerOn, openHatch, sitDown, rideStart, rideLever, lightGroups, floors, TRACK_S, camPos, focusLabel: () => $('hint').textContent };
 })();
 </script>
 </body></html>
