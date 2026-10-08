@@ -1,7 +1,7 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Дом 1417</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=PT+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;1,400;1,700&display=swap">
 </head><body><style>
 /* Layout: full-screen game canvas, camcorder viewfinder HUD on top, overlay screens centered */
 :root{
@@ -12,7 +12,8 @@
   --ground:#040404;
   --panel:rgba(8,6,6,.88);
   --tape:#c9b37a;      /* label-tape yellow */
-  --f-ui:"Pixelify Sans",ui-monospace,"Courier New",monospace;
+  --f-ui:"PT Sans","Segoe UI",Roboto,Arial,sans-serif;   /* readable HUD and menus */
+  --f-title:"Pixelify Sans",ui-monospace,"Courier New",monospace;   /* only the big VHS titles */
   --f-voice:"PT Serif",Georgia,serif;
   color-scheme:dark;
 }
@@ -21,76 +22,90 @@ html,body{height:100%;margin:0;background:var(--ground);color:var(--ink);overflo
 body{font-family:var(--f-ui);-webkit-user-select:none;user-select:none;touch-action:none}
 #game{position:fixed;inset:0}
 #game canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
-#hud{position:fixed;inset:0;pointer-events:none;font-size:15px;letter-spacing:.06em;text-shadow:0 0 2px #000,1px 1px 0 #000}
+#hud{position:fixed;inset:0;pointer-events:none;font-size:18px;font-weight:700;letter-spacing:.05em;text-shadow:0 0 3px #000,0 0 6px #000,1px 1px 0 #000}
 #hud .corner{position:absolute;width:26px;height:20px;border-color:rgba(216,210,194,.5);border-style:solid;border-width:0}
 .c-tl{top:12px;left:12px;border-top-width:2px!important;border-left-width:2px!important}
 .c-tr{top:12px;right:12px;border-top-width:2px!important;border-right-width:2px!important}
 .c-bl{bottom:12px;left:12px;border-bottom-width:2px!important;border-left-width:2px!important}
 .c-br{bottom:12px;right:12px;border-bottom-width:2px!important;border-right-width:2px!important}
-#rec{position:absolute;top:22px;left:44px;display:flex;gap:8px;align-items:center}
+#rec{position:absolute;top:22px;left:44px;font-family:var(--f-title);display:flex;gap:8px;align-items:center}
 #rec i{width:10px;height:10px;border-radius:50%;background:var(--rec);display:inline-block}
-#tc{position:absolute;top:22px;right:44px;font-variant-numeric:tabular-nums}
+#tc{position:absolute;top:22px;right:44px;font-family:var(--f-title);font-variant-numeric:tabular-nums}
 #batt{position:absolute;bottom:24px;left:44px;display:flex;gap:8px;align-items:center}
 #batt .bar{display:flex;gap:2px}
-#batt .bar b{width:7px;height:11px;background:var(--ink);opacity:.9}
+#batt .bar b{width:9px;height:14px;background:var(--ink);opacity:.9}
 #batt .bar b.off{opacity:.15}
 #batt.low .bar b{background:var(--rec)}
-#stance{position:absolute;bottom:64px;left:44px;font-size:12px;color:var(--tape)}
+#stance{position:absolute;bottom:72px;left:44px;font-size:15px;color:var(--tape)}
 #finds{position:absolute;bottom:24px;right:44px;font-variant-numeric:tabular-nums;text-align:right}
-#keyMark{position:absolute;bottom:46px;right:44px;font-size:12px;color:var(--tape)}
+#keyMark{position:absolute;bottom:52px;right:44px;font-size:15px;color:var(--tape)}
 #cross{position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1px 0 0 -1px;background:rgba(216,210,194,.6)}
-#hint{position:absolute;left:50%;top:58%;transform:translateX(-50%);color:var(--tape);font-size:15px;white-space:nowrap}
+#hint{position:absolute;left:50%;top:58%;transform:translateX(-50%);color:#f0d890;font-size:19px;white-space:nowrap;background:rgba(0,0,0,.55);padding:3px 10px;border-radius:3px}
+#hint:empty{display:none}
 #slats{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,#000 0 6%,rgba(0,0,0,.25) 6% 10%,#000 10% 12.5%);opacity:.88}
-#voice{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);width:min(620px,86vw);text-align:center;font-family:var(--f-voice);font-style:italic;font-size:18px;line-height:1.4;letter-spacing:0;transition:opacity .6s}
-#note{position:absolute;left:50%;top:14%;transform:translateX(-50%);width:min(460px,86vw);background:var(--panel);border:1px solid rgba(142,27,20,.55);padding:14px 16px;transition:opacity .5s}
-#note h3{margin:0 0 6px;font-weight:600;font-size:16px;color:var(--tape);letter-spacing:.08em}
-#note p{margin:0;font-family:var(--f-voice);font-size:16px;line-height:1.45;letter-spacing:0;color:var(--ink)}
-#objective{position:absolute;top:48px;left:44px;font-size:13px;color:var(--dim);max-width:60vw}
+#voice{position:absolute;left:50%;bottom:72px;transform:translateX(-50%);width:min(700px,88vw);text-align:center;font-family:var(--f-voice);font-style:italic;font-weight:400;font-size:22px;line-height:1.45;letter-spacing:0;color:#f2ecdc;background:rgba(0,0,0,.6);padding:8px 14px;border-radius:4px;box-sizing:border-box;transition:opacity .6s}
+#note{position:absolute;left:50%;top:12%;transform:translateX(-50%);width:min(560px,90vw);background:rgba(8,6,6,.94);border:1px solid rgba(142,27,20,.7);padding:16px 20px;box-sizing:border-box;transition:opacity .5s}
+#note h3{margin:0 0 8px;font-weight:700;font-size:19px;color:var(--tape);letter-spacing:.06em}
+#note p{margin:0;font-family:var(--f-voice);font-weight:400;font-size:20px;line-height:1.5;letter-spacing:0;color:#f2ecdc}
+#objective{position:absolute;top:52px;left:44px;font-size:17px;color:#e6dcc4;max-width:60vw;background:rgba(0,0,0,.5);padding:3px 9px;border-radius:3px;line-height:1.35}
+#objective:empty{display:none}
 .screen{position:fixed;inset:0;display:flex;padding:24px 16px;background:radial-gradient(ellipse at 50% 40%,rgba(30,10,10,.72),rgba(2,2,2,.97));z-index:5;overflow:auto}
 .screen .box{margin:auto;max-width:580px;width:100%;display:flex;flex-direction:column;gap:16px}
-.eyebrow{font-size:13px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
-h1{margin:0;font-size:clamp(48px,11vw,92px);line-height:.9;font-weight:600;letter-spacing:.04em;color:var(--ink);text-shadow:3px 0 0 rgba(210,58,42,.4),-3px 0 0 rgba(80,140,200,.22)}
-.lede{margin:0;font-family:var(--f-voice);font-size:18px;line-height:1.5;color:var(--ink);max-width:62ch}
-.controls{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;color:var(--dim);margin:0}
+.eyebrow{font-size:15px;font-weight:700;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+h1{margin:0;font-family:var(--f-title);font-size:clamp(48px,11vw,92px);line-height:.9;font-weight:600;letter-spacing:.04em;color:var(--ink);text-shadow:3px 0 0 rgba(210,58,42,.4),-3px 0 0 rgba(80,140,200,.22)}
+.lede{margin:0;font-family:var(--f-voice);font-size:20px;line-height:1.55;color:var(--ink);max-width:62ch}
+.controls{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:17px;color:#bdb5a2;margin:0}
+.controls dt{font-weight:700}
 .controls dt{color:var(--tape)}
 .controls dd{margin:0}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-button.go{font:inherit;font-size:18px;letter-spacing:.12em;background:var(--ink);color:#0a0a0a;border:0;padding:12px 22px;cursor:pointer;text-transform:uppercase}
+button.go{font:inherit;font-weight:700;font-size:19px;letter-spacing:.12em;background:var(--ink);color:#0a0a0a;border:0;padding:12px 22px;cursor:pointer;text-transform:uppercase}
 button.go:hover,button.go:focus-visible{background:var(--tape);outline:2px solid var(--tape);outline-offset:3px}
 button.go i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--rec);margin-right:10px;vertical-align:1px}
-button.ghost{font:inherit;font-size:14px;letter-spacing:.1em;background:transparent;color:var(--dim);border:1px solid rgba(216,210,194,.3);padding:11px 16px;cursor:pointer;text-transform:uppercase}
+button.ghost{font:inherit;font-weight:700;font-size:16px;letter-spacing:.1em;background:transparent;color:var(--dim);border:1px solid rgba(216,210,194,.3);padding:11px 16px;cursor:pointer;text-transform:uppercase}
 button.ghost:hover,button.ghost:focus-visible{color:var(--ink);border-color:var(--ink)}
-label.sl{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--dim)}
+label.sl{display:flex;gap:10px;align-items:center;font-size:16px;color:#bdb5a2}
 label.sl input{accent-color:var(--tape);width:140px}
-.small{font-size:12px;color:var(--dim);letter-spacing:.04em}
+.small{font-size:15px;color:#a89f8c;letter-spacing:.02em}
 #touch{position:fixed;inset:0;z-index:3;pointer-events:none}
 #joy{position:absolute;left:28px;bottom:36px;width:120px;height:120px;border-radius:50%;border:2px solid rgba(216,210,194,.25);pointer-events:auto}
 #joy i{position:absolute;left:40px;top:40px;width:40px;height:40px;border-radius:50%;background:rgba(216,210,194,.3)}
-.tb{position:absolute;right:24px;pointer-events:auto;font:inherit;font-size:13px;color:var(--ink);background:rgba(10,10,12,.55);border:1px solid rgba(216,210,194,.35);width:84px;height:44px}
+.tb{position:absolute;right:24px;pointer-events:auto;font:inherit;font-weight:700;font-size:14px;color:var(--ink);background:rgba(10,10,12,.55);border:1px solid rgba(216,210,194,.35);width:84px;height:44px}
 #tbE{bottom:198px}#tbF{bottom:146px}#tbC{bottom:94px}#tbR{bottom:42px}
 .tb.on{background:rgba(201,179,122,.35)}
-#nvTag{position:absolute;top:22px;left:50%;transform:translateX(-50%);color:#7dff8a;font-size:13px;letter-spacing:.18em}
-#mate{position:absolute;top:66px;left:44px;font-size:12px;color:var(--dim);line-height:1.6}
+#nvTag{position:absolute;top:22px;left:50%;transform:translateX(-50%);color:#7dff8a;font-size:16px;letter-spacing:.18em}
+#mate{position:absolute;top:92px;left:44px;font-size:15px;color:#cfc6b0;line-height:1.55}
 #mate .cap{color:var(--rec)}
-#radio{position:absolute;bottom:46px;left:44px;font-size:12px;color:#8fd0c0;display:flex;gap:8px;align-items:center}
+#radio{position:absolute;bottom:50px;left:44px;font-size:15px;color:#8fd0c0;display:flex;gap:8px;align-items:center}
 #radio .bar{display:flex;gap:2px}
-#radio .bar b{width:5px;height:10px;background:#8fd0c0;opacity:.15}
+#radio .bar b{width:6px;height:13px;background:#8fd0c0;opacity:.15}
 #radio .bar b.on{opacity:.95}
 #radio .bar b.hot{background:var(--rec)}
-#voice.spirit{color:#9fe0d0;text-shadow:0 0 6px rgba(80,200,180,.6),1px 1px 0 #000}
-.coop .lobby{font-size:14px;color:var(--ink);line-height:1.6;margin:0;padding:0;list-style:none}
+#voice.spirit{color:#a8f0e0;text-shadow:0 0 6px rgba(80,200,180,.6),1px 1px 0 #000}
+.coop .lobby{font-size:17px;color:var(--ink);line-height:1.6;margin:0;padding:0;list-style:none}
 .coop .lobby li span{color:var(--dim)}
-#capTag{position:absolute;top:30%;left:50%;transform:translateX(-50%);text-align:center;color:var(--rec);font-size:20px;letter-spacing:.12em;width:min(560px,86vw)}
-#capTag small{display:block;margin-top:8px;font-size:13px;color:var(--ink);letter-spacing:.06em}
+#capTag{position:absolute;top:30%;left:50%;transform:translateX(-50%);text-align:center;color:#ff5a48;font-size:24px;background:rgba(0,0,0,.6);padding:10px 14px;box-sizing:border-box;letter-spacing:.12em;width:min(560px,86vw)}
+#capTag small{display:block;margin-top:8px;font-size:17px;color:var(--ink);letter-spacing:.06em}
 .coop{display:flex;flex-direction:column;gap:12px;border:1px solid rgba(216,210,194,.18);padding:14px 16px;background:rgba(8,6,6,.5)}
-.coop h2{margin:0;font-weight:600;font-size:15px;letter-spacing:.14em;color:var(--tape);text-transform:uppercase}
-.coop .roles{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--ink)}
+.coop h2{margin:0;font-weight:700;font-size:18px;letter-spacing:.14em;color:var(--tape);text-transform:uppercase}
+.coop .roles{display:flex;gap:16px;flex-wrap:wrap;font-size:17px;color:var(--ink)}
 .coop .roles label{display:flex;gap:6px;align-items:center;cursor:pointer}
 .coop input[type=text]{font:inherit;font-size:18px;letter-spacing:.3em;text-transform:uppercase;width:9ch;background:#0c0a0a;color:var(--ink);border:1px solid rgba(216,210,194,.35);padding:9px 10px}
-.coop .code{font-size:28px;letter-spacing:.3em;color:var(--ink)}
-.coop .status{font-size:13px;color:var(--dim);min-height:1.2em}
-.coop .roleinfo{font-family:var(--f-voice);font-size:15px;line-height:1.45;color:var(--dim);margin:0}
-@media (max-width:520px){#hud{font-size:13px}#voice{font-size:16px;bottom:200px}#objective{display:none}}
+.coop .code{font-family:var(--f-title);font-size:32px;letter-spacing:.3em;color:var(--ink)}
+.coop .status{font-size:16px;color:var(--dim);min-height:1.2em}
+.coop .roleinfo{font-family:var(--f-voice);font-size:17px;line-height:1.45;color:var(--dim);margin:0}
+#cine{position:fixed;inset:0;z-index:4;pointer-events:none}
+#cine .bar{position:absolute;left:0;right:0;height:11vh;background:#000}
+#cine .bar.t{top:0}#cine .bar.b{bottom:0}
+#sub{position:absolute;left:50%;bottom:calc(11vh + 18px);transform:translateX(-50%);width:min(760px,90vw);text-align:center;font-family:var(--f-voice);font-size:23px;line-height:1.4;color:var(--ink);text-shadow:0 0 3px #000,1px 1px 0 #000;transition:opacity .4s}
+#sub b{display:block;font-family:var(--f-ui);font-weight:700;font-size:14px;letter-spacing:.2em;color:var(--tape);margin-bottom:4px;text-transform:uppercase;font-style:normal}
+#sub.spirit{color:#9fe0d0;font-style:italic;text-shadow:0 0 6px rgba(80,200,180,.6),1px 1px 0 #000}
+#card{position:absolute;inset:0;background:#000;display:flex;align-items:center;justify-content:center;padding:16px;font-size:clamp(19px,2.8vw,28px);letter-spacing:.08em;color:var(--ink);text-align:center;line-height:1.7;white-space:pre-line;transition:opacity .5s}
+#card.big{font-family:var(--f-title);font-size:clamp(48px,11vw,104px);letter-spacing:.04em;text-shadow:3px 0 0 rgba(210,58,42,.45),-3px 0 0 rgba(80,140,200,.25)}
+#skip{position:absolute;right:16px;top:calc(11vh + 10px);font:inherit;font-weight:700;font-size:15px;color:var(--dim);letter-spacing:.12em;pointer-events:auto;background:rgba(0,0,0,.4);border:1px solid rgba(216,210,194,.25);padding:6px 10px;cursor:pointer;z-index:2}
+#skip:hover,#skip:focus-visible{color:var(--ink);border-color:var(--ink)}
+#cineTag{position:absolute;left:24px;top:calc(11vh + 12px);font-family:var(--f-title);font-size:16px;color:var(--rec);letter-spacing:.14em}
+@media (max-width:520px){#hud{font-size:15px}#voice{font-size:18px;bottom:200px}#note p{font-size:17px}#objective{font-size:14px;max-width:70vw}#hint{font-size:16px}}
 @media (prefers-reduced-motion:reduce){#voice,#note{transition:none}}
 </style>
 
@@ -116,6 +131,14 @@ label.sl input{accent-color:var(--tape);width:140px}
   <div id="finds">УЛИКИ 0/7</div>
 </div>
 
+<div id="cine" hidden>
+  <div class="bar t"></div><div class="bar b"></div>
+  <div id="cineTag"></div>
+  <div id="sub" style="opacity:0"></div>
+  <div id="card" style="opacity:0"></div>
+  <button id="skip" type="button">Пропустить</button>
+</div>
+
 <div id="touch" hidden>
   <div id="joy"><i></i></div>
   <button class="tb" id="tbE" type="button">ДЕЙСТВИЕ</button>
@@ -129,7 +152,7 @@ label.sl input{accent-color:var(--tape);width:140px}
     <div class="eyebrow">Юклид-авеню, Ист-Кливленд · 02:47 · гроза</div>
     <h1>ДОМ<br>1417</h1>
     <div class="eyebrow" style="color:var(--rec);letter-spacing:.3em">Поездка в Ад</div>
-    <p class="lede">Эдгар Холлоуэй строил комнаты страха для парка Юклид-Бич. Когда парк закрыли, он увёз свой аттракцион домой и собрал его заново, под садом. По воскресеньям в доме собиралась «Церковь Утренней Звезды», и каждая служба была поездкой. 21 декабря 1979 года одиннадцать прихожан сели в вагонетки, и больше их никто не видел. Ты снимаешь ролик. Найди семь улик и выберись живым. Аттракцион до сих пор работает.</p>
+    <p class="lede">Эдгар Холлоуэй строил комнаты страха для парка Юклид-Бич. Когда парк закрыли, он увёз аттракцион домой и собрал его заново, под садом. Его «Церковь Утренней Звезды» молилась страхом, и каждая служба была поездкой. 21 декабря 1979 года одиннадцать прихожан сели в вагонетки и не вернулись. Тело Эдгара так и не нашли. Вчера вам прислали кассету без обратного адреса: на ней этот дом, снятый изнутри, и записка «Вас ждут».</p>
     <dl class="controls" id="ctlDesk">
       <dt>WASD</dt><dd>идти, Shift — бежать (бег слышно)</dd>
       <dt>C</dt><dd>присесть: тише шаги, можно пролезть под завалами</dd>
@@ -167,7 +190,7 @@ label.sl input{accent-color:var(--tape);width:140px}
       <div class="small" id="netDiag"></div>
       <div class="row"><button class="go" id="startCoop" type="button" hidden><i></i>Начать вместе</button></div>
     </div>
-    <div class="small">Играть в наушниках. Голос — через Discord или телефон. Особняк, чердак, подвал, сад и аттракцион под землёй.</div>
+    <div class="small">Играть в наушниках: звук объёмный, Его слышно за спиной. Голос — через Discord или телефон. Два акта, особняк, чердак, подвал, аттракцион под садом. Катсцену можно пропустить пробелом.</div>
   </div>
 </div>
 
@@ -599,7 +622,7 @@ cyl(4, Y, -13.6, 0.08, 5.5, M.metal, 6);
 
 // ----- shell -----
 wallX(-0.07, -0.14, 20.14, Y, 7.2, M.brick, M.brick, [{ a: 9.4, b: 10.6, top: 2.5 - Y }], 0.14);
-wallX(16.07, -0.14, 20.14, Y, 7.2, M.brick, M.brick, [], 0.14);
+wallX(16.07, -0.14, 20.14, Y, 7.2, M.brick, M.brick, [{ a: 10.45, b: 11.55, top: 2.3 - Y }], 0.14); box(10.45, Y, 16.0, 11.55, G, 16.14, M.stone);   // the back door into the garden
 wallZ(-0.07, 0, 16, Y, 7.2, M.brick, M.brick, [], 0.14); wallZ(20.07, 0, 16, Y, 7.2, M.brick, M.brick, [], 0.14);
 box(-0.2, Y, -0.22, 9.4, G + 0.2, -0.13, M.stone, { collide: false }); box(10.6, Y, -0.22, 20.2, G + 0.2, -0.13, M.stone, { collide: false });
 box(-0.25, 3.4, -0.25, 20.25, 3.65, -0.13, M.stone, { collide: false });
@@ -650,7 +673,7 @@ slab(0, 0, 7, 8, M.carpet); slab(0, 8, 7, 16, M.wood); slab(7, 0, 11.2, 16, M.pa
 // ----- ground floor walls -----
 const tt = 0.1;
 wallX(0.05, 0, 7, G, H1, M.green, M.green, [], tt); wallX(0.05, 7, 13, G, H1, M.damask, M.damask, [{ a: 9.4, b: 10.6, top: 2.5 }], tt); wallX(0.05, 13, 20, G, H1, M.panel, M.panel, [], tt);
-wallX(15.95, 0, 7, G, H1, M.damask, M.damask, [], tt); wallX(15.95, 7, 8.9, B, H1, M.plaster, M.plaster, [], tt); wallX(15.95, 8.9, 13, G, H1, M.damask, M.damask, [], tt); wallX(15.95, 13, 20, G, H1, M.tileK, M.tileK, [], tt);
+wallX(15.95, 0, 7, G, H1, M.damask, M.damask, [], tt); wallX(15.95, 7, 8.9, B, H1, M.plaster, M.plaster, [], tt); wallX(15.95, 8.9, 13, G, H1, M.damask, M.damask, [{ a: 10.45, b: 11.55 }], tt); wallX(15.95, 13, 20, G, H1, M.tileK, M.tileK, [], tt);
 wallZ(0.05, 0, 7, G, H1, M.green, M.green, [], tt); wallZ(0.05, 7, 16, G, H1, M.damask, M.damask, [], tt);
 wallZ(19.95, 0, 8, G, H1, M.panel, M.panel, [], tt); wallZ(19.95, 8, 16, G, H1, M.tileK, M.tileK, [], tt);
 wallZ(7, 0, 7, G, H1, M.green, M.damask, [{ a: 2.5, b: 3.7 }]);
@@ -703,7 +726,14 @@ function initAudio(){
   if (AU.ctx) return;
   const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
   const C = new AC(); AU.ctx = C;
-  const master = C.createGain(); master.gain.value = 0.9; master.connect(C.destination); AU.master = master;
+  // everything goes into the bus: a dry path and a long dark reverb, both through a compressor so the hits slam without clipping
+  const master = C.createGain(); master.gain.value = 0.9; AU.master = master;
+  const comp = C.createDynamicsCompressor(); comp.threshold.value = -16; comp.knee.value = 8; comp.ratio.value = 5; comp.attack.value = 0.004; comp.release.value = 0.25; comp.connect(C.destination);
+  master.connect(comp);
+  const irLen = Math.floor(C.sampleRate * 3.4), ir = C.createBuffer(2, irLen, C.sampleRate);
+  for (let ch = 0; ch < 2; ch++){ const d = ir.getChannelData(ch); let lp = 0; for (let i = 0; i < irLen; i++){ const k = i / irLen; lp += (Math.random() * 2 - 1 - lp) * (0.5 - k * 0.42); d[i] = lp * Math.pow(1 - k, 2.6) * (i < C.sampleRate * 0.012 ? i / (C.sampleRate * 0.012) : 1); } }
+  const verb = C.createConvolver(); verb.buffer = ir; const send = C.createGain(); send.gain.value = 0.3; const vOut = C.createGain(); vOut.gain.value = 0.85;
+  master.connect(send); send.connect(verb); verb.connect(vOut); vOut.connect(comp); AU.verb = send;
   const len = C.sampleRate * 3;
   const brown = C.createBuffer(1, len, C.sampleRate), white = C.createBuffer(1, len, C.sampleRate);
   const bd = brown.getChannelData(0), wd = white.getChannelData(0); let last = 0;
@@ -723,8 +753,35 @@ function initAudio(){
   const f1 = C.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 520; f1.Q.value = 6; const f2 = C.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 880; f2.Q.value = 7;
   [73.4, 110, 116.5].forEach(f => { const o = C.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; const lf = C.createOscillator(); lf.frequency.value = 5 + Math.random(); const lg = C.createGain(); lg.gain.value = 1.2; lf.connect(lg); lg.connect(o.frequency); lf.start(); o.connect(f1); o.connect(f2); o.start(); });
   const sw = C.createGain(); sw.gain.value = 0.5; f1.connect(sw); f2.connect(sw); const lfo = C.createOscillator(); lfo.frequency.value = 0.22; const lfg = C.createGain(); lfg.gain.value = 0.45; lfo.connect(lfg); lfg.connect(sw.gain); lfo.start(); sw.connect(chG);
+  // the house breathes: very low rumble swelling every few seconds
+  const hb = loop(brown, 'lowpass', 120, 0); const hbl = C.createOscillator(); hbl.frequency.value = 0.13; const hbg = C.createGain(); hbg.gain.value = 0.05; hbl.connect(hbg); hbg.connect(hb.g.gain); hbl.start(); AU.houseBreath = hb;
+  // close sub tones beating against each other, louder with fear
+  const subG = C.createGain(); subG.gain.value = 0; subG.connect(master); AU.sub = subG;
+  [36.7, 38.9, 55.1].forEach(f => { const o = C.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.connect(subG); o.start(); });
+  // a thin ringing in the ears when the fear peaks
+  const tinG = C.createGain(); tinG.gain.value = 0; tinG.connect(master); AU.tin = tinG; const tin = C.createOscillator(); tin.frequency.value = 7350; tin.connect(tinG); tin.start();
+  // a vocal-fry rattle: the click train the thing makes in its throat
+  const fl = C.sampleRate * 2, fry = C.createBuffer(1, fl, C.sampleRate), fd = fry.getChannelData(0);
+  for (let i = 0, next = 0; i < fl; i++){ if (i >= next){ const amp = 0.6 + Math.random() * 0.4; for (let k = 0; k < 90 && i + k < fl; k++) fd[i + k] += amp * Math.exp(-k / 14) * (k % 2 ? -1 : 1); next = i + Math.floor(C.sampleRate / (28 + Math.random() * 40 + 25 * Math.sin(i / fl * 9))); } }
+  AU.fry = fry;
+  const curve = new Float32Array(1024); for (let i = 0; i < 1024; i++){ const x = i / 512 - 1; curve[i] = Math.tanh(x * 6) * 0.9; } AU.curve = curve;
+  AU.listen = C.listener;
 }
-function panner(pan){ const C = AU.ctx; if (C.createStereoPanner){ const p = C.createStereoPanner(); p.pan.value = clamp(pan || 0, -1, 1); p.connect(AU.master); return p; } return AU.master; }
+// pan: a number for a flat stereo position, or a point in the world for a sound placed around your head
+function panner(pan){
+  const C = AU.ctx;
+  if (pan && typeof pan === 'object'){ const p = C.createPanner(); p.panningModel = 'HRTF'; p.distanceModel = 'inverse'; p.refDistance = 1.6; p.rolloffFactor = 1.1; p.maxDistance = 60;
+    if (p.positionX){ p.positionX.value = pan.x; p.positionY.value = pan.y; p.positionZ.value = pan.z; } else p.setPosition(pan.x, pan.y, pan.z); p.connect(AU.master); return p; }
+  if (C.createStereoPanner){ const p = C.createStereoPanner(); p.pan.value = clamp(pan || 0, -1, 1); p.connect(AU.master); return p; } return AU.master;
+}
+function shaper(){ const w = AU.ctx.createWaveShaper(); w.curve = AU.curve; w.oversample = '2x'; return w; }
+function setListener(){
+  const L = AU.listen; if (!L) return; const f = camFwd, t = AU.ctx.currentTime;
+  if (L.positionX){ L.positionX.setValueAtTime(camPos.x, t); L.positionY.setValueAtTime(camPos.y, t); L.positionZ.setValueAtTime(camPos.z, t); L.forwardX.setValueAtTime(f.x, t); L.forwardY.setValueAtTime(f.y, t); L.forwardZ.setValueAtTime(f.z, t); L.upX.setValueAtTime(0, t); L.upY.setValueAtTime(1, t); L.upZ.setValueAtTime(0, t); }
+  else { L.setPosition(camPos.x, camPos.y, camPos.z); L.setOrientation(f.x, f.y, f.z, 0, 1, 0); }
+}
+// a point around the listener: anywhere, or somewhere behind
+function around(dist, back, dy = 0){ const a = camera.rotation.y + (back ? R(-0.9, 0.9) : R(-Math.PI, Math.PI)); return new V3(camPos.x + Math.sin(a) * dist, camPos.y + dy, camPos.z + Math.cos(a) * dist); }
 function noiseHit(dur, type, freq, q, gain, pan, when = 0, buf){
   const C = AU.ctx; if (!C) return; const t = C.currentTime + when;
   const s = C.createBufferSource(); s.buffer = buf || AU.white; const f = C.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
@@ -784,7 +841,8 @@ const S = {
   gramo: false, gramoT: 0, gramoI: 0, musicBox: false, mbT: 0, mbI: 0, horseT: 0, phoneRing: false, phoneT: 0, phoneDone: false, ringT: 0, ringLeft: 0,
   checkpoint: new V3(10, Y, -7), gamma: 1.55, noise: 0, wanderAt: 0,
   role: 'solo', nv: false, captured: null, out: false,
-  seat: -1, seatIdx: 0, power: false, hatch: false, hasHandle: false, radio: false, radioK: 0, blackout: 0, shake: 0, faceT: 0, shutter: 0
+  seat: -1, seatIdx: 0, power: false, hatch: false, hasHandle: false, radio: false, radioK: 0, blackout: 0, shake: 0, faceT: 0, shutter: 0,
+  ambT: 20, pantT: 0, act2: false, relics: 0, burned: false, escape: false, wounds: 0, cine: null
 };
 // co-op: NET is the connection, PEERS are the others as last reported over the network
 const NET = { on: false, host: false, me: '', hostId: null, roster: [], prefs: {}, presence: new Map(), links: [], rooms: [], seq: 0, seen: new Set(), applying: false, from: null, sendT: 0, lastRx: 0, ePos: new V3(), eYaw: 0, eFrozen: false, eMoving: false, started: false, rideT: undefined, log: [] };
@@ -828,7 +886,11 @@ const DOORS = {
   study: makeDoor(13, 1.2, 'z', 1.2, 2.3, U), bath: makeDoor(13, 10, 'z', 1.2, 2.3, U)
 };
 for (const k in DOORS) DOORS[k].key = k;
-prop(11, G, 15.88, 1.0, 2.3, 0.08, M.door); mergedBoxes([[11, 0.4, 15.8, 1.4, 0.15, 0.05, 0, 0, 0.2], [11, 1.3, 15.8, 1.4, 0.15, 0.05, 0, 0, -0.25], [11, 1.9, 15.8, 1.4, 0.15, 0.05]], M.planks);
+// the back door: boarded from the inside until the house wants you back
+DOORS.back = makeDoor(10.45, 16.0, 'x', 1.1, 2.3, G, { locked: true, id: 'back' }); DOORS.back.key = 'back';
+const backPlanks = mergedBoxes([[11, 0.4, 15.85, 1.4, 0.15, 0.05, 0, 0, 0.2], [11, 1.3, 15.85, 1.4, 0.15, 0.05, 0, 0, -0.25], [11, 1.9, 15.85, 1.4, 0.15, 0.05]], M.planks);
+floorZone(10.45, 11.55, 15.9, 16.14, G); floorZone(10.2, 11.8, 16.14, 17.35, Y, { axis: 'z', a0: 17.35, a1: 16.14, y0: Y, y1: G });
+for (let i = 0; i < 4; i++) box(10.2, Y, 16.14 + i * 0.3, 11.8, G - i * 0.225, 16.44 + i * 0.3, M.stone, { collide: false });
 
 /* ================= candles & lights ================= */
 const lightGroups = {}, LG = [];
@@ -1181,6 +1243,73 @@ for (let i = 0; i < 18; i++){ const x0 = -7 + i * 7.5 / 18, top = Y + (D - Y) * 
 wallX(35.5, -7, 0.5, D, -1.0, M.stone, M.stone, [], 0.14); wallX(37.5, -7, 0.5, D, -1.0, M.stone, M.stone, [], 0.14);
 box(-3.5, -1.3, 35.4, 0.5, -1.02, 37.6, M.stone, { collide: false });
 
+/* ================= v6: the twelfth. The van, the house turned inside out, Edgar in five rooms ================= */
+const seedV5 = seed; seed = 61417;   // own random stream, so everything built before keeps its shape
+T.bloodW = textTex(64, 128, null, (g) => { stain(g, 32, 4, 34, '70,4,2', .95); for (let i = 0; i < 11; i++){ const x = R(2, 58), w = R(2, 6); drip(g, x, 0, R(40, 126), w, '96,6,4', .95); g.fillStyle = 'rgba(110,8,5,.95)'; g.fillRect(x, 0, w, R(6, 16)); } });
+T.pool = textTex(64, 64, null, (g) => { blob(g, 32, 32, 27, 'rgba(66,4,3,.96)'); blob(g, 24, 38, 13, 'rgba(112,10,6,.92)'); for (let i = 0; i < 9; i++) blob(g, R(4, 60), R(4, 60), R(2, 5), 'rgba(84,6,4,.92)'); });
+T.trail = textTex(32, 128, null, (g) => { g.fillStyle = 'rgba(72,5,3,.85)'; for (let y = 0; y < 128; y += 2) g.fillRect(12 + Math.sin(y / 9) * 3, y, R(5, 9), 2); for (let i = 0; i < 14; i++) blob(g, R(6, 26), R(0, 128), R(2, 5), 'rgba(96,8,5,.9)'); });
+T.xii = textTex(128, 64, null, (g) => { spray(g, 'XII', 30, 50, 46, '#7a0c08'); });
+T.home2 = textTex(128, 64, null, (g) => { spray(g, 'ДОБРО', 6, 28, 22, '#7a0c08'); spray(g, 'ПОЖАЛОВАТЬ', 2, 56, 20, '#7a0c08'); });
+T.burn = textTex(128, 64, null, (g) => { spray(g, 'СОЖГИ', 8, 28, 24, '#6a0a06'); spray(g, 'ЦЕЛИКОМ', 4, 58, 24, '#6a0a06'); });
+T.jarHeart = textTex(16, 24, '#5a6650', (g) => { g.fillStyle = '#2a2a24'; g.fillRect(2, 0, 12, 3); g.fillStyle = '#6a0e0a'; g.beginPath(); g.arc(6, 13, 4, 0, 7); g.arc(10, 13, 4, 0, 7); g.fill(); g.beginPath(); g.moveTo(2, 14); g.lineTo(8, 22); g.lineTo(14, 14); g.fill(); g.fillStyle = '#9a2a1a'; g.fillRect(8, 6, 2, 6); });
+T.jarEyes = textTex(16, 24, '#7a7860', (g) => { g.fillStyle = '#2a2a24'; g.fillRect(2, 0, 12, 3); for (const [x, y] of [[5, 12], [11, 15]]){ g.fillStyle = '#e8e0cc'; g.beginPath(); g.arc(x, y, 3.4, 0, 7); g.fill(); g.fillStyle = '#3a5a70'; g.fillRect(x - 1, y - 1, 2, 2); g.fillStyle = '#7a1a10'; g.fillRect(x - 3, y + 2, 1, 3); } });
+T.tongue = textTex(16, 8, '#7a2a28', (g) => { g.fillStyle = '#a84a44'; g.fillRect(2, 2, 12, 4); g.fillStyle = '#1a1010'; for (let x = 3; x < 14; x += 2) g.fillRect(x, 3, 1, 1); g.fillStyle = '#4a0806'; g.fillRect(0, 3, 2, 2); });
+T.handsR = textTex(32, 16, '#8a7a64', (g) => { g.fillStyle = '#b8a888'; for (const ox of [2, 18]){ g.fillRect(ox, 5, 8, 8); for (let f = 0; f < 4; f++) g.fillRect(ox + f * 2, 0, 1, 6); g.fillRect(ox + 8, 7, 3, 2); g.fillStyle = '#3a3a3a'; g.fillRect(ox + 3, 8, 2, 2); g.fillStyle = '#b8a888'; } drip(g, 6, 11, 5, 2, '96,8,5', .9); drip(g, 22, 11, 5, 2, '96,8,5', .9); });
+T.headR = textTex(32, 32, '#a89878', (g) => { g.fillStyle = '#5a1a12'; g.fillRect(4, 6, 24, 20); g.fillStyle = '#2a0806'; g.fillRect(9, 12, 5, 4); g.fillRect(18, 12, 5, 4); g.fillStyle = '#d8c8a8'; g.fillRect(10, 21, 12, 2); g.fillStyle = '#1a1010'; for (let x = 10; x < 22; x += 2) g.fillRect(x, 20, 1, 4); drip(g, 8, 24, 7, 2, '80,6,4', .9); drip(g, 22, 25, 6, 2, '80,6,4', .9); });
+T.page = textTex(16, 20, '#c8bea0', (g) => { g.fillStyle = '#3a3028'; for (let y = 3; y < 18; y += 2) g.fillRect(2, y, R(8, 12), 1); g.fillStyle = '#6a0a06'; g.fillRect(9, 12, 6, 6); });
+T.van = makeTex(32, 32, (g, w, h) => { g.fillStyle = '#9c968a'; g.fillRect(0, 0, w, h); for (let i = 0; i < 6; i++) stain(g, R(0, w), R(0, h), R(3, 8), '70,60,50', .5); g.fillStyle = 'rgba(90,40,20,.5)'; g.fillRect(0, h - 5, w, 5); grain(g, w, h, 16); });
+function winFigTex(cam){ return textTex(32, 64, '#c86a1c', (g, w, h) => {
+  const gr = g.createRadialGradient(16, 40, 2, 16, 40, 34); gr.addColorStop(0, '#ffb050'); gr.addColorStop(1, '#5a1404'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  g.fillStyle = '#080404'; g.beginPath(); g.moveTo(16, 14); g.quadraticCurveTo(25, 22, 22, 34); g.lineTo(31, 64); g.lineTo(1, 64); g.lineTo(10, 34); g.quadraticCurveTo(7, 22, 16, 14); g.fill();
+  if (cam){ g.fillStyle = '#1a1a1a'; g.fillRect(12, 40, 9, 6); g.fillStyle = '#ff2010'; g.fillRect(19, 41, 2, 2); }
+  g.fillStyle = '#1d1712'; g.fillRect(0, 0, w, 3); g.fillRect(0, h - 3, w, 3); g.fillRect(0, 0, 3, h); g.fillRect(w - 3, 0, 3, h); g.fillRect(15, 0, 2, 12); g.fillRect(0, 30, 10, 2); g.fillRect(22, 30, 10, 2); }); }
+T.winFig = winFigTex(false); T.winFigCam = winFigTex(true);
+Object.assign(M, { bloodW: mat(T.bloodW, { uv: true }), pool: mat(T.pool, { uv: true }), trail: mat(T.trail, { uv: true }), van: mat(T.van, { scale: [1 / 2, 1 / 2] }),
+  winFig: mat(T.winFig, { uv: true, emissive: 1.1 }), winFigCam: mat(T.winFigCam, { uv: true, emissive: 1.1 }), headlamp: mat(T.white, { tint: 0xfff0c0, emissive: 1.6 }) });
+
+// ----- the van you came in, parked on Euclid Avenue with its lights on -----
+const van = new THREE.Group(); van.position.set(4.8, Y, -11.4); scene.add(van);
+prop(0, 0.35, 0, 4.6, 1.75, 1.9, M.van, { parent: van }); prop(1.9, 1.3, 0, 0.6, 0.6, 1.8, M.dark, { parent: van }); prop(-0.2, 1.4, 0.955, 2.6, 0.45, 0.02, M.dark, { parent: van }); prop(-0.2, 1.4, -0.955, 2.6, 0.45, 0.02, M.dark, { parent: van });
+for (const z of [-0.6, 0.6]){ prop(2.31, 0.75, z, 0.02, 0.18, 0.3, M.headlamp, { parent: van }); prop(-2.31, 0.8, z, 0.02, 0.2, 0.14, M.redlamp, { parent: van }); }
+for (const [x, z] of [[1.5, 0.95], [1.5, -0.95], [-1.5, 0.95], [-1.5, -0.95]]){ const w = cyl(0, 0, 0, 0.36, 0.22, M.dark, 8); w.rotation.x = Math.PI / 2; scene.remove(w); van.add(w); w.position.set(x, 0.36, z); }
+solids.push({ x0: 2.4, x1: 7.2, y0: Y, y1: Y + 2.2, z0: -12.4, z1: -10.4 });
+const VAN_LIGHT = new V3(8.6, Y + 0.7, -11.4);
+function vanLights(on){ shared.uPLPos.value[0].copy(VAN_LIGHT); shared.uPLRad.value[0] = 9; shared.uPLCol.value[0].set(0.55, 0.48, 0.34).multiplyScalar(on ? 1 : 0); }
+vanLights(true);
+
+// ----- act II: the garden gates are chained shut -----
+const chainedGates = [];
+for (const [cx, x0, x1] of [[-8.4, -9.5, -7.3], [27.8, 26.7, 28.9]]){ const gg = mergedBoxes([[cx, Y, 0, 2.2, 1.95, 0.05], [cx, Y + 1.0, -0.05, 0.5, 0.35, 0.06]], M.iron); gg.visible = false; chainedGates.push({ mesh: gg, solid: { x0, x1, y0: Y - 1, y1: Y + 3, z0: -0.3, z1: 0.3 } }); }
+// ----- act II: the house bleeds -----
+const ACT2_SHOW = [];
+function a2(m){ m.visible = false; ACT2_SHOW.push(m); return m; }
+a2(decal(M.bloodW, 9.0, 2.2, 8.93, 1.2, 2.4, Math.PI)); a2(decal(M.bloodW, 7.07, 2.0, 5.2, 1.0, 2.4, Math.PI / 2)); a2(decal(M.bloodW, 12.93, 2.0, 13.8, 1.0, 2.4, -Math.PI / 2));
+a2(decal(M.bloodW, 6.93, U + 1.6, 3.0, 1.2, 2.6, -Math.PI / 2)); a2(decal(M.bloodW, 9.6, U + 1.6, 15.93, 1.6, 2.6, Math.PI)); a2(decal(M.bloodW, 0.11, U + 1.6, 13.4, 1.4, 2.6, Math.PI / 2));
+a2(decal(M.bloodW, 19.93, 1.6, 12.6, 1.4, 2.6, -Math.PI / 2)); a2(decal(M.bloodW, 15.0, -1.6, 0.11, 1.6, 2.4, 0)); a2(decal(M.bloodW, 13.07, A + 0.9, 8.0, 1.0, 1.6, Math.PI / 2));
+a2(decal(dm('xii'), 10, 2.6, 0.11, 2.2, 1.1, 0)); a2(decal(dm('home2'), 11, 1.7, 15.89, 1.8, 0.9, Math.PI)); a2(decal(dm('burn'), 0.11, 2.1, 5.6, 1.6, 0.8, Math.PI / 2));
+for (const [x, y, z, sz] of [[10.2, G, 6.2, 2.2], [16.4, G, 14.5, 1.6], [16.5, U, 14.2, 1.4], [2.2, B, 12.4, 1.8], [11, G, 14.6, 1.4], [1.6, U, 14.6, 1.0], [2.2, G, 4.0, 1.4]]) a2(floorDecal(M.pool, x, y + 0.015, z, sz, R(0, 6)));
+for (const [x, y, z, ry] of [[11, G, 12.5, 0], [12.6, G, 11.0, Math.PI / 2], [14.6, G, 11.0, Math.PI / 2], [10.0, G, 4.2, 0.2], [5.4, G, 3.3, Math.PI / 2], [10.0, U, 6.0, 0], [9.6, B + 0.01, 8.8, 0.4]]){ const m = a2(floorDecal(M.trail, x, y + 0.016, z, 2.6, ry)); m.scale.x = 0.4; }
+lightGroup('red1', 10, 2.7, 5, [0.55, 0.04, 0.03], 7.5, false); lightGroup('red2', 9.2, U + 2.5, 7, [0.5, 0.04, 0.03], 7, false); lightGroup('red3', 16.5, 2.5, 12.5, [0.5, 0.05, 0.03], 6, false); lightGroup('red4', 3.5, U + 2.5, 13, [0.45, 0.04, 0.05], 5.5, false);
+
+// ----- act II: three of the eleven have come up from the ride; they walk when nobody is looking -----
+const PILGRIMS = [[10.4, G, 13.2], [4.0, U, 4.6], [13.4, B, 7.2]].map(([x, y, z], i) => {
+  const f = figure('robe', x, y, z, i * 2); f.g.visible = false; f.head.rotation.x = 0.35; f.armL.rotation.x = -0.4; f.armR.rotation.x = -1.3;
+  return { f, pos: new V3(x, y, z), tpos: new V3(x, y, z), home: new V3(x, y, z), yaw: i * 2, path: [], pathT: 0, cool: 0, moving: false, stepT: 0, sneaked: false, wasSeen: false };
+});
+// ----- the five pieces of Edgar make their own sounds, so you can follow them by ear -----
+const RELIC_SND = {
+  heart: { pos: new V3(16.4, G + 1.0, 15.3), t: 0 }, eyes: { pos: new V3(1.1, U + 0.7, 15.0), t: 3 }, tongue: { pos: new V3(16.5, U + 0.6, 15.2), t: 5 },
+  hands: { pos: new V3(13.6, A + 0.9, 5.4), t: 2 }, head: { pos: new V3(2, B + 0.4, 13.5), t: 7 }
+};
+// ----- cutscene props: the figure in the doorway, the twelve windows, the supper of the twelfth -----
+const doorFig = figure('robe', 10, G, 0.9, Math.PI); doorFig.g.visible = false; doorFig.head.rotation.x = 0.25;
+const WIN12 = [[2, 1.75, 0], [18, 5.25, 0], [5, 5.25, 0], [15, 1.75, 0], [21.0, 1.6, 1], [8.3, 5.25, 0], [2, 5.25, 0], [18, 1.75, 0], [15, 5.25, 0], [18.9, 5.2, 1], [5, 1.75, 0], [11.7, 5.25, 0]].map(([x, y, tw], i) => {
+  const z = tw ? (y < 3 ? -2.95 : -2.25) - 0.012 : -0.152; const m = decal(i === 11 ? M.winFigCam : M.winFig, x, y, z, tw ? 0.9 : 1.1, tw ? 1.6 : 2.0, Math.PI + (tw ? 0.35 : 0)); m.visible = false; return m; });
+const SUPPER = [[1.9, 9.8], [1.9, 11.1], [1.9, 12.4], [1.9, 13.7], [5.1, 9.8], [5.1, 11.1], [5.1, 12.4], [5.1, 13.7], [2.8, 8.4], [3.5, 8.25], [4.2, 8.4]].map(([x, z]) => { const f = figure('robe', x, G, z, Math.atan2(3.5 - x, 11.75 - z)); f.g.visible = false; f.head.rotation.x = 0.3; return f; });
+const supperCam = new THREE.Group(); supperCam.position.set(3.5, G + 0.8, 14.75); supperCam.rotation.y = Math.PI; scene.add(supperCam); supperCam.visible = false;
+prop(0, 0, 0, 0.14, 0.13, 0.26, M.plastic, { parent: supperCam }); prop(0.04, 0.1, 0.08, 0.025, 0.025, 0.025, M.redlamp, { parent: supperCam });
+seed = seedV5;
+
 /* ================= interactables ================= */
 const inter = [];
 function addInter(o){ if (Array.isArray(o.pos)) o.pos = new V3(...o.pos); inter.push(o); return o; }
@@ -1188,7 +1317,7 @@ for (const k in DOORS){ const d = DOORS[k]; addInter({ pos: d.center, noLos: tru
 function doorAct(d){
   if (d.locked){
     if (d.id === 'basement' && S.hasKey){ d.locked = false; S.hasKey = false; SFX.click(); setDoor(d, true, camPos); voice('Ключ подошёл. Снизу тянет холодом и воском.'); objective('Спустись в подвал'); return; }
-    SFX.rattle(); voice(d.id === 'front' ? 'Не поддаётся. Будто держат с той стороны.' : (d.id === 'basement' ? 'Заперто. Нужен ключ.' : 'Заперто.'), 2.5); return;
+    SFX.rattle(); voice(d.id === 'front' ? 'Не поддаётся. Будто держат с той стороны.' : (d.id === 'basement' ? 'Заперто. Нужен ключ.' : (d.id === 'back' ? 'Заколочено. С той стороны что-то скребётся.' : 'Заперто.')), 2.5); return;
   }
   setDoor(d, !d.open, camPos);
 }
@@ -1223,10 +1352,10 @@ addInter({ pos: [5.9, U + 0.65, 7.25], label: () => S.drawerOpen ? (S.keyTaken ?
 addInter({ pos: [5.9, G + 0.8, 6.0], label: () => 'нажать клавиши', act: () => SFX.piano() });
 addInter({ pos: [1.0, G + 0.9, 6.4], label: () => S.gramo ? 'остановить граммофон' : 'завести граммофон', act: () => { S.gramo = !S.gramo; S.gramoT = 0; SFX.click(); } });
 addInter({ pos: [7.4, G + 0.9, 6.4], label: () => S.phoneRing ? 'снять трубку' : 'поднять трубку', act: () => { if (S.phoneRing){ S.phoneRing = false; S.phoneDone = true; SFX.whisper(2.6, 0, 0.5); note('Телефон', 'В трубке долго дышат. Потом шёпот, совсем близко: «Мы ждали тебя внизу».'); S.scare = 0.6; } else voice('Гудков нет. Линию отрезали лет сорок назад.', 3); } });
-addInter({ pos: [0.7, G + 0.6, 3.8], label: () => 'посмотреть в камин', act: () => note('Камин', 'Угли ещё тлеют. В золе — обгоревшие детские фотографии и зубы.') });
+addInter({ pos: [0.7, G + 0.6, 3.8], label: () => (S.act2 && S.relics >= 5 && !S.burned) ? null : 'посмотреть в камин', act: () => note('Камин', 'Угли ещё тлеют. В золе — обгоревшие детские фотографии и зубы.') });
 addInter({ pos: [1.2, U + 0.7, 15.2], label: () => S.musicBox ? 'закрыть шкатулку' : 'открыть шкатулку', act: () => { S.musicBox = !S.musicBox; S.mbT = 0; S.mbI = 0; } });
 addInter({ pos: [5.6, U + 0.5, 12.2], label: () => 'качнуть лошадку', act: () => { S.horseT = 4; } });
-addInter({ pos: [16.5, U + 0.5, 15.2], label: () => 'заглянуть в ванну', act: () => { note('Ванна', 'Вода чёрная и густая. Со дна поднимаются пузыри, как будто там кто-то дышит.'); SFX.bubbles(); if (!S.flags.tubLook) S.flags.tubLook = 1; } });
+addInter({ pos: [16.5, U + 0.5, 15.2], label: () => (S.act2 && RELICS.some(r => r.key === 'tongue' && !r.taken)) ? null : 'заглянуть в ванну', act: () => { note('Ванна', 'Вода чёрная и густая. Со дна поднимаются пузыри, как будто там кто-то дышит.'); SFX.bubbles(); if (!S.flags.tubLook) S.flags.tubLook = 1; } });
 addInter({ pos: [19.85, U + 1.6, 12], label: () => 'посмотреть в зеркало', act: () => mirrorScare() });
 addInter({ pos: [9.2, G + 1.4, 0.15], label: () => 'щёлкнуть выключателем', act: () => { SFX.click(); if (!S.flags.switch){ S.flags.switch = 1; S.flicker = 0.6; setTimeout(() => SFX.steps(6, 0.5), 600); voice('Света нет. А шаги наверху есть.', 3); } } });
 addInter({ pos: [3.5, G + 1.0, 11.75], label: () => lightGroups.dining.on ? 'задуть свечи' : null, act: () => { lightGroups.dining.on = false; SFX.whisper(1.2, R(-.5, .5), 0.25); } });
@@ -1267,6 +1396,19 @@ addInter({ pos: [19.2, D + 1.6, 26.2], label: () => S.power ? 'посмотре�
 addInter({ pos: [15.4, D + 2.3, 38.9], label: () => ride.state === 'done' ? 'посмотреть на проповедника' : null, local: true, act: () => note('Проповедник', 'Механическая кукла в рясе. Лицо — гипсовая маска Эдгара Холлоуэя, снятая с живого: на внутренней стороне остались ресницы.') });
 for (const f of ELEVEN) addInter({ pos: f.g.position.clone().add(new V3(0, 1.5, 0)), label: () => 'приподнять капюшон', local: true, act: () => { note('Один из одиннадцати', pick(['Под маской — не манекен. Кожа сухая, как бумага. На шее — бейдж прихожанина Церкви Утренней Звезды.', 'Маска пришита к лицу. Глаза открыты.', 'Пусто. Ряса стоит сама, как будто внутри всё ещё кто-то есть.'])); S.scare = 0.5; } });
 addInter({ pos: [-8.8, Y + 1.2, 34.2], label: () => DOORS.crypt.locked ? 'решётка склепа' : null, local: true, act: () => { SFX.rattle(); voice('Заперто снаружи. За решёткой сад и наш дом.', 3); } });
+// ----- v6, act II: the five pieces of Edgar, his last page, the hearth -----
+const RELICS = [];
+function relic(key, verb, x, y, z, w, h, d, tex, name, text){
+  const it = addItem('relic', x, y, z, w, h, d, tex, name, text); it.key = key; it.mesh.visible = false; it.label = () => S.act2 ? verb : null; RELICS.push(it); return it;
+}
+relic('heart', 'достать из ледника: сердце', 16.4, G + 0.95, 15.3, 0.2, 0.28, 0.2, T.jarHeart, 'Сердце Эдгара', 'Банка с мутным рассолом. Сердце внутри сокращается: раз, потом долго ничего, потом ещё раз. На крышке ножом: «НА ХОЛОД».');
+relic('eyes', 'взять банку из шкатулки: глаза', 1.0, U + 0.6, 15.05, 0.14, 0.2, 0.14, T.jarEyes, 'Глаза Эдгара', 'Банка из-под варенья. Два глаза плавают и медленно поворачиваются за светом фонаря. Записка дочери: «Папа, теперь ты всегда будешь на меня смотреть».');
+relic('tongue', 'запустить руку в ванну', 16.5, U + 0.5, 15.2, 0.3, 0.05, 0.12, T.tongue, 'Язык Эдгара', 'Пальцы нащупали что-то скользкое и тёплое. Язык, пришитый суровой ниткой к пробке слива. Вода уходит в трубы с хрипом, как будто кто-то пытается говорить.');
+relic('hands', 'отодрать от верстака: руки', 13.6, A + 0.86, 5.35, 0.5, 0.02, 0.26, T.handsR, 'Руки Эдгара', 'Кисти прибиты к верстаку гвоздями. Под ногтями гипс и чужая кожа: этими руками он снимал лица с прихожан, чтобы сделать из них манекены.');
+relic('head', 'достать через прутья: голову', 2.0, B + 0.15, 13.4, 0.26, 0.3, 0.26, T.headR, 'Голова Эдгара', 'Лица нет: его срезали и натянули на проповедника. Рот зашит, но под нитками что-то шевелится и шепчет одно и то же: «двенадцать, двенадцать, двенадцать».');
+const lastPage = addInter({ pos: [11.2, G + 0.1, 14.6], label: () => S.act2 ? 'прочитать страницу дневника' : null, local: true, act: () => note('Последняя страница', '«Когда меня не станет, разберите меня, как я разбирал их. Сердце на холод. Глаза дочери. Язык в воду. Руки к работе. Голову в клетку. Тогда дом станет мной, и я дождусь двенадцатого. Сжечь меня можно только целиком: в очаге, где Маргарет жгла их зубы». — Э. Х., 20.12.1979') });
+const pageMesh = prop(11.2, G + 0.005, 14.6, 0.3, 0.01, 0.36, mat(T.page, { uv: true, emissive: 0.2 }), { ry: 0.4 }); pageMesh.visible = false; ACT2_SHOW.push(pageMesh);
+addInter({ pos: [0.75, G + 0.7, 3.8], noLos: true, label: () => (S.act2 && !S.burned) ? (S.relics >= RELICS.length ? 'сжечь Эдгара в камине' : null) : null, act: () => burnEdgar() });
 // interactions that only matter to the one who does them are not mirrored to the others
 const LOCAL_ACTS = ['прочитать', 'трубку', 'камин', 'ванну', 'зеркало', 'выключателем', 'череп', 'капюшон', 'спрятаться'];
 inter.forEach((it, i) => { it.idx = i; let l = ''; try { l = it.label() || ''; } catch (e){} if (it.door || LOCAL_ACTS.some(w => l.includes(w))) it.local = true; });
@@ -1299,6 +1441,9 @@ nvMark('XI ЖДУТ ВНИЗУ', 9.0, U + 1.5, 15.9 - 0.02, Math.PI);
 nvMark('СМОТРИ НА НИХ', 9.0, A + 1.1, 10.98, Math.PI);
 nvMark('ЧЕТВЁРТЫЙ ВСЕГДА С ВАМИ', 15.5, D + 1.4, 26.93, Math.PI);
 nvMark('ВЫХОД ЧЕРЕЗ СКЛЕП', 0.57, D + 1.6, 34.6, Math.PI / 2);
+nvMark('ОН ВНУТРИ СТЕН', 7.07, 1.5, 6.2, Math.PI / 2); nvMarks[nvMarks.length - 1].act2 = true;
+nvMark('НЕ МОРГАЙ', 12.93, U + 1.5, 5.0, -Math.PI / 2); nvMarks[nvMarks.length - 1].act2 = true;
+nvMark('ДВЕНАДЦАТЫЙ УЖЕ ЗДЕСЬ', 0.11, 1.5, 13.8, Math.PI / 2); nvMarks[nvMarks.length - 1].act2 = true;
 // in night mode the empty seats of the car are not empty
 const ghosts = [0, 1, 2].map(i => { const f = figure('pale', 0, 0, 0, 0, { scale: 0.62 }); scene.remove(f.g); cart.add(f.g); f.g.position.set(0, 0.45, SEAT_Z[i] - 0.1); f.g.visible = false; f.armL.rotation.x = -1.2; f.armR.rotation.x = -1.2; f.head.rotation.z = 0.5; return f; });
 
@@ -1345,12 +1490,12 @@ const NODES = {
   U0: [9, U, 8.8], U1: [9, U, 2], U11: [12, U, 1.6], U2: [7, U, 5.6], U3: [3.5, U, 4.5], U4: [7, U, 10.6], U5: [4, U, 11.5], U6: [13, U, 1.8], U7: [16, U, 1.8], U8: [13, U, 10.6], U9: [16.2, U, 12], U10: [10, U, 14],
   B1: [14, B, 13.5], B2: [13, B, 11], B3: [13, B, 7], B4: [6.5, B, 6.5], B5: [16.5, B, 2.5], B6: [5, B, 13.2], B7: [6.5, B, 10.5],
   B8: [14.5, B, 15.0], R0: [14.5, D, 22.6], R1: [16, D + 0.25, 23.0], R13: [13.5, D, 38.2], R14: [5, D, 38.6], R15: [1.2, D, 36.5], R16: [-3, D + (Y - D) * 4 / 7.5, 36.5], R17: [-7.6, Y, 36.5],
-  R18: [-8.8, Y, 32.8], Y1: [-6, Y, 20], Y2: [-6, Y, 4], Y3: [-8.4, Y, 0], Y4: [-6, Y, -5], Y5: [9, Y, -6.5]
+  R18: [-8.8, Y, 32.8], GB: [11, G, 15.2], YB: [11, Y, 18.4], Y1: [-6, Y, 20], Y2: [-6, Y, 4], Y3: [-8.4, Y, 0], Y4: [-6, Y, -5], Y5: [9, Y, -6.5]
 };
 // nodes outside the house only open up as the story gets there
 const nodeOpen = id => id[0] !== 'R' && id[0] !== 'Y' ? true : (id[0] === 'Y' || ['R13', 'R14', 'R15', 'R16', 'R17', 'R18'].includes(id) ? S.final : S.power);
 const nodeIds = Object.keys(NODES); const nodes = nodeIds.map(k => new V3(...NODES[k])); const NI = {}; nodeIds.forEach((k, i) => NI[k] = i);
-const EDGES = 'G0-G1 G0-G15 G0-G21 G1-G2 G1-G3 G1-G8 G1-G15 G2-G14 G2-G7 G3-G4 G4-G5 G5-G6 G6-G7 G7-G1 G8-G9 G9-G10 G10-G11 G11-G12 G12-G13 G13-G14 G13-G17 G17-G18 G18-G19 G19-G20 G15-G16 G16-U0 U0-U1 U1-U11 U11-U6 U6-U7 U1-U2 U0-U2 U2-U3 U0-U4 U4-U5 U0-U8 U8-U9 U0-U10 G20-B1 B1-B2 B2-B3 B3-B4 B3-B5 B4-B7 B7-B6 B4-B5 B1-B8 B8-R0 R0-R1 R13-R14 R14-R15 R15-R16 R16-R17 R17-R18 R18-Y1 Y1-Y2 Y2-Y3 Y3-Y4 Y4-Y5 Y5-G21'.split(' ').map(s => s.split('-').map(k => NI[k]));
+const EDGES = 'G0-G1 G0-G15 G0-G21 G1-G2 G1-G3 G1-G8 G1-G15 G2-G14 G2-G7 G3-G4 G4-G5 G5-G6 G6-G7 G7-G1 G8-G9 G9-G10 G10-G11 G11-G12 G12-G13 G13-G14 G13-G17 G17-G18 G18-G19 G19-G20 G15-G16 G16-U0 U0-U1 U1-U11 U11-U6 U6-U7 U1-U2 U0-U2 U2-U3 U0-U4 U4-U5 U0-U8 U8-U9 U0-U10 G20-B1 B1-B2 B2-B3 B3-B4 B3-B5 B4-B7 B7-B6 B4-B5 B1-B8 B8-R0 R0-R1 R13-R14 R14-R15 R15-R16 R16-R17 R17-R18 R18-Y1 G13-GB GB-YB YB-Y1 Y1-Y2 Y2-Y3 Y3-Y4 Y4-Y5 Y5-G21'.split(' ').map(s => s.split('-').map(k => NI[k]));
 const adj = nodes.map(() => []); EDGES.forEach(([a, b]) => { adj[a].push(b); adj[b].push(a); });
 function bfs(a, b){ const prev = new Array(nodes.length).fill(-1); const q = [a]; prev[a] = a; while (q.length){ const n = q.shift(); if (n === b) break; for (const m of adj[n]) if (prev[m] < 0){ prev[m] = n; q.push(m); } } if (prev[b] < 0) return [a]; const p = [b]; while (p[0] !== a) p.unshift(prev[p[0]]); return p; }
 const ray = new THREE.Raycaster(); const _d = new V3();
@@ -1361,6 +1506,8 @@ function nearestNode(p){
   if (best < 0) for (let i = 0; i < nodes.length; i++){ const d = nodes[i].distanceToSquared(p) + Math.abs(nodes[i].y - p.y) * 20; if (d < bd){ bd = d; best = i; } }
   return best;
 }
+// somewhere inside the house, a few rooms away: where the pilgrims go after they let go of you
+function houseNode(from, minHops, maxHops){ const pn = nearestNode(from); const c = []; for (let i = 0; i < nodes.length; i++){ const id = nodeIds[i]; if (!'GUB'.includes(id[0]) || id === 'G21' || id === 'GB') continue; const h = bfs(pn, i).length; if (h >= minHops && h <= maxHops) c.push(i); } return c.length ? pick(c) : NI.G2; }
 function farNode(from, minHops, maxHops){ const pn = nearestNode(from); const cands = []; for (let i = 0; i < nodes.length; i++){ if (nodeIds[i] === 'G21' || !nodeOpen(nodeIds[i])) continue; const h = bfs(pn, i).length; if (h >= minHops && h <= maxHops) cands.push(i); } return cands.length ? pick(cands) : 0; }
 
 /* ================= HUD ================= */
@@ -1375,7 +1522,7 @@ function hudUpdate(){
   const bars = $('batt').querySelectorAll('b'); const lit = Math.ceil(S.battery * 5);
   bars.forEach((b, i) => b.classList.toggle('off', i >= lit));
   $('batt').classList.toggle('low', S.battery < 0.25);
-  $('finds').textContent = `УЛИКИ ${S.finds}/${FINDS_TOTAL}`;
+  $('finds').textContent = S.escape ? 'БЕГИ' : (S.act2 ? `ЭДГАР ${S.relics}/${RELICS.length}` : `УЛИКИ ${S.finds}/${FINDS_TOTAL}`);
   $('stance').hidden = !S.crouch; $('keyMark').hidden = !S.hasKey && !(S.hasHandle && !S.power); $('keyMark').textContent = S.hasKey ? 'КЛЮЧ ОТ ПОДВАЛА' : 'РУЧКА РУБИЛЬНИКА';
   $('nvTag').hidden = !S.nv;
   const mt = $('mate'); mt.hidden = !NET.on;
@@ -1384,10 +1531,10 @@ function hudUpdate(){
 
 /* ================= post-processing & resize ================= */
 const post = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
-  uniforms: { tDiffuse: { value: null }, uRes: { value: new THREE.Vector2(320, 240) }, uTime: { value: 0 }, uGamma: { value: 1.55 }, uHurt: { value: 0 }, uBlack: { value: 0 }, uFear: { value: 0 }, uNV: { value: 0 } },
+  uniforms: { tDiffuse: { value: null }, uRes: { value: new THREE.Vector2(320, 240) }, uTime: { value: 0 }, uGamma: { value: 1.55 }, uHurt: { value: 0 }, uBlack: { value: 0 }, uFear: { value: 0 }, uNV: { value: 0 }, uOld: { value: 0 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
   fragmentShader: `
-    uniform sampler2D tDiffuse; uniform vec2 uRes; uniform float uTime; uniform float uGamma; uniform float uHurt; uniform float uBlack; uniform float uFear; uniform float uNV;
+    uniform sampler2D tDiffuse; uniform vec2 uRes; uniform float uTime; uniform float uGamma; uniform float uHurt; uniform float uBlack; uniform float uFear; uniform float uNV; uniform float uOld;
     varying vec2 vUv;
     float b2(vec2 a){ a = floor(a); return fract(dot(a, vec2(0.5, a.y * 0.75))); }
     float b4(vec2 a){ return b2(0.5 * a) * 0.25 + b2(a); }
@@ -1406,7 +1553,8 @@ const post = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMater
       c = pow(max(c, 0.0), vec3(1.0 / uGamma));
       float n = fract(sin(dot(px + floor(uTime * 24.0) * 3.1, vec2(12.9898, 78.233))) * 43758.5453);
       if (uNV > 0.5){ float l = dot(c, vec3(0.3, 0.59, 0.11)); c = vec3(0.2, 1.0, 0.35) * (l * 1.15 + 0.015); }
-      c += (n - 0.5) * (0.045 + uFear * 0.08 + uNV * 0.05);
+      if (uOld > 0.0){ float l = dot(c, vec3(0.3, 0.59, 0.11)); c = mix(c, vec3(l * 1.2 + 0.02, l * 0.95 + 0.01, l * 0.62), uOld); c *= 1.0 - uOld * 0.25 * step(0.92, hash(floor(uTime * 9.0) + floor(px.y / 3.0) * 0.17)); }
+      c += (n - 0.5) * (0.045 + uFear * 0.08 + uNV * 0.05 + uOld * 0.06);
       vec2 q = vUv - 0.5; c *= 1.0 - dot(q, q) * (1.3 + uFear * 1.4);
       c = mix(c, vec3(c.r * 1.3 + 0.12, c.g * 0.4, c.b * 0.4), uHurt);
       float d = b4(px) - 0.5;
@@ -1448,13 +1596,14 @@ const isTouch = matchMedia('(pointer: coarse)').matches || ('ontouchstart' in wi
 function look(dx, dy, k = 0.0022){ player.yaw -= dx * k; player.pitch = clamp(player.pitch - dy * k, -1.35, 1.35); }
 function requestLock(){ if (isTouch || !lockOK) return; try { const p = canvas.requestPointerLock(); if (p && p.catch) p.catch(() => { if (!lockEver) lockOK = false; }); } catch (e){ lockOK = false; } }
 document.addEventListener('pointerlockerror', () => { if (!lockEver) lockOK = false; });
-document.addEventListener('pointerlockchange', () => { if (document.pointerLockElement === canvas) lockEver = true; if (document.pointerLockElement !== canvas && S.started && !S.over && lockOK) pause(true); });
-document.addEventListener('mousemove', e => { if (!S.started || S.paused || S.over) return; if (document.pointerLockElement === canvas) look(e.movementX, e.movementY); else if (dragging){ look(e.clientX - lastMX, e.clientY - lastMY, 0.004); lastMX = e.clientX; lastMY = e.clientY; } });
-canvas.addEventListener('mousedown', e => { if (!S.started || S.paused || S.over || isTouch) return; if (document.pointerLockElement === canvas){ tryInteract(); return; } dragging = true; lastMX = e.clientX; lastMY = e.clientY; requestLock(); });
+document.addEventListener('pointerlockchange', () => { if (document.pointerLockElement === canvas) lockEver = true; if (document.pointerLockElement !== canvas && S.started && !S.over && !S.cine && !S.ending && lockOK) pause(true); });
+document.addEventListener('mousemove', e => { if (!S.started || S.paused || S.over || S.cine) return; if (document.pointerLockElement === canvas) look(e.movementX, e.movementY); else if (dragging){ look(e.clientX - lastMX, e.clientY - lastMY, 0.004); lastMX = e.clientX; lastMY = e.clientY; } });
+canvas.addEventListener('mousedown', e => { if (!S.started || S.paused || S.over || isTouch) return; if (S.cine){ requestLock(); return; } if (document.pointerLockElement === canvas){ tryInteract(); return; } dragging = true; lastMX = e.clientX; lastMY = e.clientY; requestLock(); });
 window.addEventListener('mouseup', () => { dragging = false; });
 window.addEventListener('keydown', e => {
   keys[e.code] = true;
   if (!S.started || S.over) return;
+  if (S.cine){ if (e.code === 'Space' || e.code === 'Enter' || e.code === 'KeyE') skipCine(); if (e.code === 'Space') e.preventDefault(); return; }
   if (e.code === 'KeyE') tryInteract();
   if (e.code === 'KeyF') toggleFlash();
   if (e.code === 'KeyC') toggleCrouch();
@@ -1495,8 +1644,13 @@ function beginGame(role, fromNet){
   S.role = role; S.flashOn = role === 'light' || role === 'solo'; S.nv = false; S.radio = false;
   $('batt').querySelector('span').textContent = GEAR[role].toUpperCase();
   shared.uFlashCos.value.copy(role === 'medium' ? LAMP_COS : FLASH_COS);
-  $('title').hidden = true; $('hud').hidden = false; if (isTouch){ $('touch').hidden = false; $('tbF').textContent = role === 'cam' ? 'НОЧЬ' : (role === 'medium' ? 'ЭФИР' : 'ФОНАРЬ'); }
+  $('title').hidden = true; if (isTouch) $('tbF').textContent = role === 'cam' ? 'НОЧЬ' : (role === 'medium' ? 'ЭФИР' : 'ФОНАРЬ');
   S.started = true; NET.started = true; if (!fromNet) requestLock();
+  playCine(INTRO, introCleanup, () => afterIntro(role, fromNet));
+}
+function afterIntro(role, fromNet){
+  $('hud').hidden = false; if (isTouch) $('touch').hidden = false;
+  player.pos.set(10, Y, -11.5); player.yaw = Math.PI; player.pitch = 0; player.vy = 0;
   objective('Войди в особняк');
   if (role === 'solo') voice('Особняк Холлоуэев. Юклид-авеню, 1417. Последний раз здесь кто-то жил в семьдесят девятом.', 5.5);
   else if (role === 'cam') voice('Я снимаю. [F] — ночной режим: вижу в темноте, но не свечу. Остановить его может только фонарь напарника.' + (fromNet && !isTouch ? ' Кликни по экрану.' : ''), 7);
@@ -1504,6 +1658,7 @@ function beginGame(role, fromNet){
   else voice('У меня фонарь. Пока я свечу на Него, Он стоит. Но долго светить нельзя: Он зайдёт сзади.' + (fromNet && !isTouch ? ' Кликни по экрану.' : ''), 7);
 }
 $('start').addEventListener('click', () => beginGame('solo'));
+$('skip').addEventListener('click', () => skipCine());
 function pause(on){ if (S.over) return; S.paused = on; $('pause').hidden = !on; if (AU.ctx && !NET.on){ on ? AU.ctx.suspend() : AU.ctx.resume(); } if (!on) requestLock(); }
 $('resume').addEventListener('click', () => pause(false));
 $('again').addEventListener('click', () => location.reload());
@@ -1512,16 +1667,18 @@ function endGame(win, text){
   S.over = true; try { document.exitPointerLock && document.exitPointerLock(); } catch (e){}
   const s = Math.floor(S.time), tc = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
   $('endEyebrow').textContent = win ? 'Запись сохранена · ' + tc : 'Сигнал потерян · ' + tc;
-  $('endTitle').textContent = win ? 'ТЫ ВЫБРАЛСЯ' : 'ЗАПИСЬ ОБОРВАНА';
+  $('endTitle').textContent = win ? 'ДВЕНАДЦАТЫЙ' : 'ЗАПИСЬ ОБОРВАНА';
   $('endText').textContent = win
-    ? `На плёнке ${S.finds} из ${FINDS_TOTAL} улик. На последних кадрах, снятых уже с улицы, во всех окнах второго этажа стоят люди в рясах. Их было одиннадцать. Теперь двенадцать: двенадцатый держит видеокамеру.`
+    ? `Вы выбрались из дома 1417. На плёнке ${S.finds} из ${FINDS_TOTAL} улик и пепел Эдгара Холлоуэя. Только запись кончается не на улице, а за столом в столовой, и снимает её тот, кто сидит на двенадцатом месте. ${NET.on ? 'Никто из вас не помнит' : 'Ты не помнишь'}, как садился за этот стол. А утром в почтовом ящике лежала новая кассета.`
     : (text || 'Последние секунды записи: перевёрнутое лицо очень близко к объективу. Потом темнота и чьё-то дыхание. Плёнку можно перемотать.');
   $('rewind').hidden = win; $('again').textContent = win ? 'Записать заново' : 'Начать заново';
+  if (win) $('endEyebrow').textContent = 'Конец? · запись ' + tc;
   setTimeout(() => { $('end').hidden = false; $('hud').hidden = true; $('touch').hidden = true; }, win ? 700 : 1500);
 }
 function respawn(fromNet){
   if (NET.on && !fromNet) netSend({ t: 'rw' });
-  S.captured = null; for (const r of mates()) r.cap = false; S.out = false; $('capTag').hidden = true; S.nv = false; S.seat = -1; S.blackout = 0;
+  S.captured = null; for (const r of mates()) r.cap = false; S.out = false; $('capTag').hidden = true; S.nv = false; S.seat = -1; S.blackout = 0; S.wounds = 0; S.faceT = 0;
+  if (S.act2 && (!NET.on || NET.host)) for (const q of PILGRIMS){ q.pos.copy(nodes[houseNode(S.checkpoint, 6, 14)]); q.tpos.copy(q.pos); q.path = []; q.cool = 4; }
   $('end').hidden = true; $('hud').hidden = false; if (isTouch) $('touch').hidden = false;
   S.over = false; S.hurt = 0; S.fear = 0; S.scare = 0; post.material.uniforms.uBlack.value = 0;
   player.pos.copy(S.checkpoint); player.vy = 0; player.yaw = Math.PI; player.pitch = 0; S.crouch = false;
@@ -1739,6 +1896,7 @@ function onNet(id, m){
       }
       if (fromHost && Array.isArray(m.mq)) MANNEQ.forEach((q, i) => { if (m.mq[i * 3] !== undefined){ q.tpos.set(m.mq[i * 3], A, m.mq[i * 3 + 1]); q.yaw = m.mq[i * 3 + 2]; } });
       if (fromHost && m.rt !== undefined && ride.state === 'run') NET.rideT = +m.rt;
+      if (fromHost && Array.isArray(m.pg)) PILGRIMS.forEach((q, i) => { if (m.pg[i * 4] !== undefined){ q.tpos.set(m.pg[i * 4], m.pg[i * 4 + 1], m.pg[i * 4 + 2]); q.yaw = m.pg[i * 4 + 3]; } });
       break;
     }
     case 'act': { const it = inter[m.i]; if (it && !it.taken){ NET.applying = true; NET.from = id; try { it.act(); } catch (e){ console.warn(e); } NET.applying = false; } break; }
@@ -1750,8 +1908,10 @@ function onNet(id, m){
       else if (m.k === 'sting'){ SFX.stinger(0.9); S.scare = 1; S.flicker = 0.6; S.shake = 0.5; }
       else if (m.k === 'behind'){ SFX.crack(0.6, 0); SFX.whisper(1.0, 0, 0.4); S.flicker = 0.6; }
       else if (m.k === 'mq') mannequinGrabbed();
+      else if (m.k === 'pg') pilgrimGrabbed();
       break;
-    case 'cap': if (m.who === NET.me) captureLocal(); else { const c = PEERS.get(m.who); if (c && !c.cap){ c.cap = true; c.capT = CAPTURE_TIME; } } break;
+    case 'cap': if (m.who === NET.me) captureLocal(); else { const c = PEERS.get(m.who); if (c && !c.cap){ c.cap = true; c.capT = CAPTURE_TIME; } if (NET.host) checkAllCaptured(); } break;
+    case 'act2': if (!S.act2){ NET.applying = true; NET.from = id; try { startAct2(true); } finally { NET.applying = false; } } break;
     case 'free': if (m.who === NET.me) freeLocal(); else { const c = PEERS.get(m.who); if (c) c.cap = false; } break;
     case 'lost': endGame(false, LOST_TEXT()); break;
     case 'rw': respawn(true); break;
@@ -1773,6 +1933,7 @@ function netTick(dt){
     m.e = [+E.pos.x.toFixed(3), +E.pos.y.toFixed(3), +E.pos.z.toFixed(3), +E.yaw.toFixed(3), Math.max(0, E_MODES.indexOf(E.mode)), E.g.visible ? 1 : 0, NET.eFrozen ? 1 : 0, NET.eMoving ? 1 : 0];
     if (MANNEQ.some(q => q.pos.distanceTo(q.home) > 0.01)){ m.mq = []; for (const q of MANNEQ) m.mq.push(+q.pos.x.toFixed(2), +q.pos.z.toFixed(2), +q.yaw.toFixed(2)); }
     if (ride.state === 'run') m.rt = +ride.t.toFixed(2);
+    if (S.act2){ m.pg = []; for (const q of PILGRIMS) m.pg.push(+q.pos.x.toFixed(2), +q.pos.y.toFixed(2), +q.pos.z.toFixed(2), +q.yaw.toFixed(2)); }
   }
   netSend(m);
 }
@@ -1850,6 +2011,118 @@ Object.assign(SFX, {
   breath(gain = 0.25, pan = 0){ noiseHit(0.9, 'bandpass', 700, 1.2, gain, pan); noiseHit(0.8, 'bandpass', 500, 1.2, gain * 0.8, pan, 1.2); },
   scream(gain = 0.5){ const C = AU.ctx; if (!C) return; const t = C.currentTime; const o = C.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(520, t); o.frequency.linearRampToValueAtTime(880, t + 0.25); o.frequency.linearRampToValueAtTime(610, t + 1.1); const lf = C.createOscillator(); lf.frequency.value = 9; const lg = C.createGain(); lg.gain.value = 30; lf.connect(lg); lg.connect(o.frequency); const f = C.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1300; f.Q.value = 3; const g = C.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.05); g.gain.linearRampToValueAtTime(0, t + 1.2); o.connect(f); f.connect(g); g.connect(AU.master); o.start(t); lf.start(t); o.stop(t + 1.3); lf.stop(t + 1.3); noiseHit(1.0, 'bandpass', 2600, 1, gain * 0.4); }
 });
+/* ================= v6: the sounds of the house ================= */
+// pos is optional everywhere: a point in the world places the sound around your head (HRTF), a number is a flat stereo pan
+Object.assign(SFX, {
+  // a dissonant hit: a detuned cluster through distortion, a bowed-metal screech, a sub drop and a burst of noise
+  stinger(s = 1, pos){
+    const C = AU.ctx; if (!C) return; const t = C.currentTime, P = pos || 0, out = panner(P);
+    const sh = shaper(), hp = C.createBiquadFilter(), g = C.createGain();
+    hp.type = 'highpass'; hp.frequency.setValueAtTime(260, t); hp.frequency.exponentialRampToValueAtTime(1700, t + 1.8);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.2 * s, t + 0.015); g.gain.exponentialRampToValueAtTime(0.001, t + 2.4);
+    sh.connect(hp); hp.connect(g); g.connect(out);
+    [196, 207.7, 293.7, 311.1, 415.3].forEach((f, i) => { const o = C.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(f * 1.5, t); o.frequency.exponentialRampToValueAtTime(f * (0.9 + i * 0.012), t + 2.2); const og = C.createGain(); og.gain.value = 0.3; o.connect(og); og.connect(sh); o.start(t); o.stop(t + 2.5); });
+    const car = C.createOscillator(), mod = C.createOscillator(), md = C.createGain(), cg = C.createGain();
+    car.frequency.setValueAtTime(1180, t); car.frequency.linearRampToValueAtTime(1460, t + 1.6); mod.frequency.value = 1180 * 1.414; md.gain.value = 900; mod.connect(md); md.connect(car.frequency);
+    cg.gain.setValueAtTime(0, t); cg.gain.linearRampToValueAtTime(0.06 * s, t + 0.05); cg.gain.exponentialRampToValueAtTime(0.001, t + 1.9); car.connect(cg); cg.connect(out); car.start(t); mod.start(t); car.stop(t + 2); mod.stop(t + 2);
+    noiseHit(1.2, 'bandpass', 2400, 0.6, 0.3 * s, P); tone('sine', 70, 24, 1.6, 0.75 * s, 0, P, 0.004);
+  },
+  // a heavy sub drop with a distorted rumble: for the worst moments
+  boom(gain = 1, pos){
+    const C = AU.ctx; if (!C) return; const t = C.currentTime, P = pos || 0; tone('sine', 62, 22, 2.2, 0.9 * gain, 0, P, 0.004);
+    const s = C.createBufferSource(); s.buffer = AU.brown; const sh = shaper(), f = C.createBiquadFilter(), g = C.createGain();
+    f.type = 'lowpass'; f.frequency.setValueAtTime(900, t); f.frequency.exponentialRampToValueAtTime(70, t + 1.2); g.gain.setValueAtTime(0.5 * gain, t); g.gain.exponentialRampToValueAtTime(0.001, t + 1.4);
+    s.connect(sh); sh.connect(f); f.connect(g); g.connect(panner(P)); s.start(t); s.stop(t + 1.5);
+  },
+  // a rising swell that cuts off dead: the breath before a scare
+  whoosh(dur = 1.2, gain = 0.3, pos){
+    const C = AU.ctx; if (!C) return; const t = C.currentTime; const s = C.createBufferSource(); s.buffer = AU.white; const f = C.createBiquadFilter(), g = C.createGain();
+    f.type = 'bandpass'; f.Q.value = 1.2; f.frequency.setValueAtTime(250, t); f.frequency.exponentialRampToValueAtTime(4200, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + dur); g.gain.linearRampToValueAtTime(0, t + dur + 0.03);
+    s.connect(f); f.connect(g); g.connect(panner(pos || 0)); s.start(t); s.stop(t + dur + 0.05);
+  },
+  // the rattle in its throat: a click train through two formants and distortion
+  croak(dur = 1.4, gain = 0.4, pos){
+    const C = AU.ctx; if (!C || !AU.fry) return; const t = C.currentTime; const s = C.createBufferSource(); s.buffer = AU.fry;
+    s.playbackRate.setValueAtTime(R(0.8, 1.2), t); s.playbackRate.linearRampToValueAtTime(R(0.6, 1.5), t + dur);
+    const f1 = C.createBiquadFilter(), f2 = C.createBiquadFilter(), g = C.createGain(), sh = shaper();
+    f1.type = 'bandpass'; f1.frequency.value = R(380, 600); f1.Q.value = 3; f2.type = 'bandpass'; f2.frequency.value = R(1100, 1700); f2.Q.value = 4;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.15); g.gain.setValueAtTime(gain, t + dur * 0.7); g.gain.linearRampToValueAtTime(0, t + dur);
+    s.connect(f1); s.connect(f2); f1.connect(sh); f2.connect(sh); sh.connect(g); g.connect(panner(pos || 0)); s.start(t, R(0, 0.5)); s.stop(t + dur + 0.05);
+  },
+  // its scream when it finds you
+  shriek(gain = 0.5, pos){
+    const C = AU.ctx; if (!C) return; const t = C.currentTime, P = pos || 0;
+    const o = C.createOscillator(), m = C.createOscillator(), mg = C.createGain(), sh = shaper(), f = C.createBiquadFilter(), g = C.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(700, t); o.frequency.exponentialRampToValueAtTime(1500, t + 0.35); o.frequency.exponentialRampToValueAtTime(880, t + 1.4);
+    m.frequency.value = 233; mg.gain.value = 520; m.connect(mg); mg.connect(o.frequency);
+    f.type = 'bandpass'; f.frequency.value = 2300; f.Q.value = 1.4; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.04); g.gain.setValueAtTime(gain, t + 0.6); g.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
+    o.connect(sh); sh.connect(f); f.connect(g); g.connect(panner(P)); o.start(t); m.start(t); o.stop(t + 1.6); m.stop(t + 1.6);
+    noiseHit(1.2, 'highpass', 3000, 0.7, gain * 0.4, P); SFX.croak(1.0, gain * 0.6, pos);
+  },
+  // wet and red
+  squelch(gain = 0.4, pos){
+    const C = AU.ctx; if (!C) return; const t = C.currentTime, P = pos || 0; const s = C.createBufferSource(); s.buffer = AU.brown; const f = C.createBiquadFilter(), g = C.createGain();
+    f.type = 'lowpass'; f.Q.value = 9; f.frequency.setValueAtTime(300, t); for (let k = 1; k < 8; k++) f.frequency.linearRampToValueAtTime(R(180, 1400), t + k * 0.06);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain * 2, t + 0.03); g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+    s.connect(f); f.connect(g); g.connect(panner(P)); s.start(t, R(0, 1)); s.stop(t + 0.6); tone('sine', 120, 50, 0.2, gain * 0.6, 0, P);
+  },
+  crunch(gain = 0.4, pos){ const P = pos || 0; for (let i = 0; i < 7; i++) noiseHit(0.03, 'highpass', R(1200, 4000), 1.5, gain * R(0.5, 1), P, i * R(0.015, 0.05)); tone('triangle', 180, 60, 0.12, gain * 0.5, 0, P); },
+  knock(n = 3, gain = 0.4, pos){ const P = pos || 0; for (let i = 0; i < n; i++){ const w = i * R(0.3, 0.42); tone('sine', 170, 115, 0.13, gain, w, P, 0.002); noiseHit(0.06, 'bandpass', 700, 2, gain * 0.6, P, w); } },
+  // something heavy dragged across the floor
+  drag(dur = 2.6, gain = 0.25, pos){
+    const C = AU.ctx; if (!C) return; const t = C.currentTime; const s = C.createBufferSource(); s.buffer = AU.brown; const f = C.createBiquadFilter(), g = C.createGain();
+    f.type = 'bandpass'; f.frequency.value = 340; f.Q.value = 1.6; g.gain.setValueAtTime(0, t); for (let k = 0; k < dur / 0.25; k++) g.gain.linearRampToValueAtTime(gain * 2.5 * R(0.3, 1), t + k * 0.25 + 0.12); g.gain.linearRampToValueAtTime(0, t + dur);
+    s.connect(f); f.connect(g); g.connect(panner(pos || 0)); s.start(t, R(0, 0.5)); s.stop(t + dur + 0.05);
+  },
+  // a child humming the music-box tune inside the walls
+  hum(gain = 0.12, pos){
+    const C = AU.ctx; if (!C) return; const t0 = C.currentTime, out = panner(pos || 0); const mel = [659.3, 587.3, 523.3, 493.9, 523.3, 440, 0, 392, 440, 493.9, 523.3];
+    mel.forEach((f, i) => { if (!f) return; const t = t0 + i * 0.52; const o = C.createOscillator(), v = C.createOscillator(), vg = C.createGain(), fl = C.createBiquadFilter(), g = C.createGain();
+      o.type = 'triangle'; o.frequency.setValueAtTime(f * 0.5 * (1 - i * 0.004), t); v.frequency.value = 5.2; vg.gain.value = 4; v.connect(vg); vg.connect(o.frequency);
+      fl.type = 'bandpass'; fl.frequency.value = 620; fl.Q.value = 2; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain * (1 - i * 0.04), t + 0.1); g.gain.linearRampToValueAtTime(0, t + 0.5);
+      o.connect(fl); fl.connect(g); g.connect(out); o.start(t); v.start(t); o.stop(t + 0.52); v.stop(t + 0.52); });
+  },
+  // a woman sobbing behind a wall
+  sob(gain = 0.18, pos){
+    const C = AU.ctx; if (!C) return; const t0 = C.currentTime, out = panner(pos || 0); let t = t0;
+    for (let i = 0; i < 6; i++){ t += R(0.32, 0.6); const f0 = R(330, 430); const o = C.createOscillator(), f1 = C.createBiquadFilter(), g = C.createGain();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f0 * 0.68, t + 0.3); f1.type = 'bandpass'; f1.frequency.value = 900; f1.Q.value = 5;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.04); g.gain.exponentialRampToValueAtTime(0.001, t + 0.32); o.connect(f1); f1.connect(g); g.connect(out); o.start(t); o.stop(t + 0.35);
+      noiseHit(0.25, 'bandpass', 1500, 1, gain * 0.5, pos || 0, t - t0 + 0.3); }
+  },
+  // your own breath when the fear runs high
+  pant(gain = 0.1){ noiseHit(0.45, 'bandpass', 1250, 1.4, gain, 0); noiseHit(0.55, 'bandpass', 780, 1.2, gain * 0.8, 0, 0.5); },
+  // Edgar's voice on a blown PA speaker: syllables without words, crushed and filtered
+  speaker(dur = 2.4, gain = 0.3, pos){
+    const C = AU.ctx; if (!C) return; const t0 = C.currentTime; const sh = shaper(), bp = C.createBiquadFilter(), g = C.createGain();
+    bp.type = 'bandpass'; bp.frequency.value = 1400; bp.Q.value = 0.8; g.gain.value = gain; sh.connect(bp); bp.connect(g); g.connect(panner(pos || 0));
+    for (let t = 0; t < dur; t += R(0.12, 0.22)){
+      if (rnd() < 0.15) continue; const tt = t0 + t, f = 80 * R(0.85, 1.3), len = R(0.09, 0.2); const o = C.createOscillator(), f1 = C.createBiquadFilter(), e = C.createGain();
+      o.type = 'sawtooth'; o.frequency.setValueAtTime(f, tt); o.frequency.linearRampToValueAtTime(f * R(0.75, 1.1), tt + len); f1.type = 'bandpass'; f1.frequency.value = pick([450, 600, 750, 900]); f1.Q.value = 4;
+      e.gain.setValueAtTime(0, tt); e.gain.linearRampToValueAtTime(0.7, tt + 0.02); e.gain.linearRampToValueAtTime(0, tt + len); o.connect(f1); f1.connect(e); e.connect(sh); o.start(tt); o.stop(tt + len + 0.02);
+    }
+    noiseHit(dur, 'bandpass', 3000, 0.8, gain * 0.12, pos || 0);
+  },
+  // the old heart: a deep double beat with a sub underneath
+  heart(gain, pos){ const P = pos || 0; tone('sine', 58, 34, 0.22, gain, 0, P, 0.005); tone('sine', 52, 30, 0.24, gain * 0.75, 0.24, P, 0.005); noiseHit(0.08, 'lowpass', 120, 0.7, gain * 0.5, P); },
+  chains(gain = 0.25, pos){ const P = pos || 0; for (let i = 0; i < 8; i++) noiseHit(0.06, 'bandpass', R(2000, 4200), 6, gain * R(0.4, 1), P, i * R(0.05, 0.12)); },
+  // a long human scream far away, under the floor
+  farScream(gain = 0.2, pos){ const C = AU.ctx; if (!C) return; const t = C.currentTime; const o = C.createOscillator(), lf = C.createOscillator(), lg = C.createGain(), f = C.createBiquadFilter(), g = C.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(560, t); o.frequency.linearRampToValueAtTime(760, t + 0.4); o.frequency.linearRampToValueAtTime(420, t + 2.2); lf.frequency.value = 6.5; lg.gain.value = 18; lf.connect(lg); lg.connect(o.frequency);
+    f.type = 'bandpass'; f.frequency.value = 1000; f.Q.value = 4; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.1); g.gain.linearRampToValueAtTime(0, t + 2.3);
+    o.connect(f); f.connect(g); g.connect(panner(pos || 0)); o.start(t); lf.start(t); o.stop(t + 2.4); lf.stop(t + 2.4); }
+});
+// random sounds of the house: knocks behind you, dragging upstairs, humming in the walls, sobbing, screams from below
+function ambientEvent(zn, inside, base){
+  const opts = [];
+  if (inside && !base){ opts.push(() => SFX.knock(3, 0.35, around(R(3, 6), true)), () => SFX.drag(R(2, 3.5), 0.3, around(R(2, 5), false, 3.4)), () => SFX.hum(0.1, around(R(4, 8), false)), () => SFX.sob(0.16, around(R(5, 9), false)), () => SFX.steps(5, 0.35, around(R(3, 6), false, 3.3)), () => SFX.farScream(0.12, around(R(5, 9), false, -4)));
+    if (E.mode === 'hidden' && rnd() < 0.5) opts.push(() => SFX.croak(R(1.2, 2.2), 0.12, around(R(5, 9), true))); }
+  if (base){ opts.push(() => SFX.chains(0.25, around(R(4, 8), false)), () => SFX.groan(0.3, around(R(5, 10), false)), () => SFX.knock(4, 0.3, around(R(3, 6), true)), () => SFX.whisper(1.6, around(1.3, true), 0.3), () => SFX.drag(R(2, 3), 0.25, around(R(4, 8), false))); }
+  if (!inside){ opts.push(() => SFX.farScream(0.1, around(R(15, 25), false)), () => SFX.knock(3, 0.25, new V3(10, 1.5, 8))); }
+  if (S.act2) opts.push(() => SFX.whisper(1.8, around(0.9, true), 0.35), () => SFX.laugh(0.2, 0.75, around(R(4, 8), false), 6));
+  if (opts.length) pick(opts)();
+}
 // the calliope of the ride, out of tune: plays from the station speaker, or from the car while it runs
 const NOTE = n => 440 * Math.pow(2, (n - 69) / 12);
 const CALLI = [67, 72, 76, 79, 78, 79, 76, 72, 74, 77, 81, 84, 83, 84, 81, 77, 76, 79, 84, 88, 87, 88, 84, 79, 81, 77, 74, 71, 72, 0, 72, 0].map(n => n ? NOTE(n) : 0);
@@ -1914,7 +2187,7 @@ function updateMannequins(dt){
       q.yaw = Math.atan2(dx, dz); q.moving = true;
     }
     q.f.g.position.copy(q.pos); q.f.g.rotation.y = q.yaw;
-    if (q.moving){ q.stepT -= dt; if (q.stepT <= 0){ q.stepT = R(0.25, 0.5); const v = clamp(1 - q.pos.distanceTo(player.pos) / 12, 0, 1); if (v > 0.02){ SFX.crack(0.25 * v, 0); if (rnd() < 0.4) SFX.thump(0, 0.15 * v); } q.f.head.rotation.z = R(-0.5, 0.5); q.f.armR.rotation.x = -R(0.2, 1.6); } }
+    if (q.moving){ q.stepT -= dt; if (q.stepT <= 0){ q.stepT = R(0.25, 0.5); const v = clamp(1 - q.pos.distanceTo(player.pos) / 14, 0, 1); if (v > 0.02){ const mp = new V3(q.pos.x, A + 1.0, q.pos.z); SFX.crack(0.4, mp); if (rnd() < 0.4) SFX.thump(0, 0.3, mp); if (rnd() < 0.2) SFX.drag(0.4, 0.15, mp); } q.f.head.rotation.z = R(-0.5, 0.5); q.f.armR.rotation.x = -R(0.2, 1.6); } }
   }
 }
 function mannequinGrab(q, a){
@@ -2011,7 +2284,7 @@ const RIDE_EV = [
   [48.6, () => { ELEVEN.forEach(f => { f.head.rotation.y = 0; }); for (let i = 0; i < 8; i++) SFX.crack(0.35, R(-1, 1)); SFX.bell(); }],
   [RIDE_END, () => rideEnd()]
 ];
-function sermon(i){ rideVoice('«' + SERMON[i] + '»', 2.4); SFX.mutter(2.1, 0.28, scenePan(15.4, 38.9)); ride.talk = 2.2; }
+function sermon(i){ rideVoice('«' + SERMON[i] + '»', 2.4); SFX.speaker(2.1, 0.35, new V3(15.4, D + 2.2, 38.9)); ride.talk = 2.2; }
 function showRideE(P, yaw){ E.g.position.copy(P); E.g.rotation.set(0, yaw, 0); E.g.visible = true; enemyPose(false, true); ride.eShown = true; }
 function hideRideE(){ E.g.visible = false; ride.eShown = false; }
 function rideEnd(){
@@ -2058,7 +2331,11 @@ const SPIRITS = [
   { p: [10, B, 6.2], r: 3, t: '«…не стой в круге… он чувствует, кто в круге…»' },
   { p: [16, D, 24.5], r: 4, t: '«…садитесь по трое… четвёртое место всегда занято…»' },
   { p: [10, D, 36.5], r: 4, t: '«…не бери нож… нет… бери… пусть он выйдет…»', c: () => ride.state === 'done' },
-  { p: [-8, Y, 36.5], r: 4, t: '«…через сад… калитка слева… беги…»' }
+  { p: [-8, Y, 36.5], r: 4, t: '«…калитки на цепях… дом зовёт вас обратно…»' },
+  { p: [11, G, 14.2], r: 3, t: '«…сердце на холоде… глаза у сестры… язык в воде… руки наверху… голова в клетке…»', c: () => S.act2 },
+  { p: [16.4, G, 13.5], r: 3, t: '«…слышишь, как стучит?.. он ещё живой там, в банке…»', c: () => S.act2 },
+  { p: [10, U, 6], r: 3, t: '«…не моргай, когда они рядом… они ходят, пока ты не смотришь…»', c: () => S.act2 },
+  { p: [1.5, G, 4], r: 3, t: '«…только целиком… в огонь… тогда двери откроются…»', c: () => S.act2 }
 ].map(s => Object.assign(s, { pos: new V3(...s.p), done: false }));
 function updateRadio(dt){
   const show = S.role === 'medium'; $('radio').hidden = !show; if (!show) return;
@@ -2105,6 +2382,263 @@ function updatePoppers(dt){
   }
 }
 
+/* ================= v6: act II. The house takes you back ================= */
+function startAct2(remote){
+  if (S.act2) return; S.act2 = true;
+  for (const m of ACT2_SHOW) m.visible = true;
+  for (const it of RELICS) if (!it.taken) it.mesh.visible = true;
+  for (const g of chainedGates){ g.mesh.visible = true; solids.push(g.solid); }
+  for (const k of ['red1', 'red2', 'red3', 'red4']) lightGroups[k].on = true;
+  lightGroups.dining.on = true; lightGroups.dining.col.set(0.6, 0.12, 0.06);
+  M.water.uniforms.uTint.value.setHex(0x8a1008);
+  backPlanks.visible = false; const was = NET.applying; NET.applying = true; DOORS.back.locked = false; setDoor(DOORS.back, true, new V3(11, Y, 18), true); NET.applying = was;
+  for (const q of MANNEQ){ q.pos.copy(q.home); q.tpos.copy(q.home); q.yaw = q.homeYaw; }
+  if (!NET.on || NET.host){ hideE(false); S.wanderAt = S.time + 35; }
+  S.checkpoint.set(11, G, 14);
+  SFX.boom(0.9); SFX.whisper(2.5, new V3(11, 1.5, 15), 0.5); setTimeout(() => SFX.sob(0.25, new V3(11, 1.6, 14)), 1800);
+  if (remote) voice('В саду: калитки на цепях. А задняя дверь дома открылась сама.', 4, true);
+  else voice('Калитки на цепях... А задняя дверь дома открылась сама. Он хочет, чтобы мы вернулись.', 5, true);
+  objective('Задняя дверь дома открыта. Вернись в дом.');
+}
+function relicTaken(it, remote, who){
+  S.relics++;
+  const left = RELICS.length - S.relics;
+  objective(left ? `Найди части Эдгара и сожги их в камине гостиной (${S.relics}/${RELICS.length})` : 'Все части у вас. Сожги Эдгара в камине гостиной');
+  if (remote){ voice(who + ' нашёл: ' + it.name.toLowerCase() + '.' + (left ? '' : ' Всё. К камину!'), 3.5, true); return; }
+  note(it.name, it.text);
+  const P = RELIC_SND[it.key].pos;
+  if (!NET.on || NET.host) S.wanderAt = Math.min(S.wanderAt || 1e9, S.time + R(6, 12));
+  if (it.key === 'heart'){ SFX.squelch(0.7, P); SFX.stinger(0.9, P); S.scare = 1; S.flicker = 1.2; if (kitchenBody.g.visible) kitchenBody.swing = 1.2; setTimeout(() => SFX.heart(1.0, around(0.6, true)), 900); }
+  else if (it.key === 'eyes'){ S.horseT = 8; SFX.hum(0.3, around(0.8, true)); S.scare = 0.8; setTimeout(() => { SFX.laugh(0.3, 2.2, around(1.2, true), 5); S.flicker = 0.8; }, 1600); }
+  else if (it.key === 'tongue'){ SFX.squelch(0.8, P); SFX.stinger(1.2, P); S.faceT = 0.5; S.faceMat = M.mface; S.hurt = 0.7; S.shake = 1; S.scare = 1; tubBody.g.visible = true; tubBody.g.rotation.x = -0.25; setTimeout(() => { tubBody.g.visible = false; }, 1400); voice('Под водой меня схватили за руку!', 3, true); }
+  else if (it.key === 'hands'){ lightGroups.attic.on = false; S.blackout = 2.5; SFX.whoosh(1.0, 0.4); setTimeout(() => { lightGroups.attic.on = true; SFX.stinger(1.0); S.scare = 1; for (const q of MANNEQ){ q.yaw = Math.atan2(player.pos.x - q.pos.x, player.pos.z - q.pos.z); } }, 2500); voice('Свет! Где свет?!', 2, true); }
+  else if (it.key === 'head'){ for (const r of robes) r.rotation.y = Math.atan2(camPos.x - r.position.x, camPos.z - r.position.z); SFX.speaker(2.4, 0.4, P); SFX.crunch(0.6, P); S.scare = 1; setTimeout(() => { if (E.mode === 'hidden') showE(10, B - 2.7, 6, 'rise', { riseY: B }); SFX.groan(0.7, new V3(10, B + 1, 6)); }, 1500); voice('Она шевелит губами под нитками...', 3, true); }
+}
+// burning him: the house screams, every door bursts open, the front door too
+function burnEdgar(){
+  if (S.burned) return; S.burned = true; S.escape = true;
+  const h = lightGroups.hearth; h.col.set(1.4, 0.55, 0.15); h.rad = 9; h.amp = 0.5;
+  SFX.boom(1.3); SFX.shriek(0.8, new V3(0.7, 1, 3.8)); SFX.farScream(0.35, new V3(10, 5, 8)); setTimeout(() => SFX.farScream(0.3, new V3(16, -2, 4)), 700); setTimeout(() => SFX.laugh(0.5, 0.6, new V3(10, 2, 8), 12), 1500);
+  S.shake = 2.5; S.flicker = 2.5; S.scare = 1; S.fear = 1;
+  const was = NET.applying; NET.applying = true; DOORS.front.locked = false; for (const d of doors) if (!d.locked) setDoor(d, true, new V3(d.center.x + 0.3, d.center.y, d.center.z + 0.3), true); NET.applying = was;
+  for (const g of LG) if (g.on && g !== h) g.dim = 0.35;
+  S.checkpoint.set(10, G, 3.5);
+  objective('Беги! Парадная дверь открыта, к воротам!');
+  voice('Горит... Дом кричит. Парадная дверь распахнулась. БЕГИ!', 4, true);
+  if (!NET.on || NET.host) setTimeout(() => { hideE(false); showE(10.2, G - 2.7, 9.5, 'rise', { riseY: G }); }, 2200);
+}
+// the pieces of Edgar make their own sounds: a heartbeat in the kitchen, humming upstairs, gurgling in the tub, nails being hammered in the attic, muttering in a cage
+function updateRelicSounds(dt){
+  if (!S.act2 || S.burned) return;
+  for (const it of RELICS){
+    if (it.taken) continue; const r = RELIC_SND[it.key]; r.t -= dt; if (r.t > 0) continue;
+    const d = r.pos.distanceTo(camPos), k = clamp(1 - d / 26, 0, 1); if (k <= 0){ r.t = 2; continue; }
+    if (it.key === 'heart'){ r.t = 1.25; SFX.heart(0.35 + k * 0.5, r.pos); }
+    else if (it.key === 'eyes'){ r.t = R(7, 10); SFX.hum(0.08 + k * 0.12, r.pos); }
+    else if (it.key === 'tongue'){ r.t = R(3, 5); SFX.bubbles(); SFX.squelch(0.1 + k * 0.15, r.pos); if (rnd() < 0.4) SFX.whisper(1.2, r.pos, 0.2 + k * 0.2); }
+    else if (it.key === 'hands'){ r.t = R(2.5, 4.5); SFX.knock(R(2, 4) | 0, 0.25 + k * 0.25, r.pos); }
+    else { r.t = R(4, 6); SFX.speaker(1.6, 0.12 + k * 0.18, r.pos); }
+  }
+}
+// three of the eleven walk the house; they move only while no one is looking at them
+const _pg = new V3();
+function updatePilgrims(dt){
+  if (!S.act2) return;
+  const local = !NET.on || NET.host;
+  const fast = S.escape ? 3.4 : 2.1;
+  for (const q of PILGRIMS){
+    q.f.g.visible = true;
+    if (!local){ const was = q.pos.clone(); q.pos.lerp(q.tpos, Math.min(1, dt * 10)); if (q.pos.distanceTo(q.tpos) > 3) q.pos.copy(q.tpos); q.moving = was.distanceTo(q.pos) > 0.003; }
+    else if (S.cine || ride.state === 'run'){ q.moving = false; }
+    else {
+      q.moving = false; q.cool = Math.max(0, q.cool - dt);
+      const AG = agents().filter(a => !a.cap && !a.seat && a.pos.y < 6.5);
+      _pg.set(q.pos.x, q.pos.y + 1.5, q.pos.z);
+      if (AG.length && q.cool <= 0 && !AG.some(a => seesPoint(a, _pg, 22))){
+        let T = AG[0]; for (const a of AG) if (a.pos.distanceTo(q.pos) + Math.abs(a.pos.y - q.pos.y) * 3 < T.pos.distanceTo(q.pos) + Math.abs(T.pos.y - q.pos.y) * 3) T = a;
+        const hd = Math.hypot(T.pos.x - q.pos.x, T.pos.z - q.pos.z);
+        if (hd < 0.8 && Math.abs(T.pos.y - q.pos.y) < 1.2 && !T.hide){ pilgrimGrab(q, T); }
+        else {
+          let tgt;
+          if (hd < 6 && Math.abs(T.pos.y - q.pos.y) < 0.8 && los(_pg, T.eye)) tgt = T.pos;
+          else { q.pathT -= dt; if (q.pathT <= 0 || !q.path.length){ q.pathT = 0.5; q.path = bfs(nearestNode(q.pos), nearestNode(T.pos)); if (q.path.length > 1 && q.pos.distanceTo(nodes[q.path[0]]) < 0.7) q.path.shift(); } tgt = q.path.length ? nodes[q.path[0]] : q.pos; }
+          const dx = tgt.x - q.pos.x, dz = tgt.z - q.pos.z, dl = Math.hypot(dx, dz);
+          if (dl > 0.02){ const st = Math.min(dl, fast * dt); q.pos.x += dx / dl * st; q.pos.z += dz / dl * st; q.yaw = Math.atan2(dx, dz); q.moving = true; }
+          else if (q.path.length) q.path.shift();
+          if (q.path.length && tgt === nodes[q.path[0]] && dl < 0.35) q.path.shift();
+          const fh = floorH(q.pos.x, q.pos.z, q.pos.y); if (fh > -90) q.pos.y += (fh - q.pos.y) * Math.min(1, dt * 10);
+          for (const dr of doors) if (!dr.open && !dr.locked && Math.hypot(dr.center.x - q.pos.x, dr.center.z - q.pos.z) < 1.0 && Math.abs(dr.center.y - 1.1 - q.pos.y) < 1) setDoor(dr, true, q.pos, true);
+        }
+      }
+    }
+    q.f.g.position.copy(q.pos); q.f.g.rotation.y = q.yaw;
+    if (q.moving){
+      q.sneaked = true; q.stepT -= dt;
+      if (q.stepT <= 0){ q.stepT = R(0.35, 0.6); const sp = new V3(q.pos.x, q.pos.y + 0.3, q.pos.z); if (sp.distanceTo(camPos) < 18){ SFX.drag(0.45, 0.22, sp); if (rnd() < 0.3) SFX.crack(0.3, sp); } q.f.head.rotation.z = R(-0.6, 0.6); q.f.armR.rotation.x = -R(0.8, 1.8); }
+    }
+    // turning round to find one closer than it was: that is the scare
+    _pg.set(q.pos.x, q.pos.y + 1.5, q.pos.z);
+    const seen = !S.cine && seesPoint({ eye: camPos, fwd: camFwd, light: S.flashOn && S.battery > 0, lamp: S.role === 'medium', nv: S.nv }, _pg, 7);
+    if (seen && !q.wasSeen && q.sneaked){ q.sneaked = false; SFX.stinger(0.8, _pg.clone()); SFX.whoosh(0.2, 0.25); S.scare = Math.max(S.scare, 0.8); S.shake = Math.max(S.shake, 0.4); }
+    q.wasSeen = seen;
+  }
+}
+function pilgrimGrab(q, a){
+  q.cool = 6; const n = houseNode(a.pos, 6, 14); q.pos.copy(nodes[n]); q.tpos.copy(q.pos); q.path = [];
+  if (a.id === 'L') pilgrimGrabbed(); else netSend({ t: 'fx', who: a.id, k: 'pg' });
+}
+function pilgrimGrabbed(){
+  S.wounds++; SFX.stinger(1.3); SFX.shriek(0.45); SFX.squelch(0.7); S.scare = 1; S.hurt = 0.9; S.shake = 1.2; S.faceT = 0.55; S.faceMat = M.cmask;
+  S.battery = Math.max(0.05, S.battery - 0.2);
+  if (S.wounds >= 3){ S.wounds = 0; if (!NET.on){ caught(); return; } captureLocal(); netSend({ t: 'cap', who: NET.me }); return; }
+  voice(S.wounds === 1 ? 'Оно вцепилось в меня... Не отворачивайтесь от них!' : 'Ещё раз — и меня утащат вниз.', 3, true);
+}
+
+/* ================= v6: cutscenes ================= */
+const cine = { shots: null, i: -1, t: 0, shot: null, subI: 0, done: null, cleanup: null, typed: 0 };
+const yawTo = (fx, fz, tx, tz) => Math.atan2(-(tx - fx), -(tz - fz));
+const ease = k => k * k * (3 - 2 * k);
+function camSet(x, y, z, yaw, pitch = 0, roll = 0){ camera.position.set(x, y, z); camera.rotation.set(pitch, yaw, roll); }
+function camLerp(a, b, k){ const e = ease(clamp(k, 0, 1)); let dy = b[3] - a[3]; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); camSet(a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e, a[2] + (b[2] - a[2]) * e, a[3] + dy * e, (a[4] || 0) + ((b[4] || 0) - (a[4] || 0)) * e); }
+function playCine(shots, cleanup, done){
+  S.cine = true; cine.shots = shots; cine.i = -1; cine.cleanup = cleanup; cine.done = done;
+  $('cine').hidden = false; $('hud').hidden = true; $('touch').hidden = true; cineSub(null);
+  nextShot();
+}
+function nextShot(){
+  const c = cine; if (c.shot && c.shot.exit) c.shot.exit();
+  c.i++; c.t = 0; c.subI = 0; c.typed = 0; c.shot = c.shots[c.i];
+  if (!c.shot){ endCine(); return; }
+  const card = $('card'); card.className = c.shot.big ? 'big' : ''; card.textContent = ''; card.style.opacity = c.shot.card !== undefined ? 1 : 0;
+  $('cineTag').textContent = c.shot.tag || ''; cineSub(null);
+  if (c.shot.enter) c.shot.enter();
+}
+function endCine(){
+  const c = cine; if (!S.cine) return;
+  if (c.shot && c.shot.exit && c.i < c.shots.length) c.shot.exit();
+  c.shot = null; S.cine = false; $('cine').hidden = true; cineSub(null); $('card').style.opacity = 0;
+  post.material.uniforms.uOld.value = 0; post.material.uniforms.uBlack.value = 0;
+  if (c.cleanup) c.cleanup();
+  const d = c.done; c.done = null; if (d) d();
+}
+function skipCine(){ if (S.cine && cine.shots && cine.shots.skippable !== false) endCine(); }
+function cineSub(text, who, spirit){ const el = $('sub'); if (!text){ el.style.opacity = 0; return; } el.textContent = ''; el.classList.toggle('spirit', !!spirit); if (who){ const b = document.createElement('b'); b.textContent = who; el.appendChild(b); } el.appendChild(document.createTextNode(text)); el.style.opacity = 1; }
+function updateCine(dt){
+  const c = cine, sh = c.shot; if (!sh) return;
+  c.t += dt; const k = Math.min(1, c.t / sh.dur);
+  if (sh.cam) sh.cam(k, c.t, dt);
+  if (sh.card !== undefined){ const n = Math.min(sh.card.length, Math.floor(c.t * (sh.big ? 60 : 30))); if (n > c.typed){ if (/\S/.test(sh.card.slice(c.typed, n)) && !sh.big) noiseHit(0.025, 'highpass', 3800, 0.7, 0.08); c.typed = n; $('card').textContent = sh.card.slice(0, n); } }
+  if (sh.subs) for (; c.subI < sh.subs.length && c.t >= sh.subs[c.subI][0]; c.subI++){ const e = sh.subs[c.subI]; if (e[1] !== undefined) cineSub(e[1], e[2], e[4]); if (e[3]) e[3](); }
+  if (c.t >= sh.dur) nextShot();
+}
+// one frame of a cutscene: the camera is scripted, the world keeps breathing (light, weather, sound), the game logic waits
+function cineFrame(dt){
+  S.time += dt;
+  updateCine(dt); if (!S.cine) return;
+  camera.updateMatrixWorld(); camPos.copy(camera.position); camera.getWorldDirection(camFwd);
+  shared.uFlashI.value = 0; shared.uNV.value = 0; post.material.uniforms.uNV.value = 0; for (const m of nvMarks) m.visible = false;
+  const p = camPos, zn = floorName(p), base = zn === 'подвал' || zn === 'аттракцион', inside = base || zn === 'склеп' || (p.x > 0 && p.x < 20 && p.z > 0 && p.z < 16);
+  shared.uFogFar.value += ((inside ? (base ? 11 : 13) : 22) - shared.uFogFar.value) * Math.min(1, dt * 3);
+  const fv = lightning(dt, inside, base);
+  shared.uPLPos.value[11].set(p.x, p.y + 2, p.z); shared.uPLRad.value[11] = 10; shared.uPLCol.value[11].set(0.2, 0.22, 0.3).multiplyScalar(inside && !base ? fv : 0);
+  rain.uniforms.uCam.value.copy(camPos); rain.uniforms.uTime.value = S.time;
+  assignLights();
+  for (const g of LG){ const f = g.on ? (1 - g.amp + g.amp * (0.6 + 0.4 * Math.sin(S.time * 13 + g.idx) * Math.sin(S.time * 7.3 + g.idx * 2))) * (g.dim === undefined ? 1 : g.dim) : 0; if (g.slot) shared.uPLCol.value[g.slot].copy(g.col).multiplyScalar(f); for (const fl of g.flames) fl.visible = g.on; }
+  M.flame.uniforms.uEmissive.value = 1.3 + Math.sin(S.time * 17) * 0.3;
+  if (AU.ctx){
+    const T0 = AU.ctx.currentTime; setListener();
+    AU.wind.g.gain.setTargetAtTime(inside ? (base ? 0.01 : 0.04) : 0.16, T0, 0.6); AU.rain.g.gain.setTargetAtTime(inside ? (base ? 0.003 : 0.025) : 0.09, T0, 0.6); AU.rainLow.g.gain.setTargetAtTime(inside ? (base ? 0.02 : 0.06) : 0.15, T0, 0.6);
+    AU.chant.gain.setTargetAtTime(cine.chant || 0, T0, 1.0); AU.drone.gain.setTargetAtTime(0.04 + (cine.dread || 0) * 0.08, T0, 0.5); AU.droneF.frequency.setTargetAtTime(240 + (cine.dread || 0) * 800, T0, 0.5);
+    AU.verb.gain.setTargetAtTime(inside ? (base ? 0.6 : 0.34) : 0.12, T0, 0.8); AU.sub.gain.setTargetAtTime((cine.dread || 0) * 0.1, T0, 0.6); AU.static.g.gain.setTargetAtTime(cine.static || 0, T0, 0.05); AU.tin.gain.setTargetAtTime(0, T0, 0.2);
+    AU.houseBreath.g.gain.setTargetAtTime(inside ? 0.06 : 0, T0, 1); AU.radio.g.gain.setTargetAtTime(0, T0, 0.1); AU.cart.g.gain.setTargetAtTime(0, T0, 0.1);
+  }
+  for (const d of doors){ d.ang += (d.target - d.ang) * Math.min(1, dt * d.speed); d.pivot.rotation.y = d.ang; }
+  updateAnims(dt);
+  updateRemote(dt); for (const r of mates()) r.av.g.visible = false; for (let i = 0; i < 2; i++) shared.uRI.value[i] = 0;
+  netTick(dt);
+  if (S.voiceT > 0){ S.voiceT -= dt; if (S.voiceT <= 0) $('voice').style.opacity = 0; }
+}
+// ----- the opening: the last service in 1979, then the street tonight -----
+const INTRO = [
+  { card: 'ИСТ-КЛИВЛЕНД, ОГАЙО\n21 ДЕКАБРЯ 1979 ГОДА\nПОСЛЕДНЯЯ СЛУЖБА ЦЕРКВИ УТРЕННЕЙ ЗВЕЗДЫ', dur: 5.2 },
+  { tag: '▶ ПЛЁНКА 8 ММ · 21.12.1979', dur: 14,
+    enter(){ post.material.uniforms.uOld.value = 1; for (const k of ['rhall', 'rpulpit']){ lightGroups[k].on = true; lightGroups[k].dim = 1.6; } ELEVEN.forEach(f => { f.head.rotation.set(0.5, 0, 0); }); cine.chant = 0.07; cine.dread = 0.3; },
+    cam(k, t){ const pr = [15.4, D + 2.0, 38.9];
+      if (t < 9.2) camLerp([13.4, D + 1.65, 36.5, Math.PI / 2, -0.12], [11.7, D + 1.6, 36.5, Math.PI / 2, -0.18], t / 9.2);
+      else camLerp([11.7, D + 1.6, 36.5, Math.PI / 2, -0.18], [11.7, D + 1.6, 36.5, yawTo(11.7, 36.5, pr[0], pr[2]), 0.02], (t - 9.2) / 1.2);
+      camera.rotation.z = Math.sin(t * 0.9) * 0.015; camera.position.y += Math.sin(t * 1.7) * 0.01; },
+    subs: [
+      [0.6, '«Страх — это молитва. Крик — это хлеб Его».', 'Эдгар Холлоуэй', () => SFX.speaker(2.4, 0.35, new V3(15.4, D + 2.2, 38.9))],
+      [4.0, '«Сегодня нас одиннадцать. Двенадцатый придёт сам. Он всегда приходит сам».', 'Эдгар Холлоуэй', () => SFX.speaker(3.0, 0.35, new V3(15.4, D + 2.2, 38.9))],
+      [7.8, '«Возьмите друг друга за руки. И не оглядывайтесь».', 'Эдгар Холлоуэй', () => SFX.speaker(2.2, 0.35, new V3(15.4, D + 2.2, 38.9))],
+      [10.4, null, null, () => { preacher.head.rotation.y = -1.0; SFX.crunch(0.5, new V3(15.4, D + 2.2, 38.9)); cine.dread = 0.8; }],
+      [11.6, null, null, () => { ELEVEN.forEach(f => { const a = Math.atan2(camPos.x - f.g.position.x, camPos.z - f.g.position.z) - f.g.rotation.y; f.head.rotation.set(0, Math.atan2(Math.sin(a), Math.cos(a)), 0); }); SFX.crunch(0.8, new V3(8.5, D + 1.5, 36.5)); SFX.stinger(1.4); SFX.shriek(0.6, new V3(8.5, D + 1.5, 36.5)); for (const k of ['rhall', 'rpulpit']) lightGroups[k].on = false; }],
+      [12.4, null, null, () => { cine.static = 0.18; SFX.boom(1.2); post.material.uniforms.uBlack.value = 0.9; }]
+    ],
+    exit(){ post.material.uniforms.uOld.value = 0; post.material.uniforms.uBlack.value = 0; cine.static = 0; cine.chant = 0; ELEVEN.forEach(f => f.head.rotation.set(0, 0, 0)); preacher.head.rotation.y = 0; for (const k of ['rhall', 'rpulpit']){ lightGroups[k].on = S.power; lightGroups[k].dim = undefined; } } },
+  { card: 'СОРОК СЕМЬ ЛЕТ СПУСТЯ\n8 ОКТЯБРЯ 2026 · 02:41\nЮКЛИД-АВЕНЮ, 1417', dur: 4.6, enter(){ cine.dread = 0.2; } },
+  { tag: '● REC', dur: 10,
+    cam(k){ camLerp([-1.8, Y + 1.8, -17.2, yawTo(-1.8, -17.2, 10, 6), 0.1], [8.2, Y + 1.6, -13.4, yawTo(8.2, -13.4, 10, 6), 0.16], k); },
+    subs: [
+      [0.8, 'Адрес пришёл в письме без обратного адреса. Внутри была кассета и записка: «Вас ждут».', 'Голос за кадром'],
+      [5.2, 'На кассете этот дом. Снято изнутри. И дата на плёнке сегодняшняя.', 'Голос за кадром'],
+      [9.4, null]
+    ] },
+  { tag: '● REC', dur: 7.5,
+    cam(k, t){ camSet(10, Y + 1.6, -8.4, Math.PI, 0.06 + t * 0.004); },
+    subs: [
+      [2.2, undefined, null, () => { S.flash = 1; S.thunderQ.push(S.time + 0.5); doorFig.g.visible = true; }],
+      [2.9, undefined, null, () => { doorFig.g.visible = false; }],
+      [3.6, 'Ты видел? В дверях кто-то стоял.', 'Голос за кадром', () => { cine.dread = 0.5; }],
+      [5.4, 'Там никого нет. Пошли, пока я не передумал.', 'Голос за кадром']
+    ],
+    exit(){ doorFig.g.visible = false; } },
+  { tag: '● REC', dur: 6.5,
+    cam(k){ camLerp([10, Y + 1.6, -6.5, Math.PI, 0.05], [10, G + 1.55, -1.4, Math.PI, 0.02], k); },
+    subs: [
+      [2.6, '«…двенадцать…»', null, () => SFX.whisper(2.0, around(0.7, true), 0.55), true],
+      [4.4, undefined, null, () => { SFX.creak(1.4, 0, 1); setDoor(DOORS.front, true, null); DOORS.front.target = 1.75; }],
+      [5.6, null]
+    ] },
+  { card: 'ДОМ 1417', big: true, dur: 2.6, enter(){ SFX.boom(1.0); SFX.stinger(0.8); cine.dread = 0; } }
+];
+// ----- the ending: twelve windows, the tape that was found, the supper of the twelfth -----
+const ENDING = [
+  { tag: '● REC', dur: 11.5,
+    enter(){ van.visible = false; vanLights(false); cine.dread = 0.3; },
+    cam(k, t){ camSet(10, Y + 1.5, -12.6 + t * 0.06, Math.PI, 0.2 + t * 0.004); },
+    subs: [
+      ...WIN12.map((m, i) => [1.0 + i * 0.72, undefined, null, () => { m.visible = true; SFX.note(NOTE(40 + (i % 3)), 0.15, 'sine', 1.2); SFX.crack(0.25, new V3(m.position.x, m.position.y, m.position.z)); if (i === 11){ SFX.stinger(1.2); SFX.boom(0.8); cine.dread = 0.9; } }]),
+      [0.4, 'Фургона нет. Мы оставили его здесь, с включёнными фарами.', 'Голос за кадром'],
+      [5.0, 'Сколько их в окнах? Восемь... десять...', 'Голос за кадром'],
+      [9.6, 'Двенадцать. У двенадцатого в руках камера.', 'Голос за кадром']
+    ] },
+  { card: 'ПЛЁНКУ НАШЛИ 14 ОКТЯБРЯ\nНА ОБОЧИНЕ ЮКЛИД-АВЕНЮ.\nФУРГОН ТАК И НЕ НАШЛИ.', dur: 6.2, enter(){ cine.dread = 0.4; } },
+  { tag: '▶ ПОСЛЕДНИЕ 40 СЕКУНД ЗАПИСИ', dur: 14,
+    enter(){ post.material.uniforms.uOld.value = 0.45; SUPPER.forEach(f => { f.g.visible = true; f.head.rotation.set(0.3, 0, 0); }); supperCam.visible = true; lightGroups.dining.on = true; lightGroups.dining.col.set(0.7, 0.4, 0.16); lightGroups.dining.dim = 1.3; cine.dread = 0.4; cine.chant = 0.03; },
+    cam(k, t){
+      if (t < 6) camLerp([6.3, G + 1.6, 8.0, yawTo(6.3, 8.0, 3.5, 13), -0.05], [6.3, G + 1.6, 14.6, yawTo(6.3, 14.6, 3.5, 12), -0.1], t / 6);
+      else if (t < 9.5) camLerp([6.3, G + 1.6, 14.6, yawTo(6.3, 14.6, 3.5, 12), -0.1], [3.5, G + 1.55, 15.35, 0, -0.18], (t - 6) / 3.5);
+      else camLerp([3.5, G + 1.55, 15.35, 0, -0.18], [3.5, G + 1.12, 15.35, 0, -0.1], (t - 9.5) / 1.2); },
+    subs: [
+      [1.0, 'Стол накрыт на двенадцать.', 'Голос за кадром'],
+      [5.0, null, null, () => { SUPPER.forEach(f => { const a = Math.atan2(camPos.x - f.g.position.x, camPos.z - f.g.position.z) - f.g.rotation.y; f.head.rotation.set(0, clamp(Math.atan2(Math.sin(a), Math.cos(a)), -1.4, 1.4), 0); }); SFX.crunch(0.7, new V3(3.5, 1.6, 11.7)); SFX.stinger(1.0); cine.dread = 0.8; }],
+      [9.6, undefined, null, () => { SFX.creak(0.8, 0, 0.8); }],
+      [10.8, '«Добро пожаловать домой».', 'Эдгар Холлоуэй', () => { SFX.speaker(2.0, 0.4, new V3(3.5, 2.4, 11.7)); }],
+      [12.2, undefined, null, () => { SFX.ring(1); }],
+      [13.2, null, null, () => { cine.static = 0.2; SFX.boom(1.0); post.material.uniforms.uBlack.value = 1; }]
+    ],
+    exit(){ post.material.uniforms.uOld.value = 0; cine.static = 0; } },
+  { card: 'ЧЕРЕЗ НЕДЕЛЮ В ПОЧТОВЫЙ ЯЩИК\nДОМА НА СОСЕДНЕЙ УЛИЦЕ\nКТО-ТО ПОЛОЖИЛ КАССЕТУ.\n\nБЕЗ ОБРАТНОГО АДРЕСА.', dur: 7.5, enter(){ cine.dread = 0.2; } }
+];
+INTRO.skippable = true; ENDING.skippable = true;
+function introCleanup(){ doorFig.g.visible = false; ELEVEN.forEach(f => f.head.rotation.set(0, 0, 0)); preacher.head.rotation.y = 0; for (const k of ['rhall', 'rpulpit']){ lightGroups[k].on = S.power; lightGroups[k].dim = undefined; } setDoor(DOORS.front, true, null); DOORS.front.target = 1.4; }
+function winGame(){
+  if (S.ending) return; S.ending = true;
+  try { document.exitPointerLock && document.exitPointerLock(); } catch (e){}
+  hideE(false); for (const q of PILGRIMS) q.f.g.visible = false;
+  playCine(ENDING, () => { for (const m of WIN12) m.visible = false; SUPPER.forEach(f => f.g.visible = false); supperCam.visible = false; }, () => endGame(true));
+}
 /* ================= interaction ================= */
 let focus = null;
 function findFocus(){
@@ -2126,6 +2660,7 @@ function takeItem(it){
   it.taken = true; it.mesh.visible = false; if (!remote) SFX.pickup();
   if (it.kind === 'battery'){ if (remote) return; S.battery = 1; if (S.role === 'cam') S.nv = true; else if (S.role === 'medium') S.radio = true; else S.flashOn = true; note('Батарейки', 'Свежие. ' + GEAR[S.role] + ' снова работает в полную силу.'); return; }
   if (it.kind === 'tool'){ S.hasHandle = true; if (remote) voice(who + ' нашёл ручку рубильника.', 3, true); else note(it.name, 'Тяжёлая эбонитовая ручка. На ней выцарапано: «ПОЕХАЛИ».'); objective('Включи ток: щиток в задней комнате подвала'); return; }
+  if (it.kind === 'relic'){ relicTaken(it, remote, who); return; }
   S.finds++; if (remote) voice(who + ' нашёл: ' + it.name.toLowerCase() + '.', 3, true); else note(it.name, it.text);
   if (it.onTake) it.onTake();
   if (S.finds === FINDS_TOTAL - 1 && !S.final) objective('Последняя улика — в конце аттракциона');
@@ -2197,10 +2732,11 @@ function zoneEvents(p, dt){
   if (!F.base && p.y < -1.5 && p.z < 16){ F.base = 1; voice('Господи... Здесь они и молились.', 4); if (!S.power) objective('Осмотри подвал: на алтаре что-то лежит'); }
   if (!F.attic && p.y > 6.9){ F.attic = 1; voice('Мастерская Холлоуэя. Манекены... Не своди с них глаз. Только не в темноте.', 5); if (!S.hasHandle) objective('Найди на чердаке ручку рубильника'); }
   if (!F.station && p.z > 21.5 && p.y < -5){ F.station = 1; voice('Это аттракцион. Прямо под садом. И он работает.', 4); objective(NET.on ? 'Садитесь в вагонетку все вместе' : 'Садись в вагонетку'); SFX.laugh(0.4, 0.85, scenePan(19.2, 26.2), 8); }
-  if (S.final && !F.outCrypt && p.z < 33.6 && p.x < -3 && p.z > 20){ F.outCrypt = 1; objective('К воротам! Через калитку слева от дома'); voice('Сад... Калитка слева от дома, потом к воротам!', 3.5); }
+  if (S.final && !S.act2 && p.z < 33.6 && p.x < -3 && p.z > 20 && p.y > Y - 0.3){ startAct2(false); netSend({ t: 'act2' }); }
+  if (S.act2 && !F.act2in && p.x > 0 && p.x < 20 && p.z > 0 && p.z < 16 && p.y > -0.5 && p.y < 3){ F.act2in = 1; SFX.heart(1.0, new V3(16.4, 1, 15.3)); voice('Всё в крови... Слышите? Сердце. Оно бьётся где-то в доме.', 4.5, true); objective(`Найди части Эдгара и сожги их в камине гостиной (${S.relics}/${RELICS.length})`); }
   if (!F.nurs && p.x < 7 && p.z > 8 && p.y > 3){ F.nurs = 1; S.horseT = 6; }
-  if (S.final && p.z < -8.6 && !S.over && !S.captured){
-    if (!NET.on || mates().every(r => r.pos.z < -8.6)) endGame(true);
+  if (S.escape && p.z < -8.6 && !S.over && !S.captured && !S.ending){
+    if (!NET.on || mates().every(r => r.pos.z < -8.6)) winGame();
     else if (!S.out){ S.out = true; voice(mates().length > 1 ? 'Я снаружи. Где вы? Быстрее!' : 'Я снаружи. Где ты? Выходи!', 3); objective('Дождись остальных у ворот'); }
   }
 }
@@ -2370,7 +2906,7 @@ function updateEnemy(dt){
       if ((spotted || hears) && (!best || pd < best.pd)) best = { a, pd, spotted };
     }
     if (best){
-      if (E.mode !== 'hunt'){ if (dist < 16) SFX.groan(0.5, 0); scareFor(best.a, 0.7); }
+      if (E.mode !== 'hunt') scareFor(best.a, 0.7);
       E.mode = 'hunt'; E.lostT = 0; E.wanderT = 0; E.tgt = best.a.id;
       // sight gives an exact position; a sound only gives a rough direction
       E.lastKnown = best.spotted ? best.a.pos.clone() : best.a.pos.clone().add(new V3(R(-1.8, 1.8), 0, R(-1.8, 1.8)));
@@ -2409,10 +2945,13 @@ function enemyFx(dt, moving, frozen, dist, dirE){
     enemyPose(moving, frozen);
     for (const m of [M.flesh, M.ribs, M.eface]) m.uniforms.uWarp.value = frozen ? 0.07 : 0.03;
   }
-  E.sndT -= dt; const pan = clamp(dirE.dot(new V3(Math.cos(camera.rotation.y), 0, -Math.sin(camera.rotation.y))), -1, 1); const vol = clamp(1 - dist / 16, 0, 1);
-  if (E.sndT <= 0 && vol > 0){ E.sndT = moving ? R(0.15, 0.5) : R(0.6, 1.6); SFX.crack(0.35 * vol, pan); if (moving && rnd() < 0.5) SFX.thump(0, 0.35 * vol, pan); if (rnd() < 0.05) SFX.groan(0.3 * vol, pan); }
+  // its sounds sit where it is: cracking joints, heavy steps, the rattle in its throat, a shriek when it starts hunting
+  E.sndT -= dt; const vol = clamp(1 - dist / 24, 0, 1); const ep = new V3(E.pos.x, E.pos.y + 1.4, E.pos.z);
+  if (E.mode === 'hunt' && E.prevMode !== 'hunt' && E.g.visible && dist < 22){ SFX.shriek(0.5, ep); S.scare = Math.max(S.scare, 0.6); }
+  E.prevMode = E.mode;
+  if (E.sndT <= 0 && vol > 0){ E.sndT = moving ? R(0.18, 0.45) : R(0.6, 1.5); SFX.crack(0.5 * vol, ep); if (moving && rnd() < 0.6) SFX.thump(0, 0.55 * vol, ep); if (rnd() < (E.mode === 'hunt' ? 0.22 : 0.1)) SFX.croak(R(0.8, 1.8), 0.3 * vol + 0.06, ep); if (rnd() < 0.04) SFX.groan(0.35 * vol, ep); }
   S.heartT -= dt; const near = clamp(1 - dist / 12, 0, 1);
-  if ((E.mode === 'hunt' || E.mode === 'wander') && S.heartT <= 0 && near > 0){ SFX.heart(0.2 + near * 0.6); S.heartT = 1.3 - near * 0.8; }
+  if ((E.mode === 'hunt' || E.mode === 'wander') && S.heartT <= 0 && near > 0){ SFX.heart(0.25 + near * 0.7); S.heartT = 1.2 - near * 0.8; }
   if (E.mode !== 'appear' && E.mode !== 'crawl') S.fear = Math.max(S.fear, near * (E.mode === 'hunt' ? 1 : 0.6));
   if (near > 0.45 && rnd() < near * 0.08) S.flicker = Math.max(S.flicker, 0.12);
 }
@@ -2428,7 +2967,7 @@ const LOST_TEXT = () => mates().length > 1 ? 'Круг замкнулся. На 
 function jumpscare(){
   const f = camFwd.clone().setY(0).normalize();
   E.g.position.copy(camPos).add(f.multiplyScalar(0.8)); E.g.position.y = camPos.y - 2.4; E.g.rotation.set(0, Math.atan2(camPos.x - E.g.position.x, camPos.z - E.g.position.z), 0); E.g.visible = true; enemyPose(false, true);
-  SFX.stinger(1.6); SFX.groan(0.9, 0); S.hurt = 1; S.fear = 1;
+  SFX.stinger(1.6); SFX.shriek(0.9); SFX.boom(1.1); S.hurt = 1; S.fear = 1; S.shake = 1.2;
 }
 function caught(){ jumpscare(); endGame(false); }
 const CAPTURE_TIME = 60;
@@ -2472,7 +3011,8 @@ function frame(now){
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   const active = S.started && (!S.paused || NET.on) && !S.over;
   shared.uTime.value = now / 1000;
-  if (active){
+  if (active && S.cine) cineFrame(dt);
+  else if (active){
     S.time += dt;
     updatePlayer(dt);
     if (S.shake > 0){ camera.rotation.x += (rnd() - 0.5) * S.shake * 0.07; camera.rotation.z += (rnd() - 0.5) * S.shake * 0.09; S.shake = Math.max(0, S.shake - dt * 1.6); }
@@ -2482,7 +3022,7 @@ function frame(now){
     shared.uFlashPos.value.copy(camPos).add(_tmp.set(Math.cos(camera.rotation.y), 0, -Math.sin(camera.rotation.y)).multiplyScalar(0.12)); shared.uFlashPos.value.y -= S.role === 'medium' ? 0.75 : 0.12;
     shared.uFlashDir.value.copy(flashDir);
     if ((S.flashOn || S.nv || S.radio) && S.battery > 0){ S.battery = Math.max(0, S.battery - dt / 200); if (S.battery === 0){ S.flashOn = false; S.nv = false; S.radio = false; voice(GEAR[S.role] + ' сел. Где-то были батарейки.', 3); } }
-    shared.uNV.value = S.nv ? 1 : 0; post.material.uniforms.uNV.value = S.nv ? 1 : 0; for (const m of nvMarks) m.visible = S.nv; M.eface.uniforms.uEmissive.value = S.nv ? 0.6 : 0;
+    shared.uNV.value = S.nv ? 1 : 0; post.material.uniforms.uNV.value = S.nv ? 1 : 0; for (const m of nvMarks) m.visible = S.nv && (!m.act2 || S.act2); M.eface.uniforms.uEmissive.value = S.nv ? 0.6 : 0;
     let fi = S.role === 'medium' ? ((S.hiding || S.captured) ? 0 : 0.85) : (S.flashOn ? 2.3 * (0.55 + 0.45 * Math.min(1, S.battery * 3)) : 0);
     if (S.blackout > 0){ fi = 0; S.blackout = Math.max(0, S.blackout - dt); }
     if (S.flashOn && (S.flicker > 0 || (S.battery < 0.2 && rnd() < 0.04))) fi *= rnd() < 0.5 ? 0.06 : 1;
@@ -2505,6 +3045,14 @@ function frame(now){
       AU.chant.gain.setTargetAtTime(base && !S.final ? 0.05 : (S.final ? 0.02 : 0), T0, 1.5);
       AU.drone.gain.setTargetAtTime(0.03 + S.fear * 0.08, T0, 0.5); AU.droneF.frequency.setTargetAtTime(220 + S.fear * 900, T0, 0.5);
       AU.static.g.gain.setTargetAtTime(S.fear > 0.5 ? (S.fear - 0.5) * 0.08 : 0, T0, 0.1);
+      setListener();
+      AU.verb.gain.setTargetAtTime(inside ? (base ? 0.6 : 0.34) : 0.12, T0, 0.8);
+      AU.houseBreath.g.gain.setTargetAtTime(inside ? (S.act2 ? 0.1 : 0.06) : 0.0, T0, 1.0);
+      AU.sub.gain.setTargetAtTime(S.fear * 0.11 + (base ? 0.025 : 0) + (S.act2 ? 0.02 : 0), T0, 0.6);
+      AU.tin.gain.setTargetAtTime(S.fear > 0.75 ? (S.fear - 0.75) * 0.018 : 0, T0, 0.4);
+      S.ambT -= dt; if (S.ambT <= 0 && S.flags.foyer){ S.ambT = S.act2 ? R(9, 18) : R(14, 30); ambientEvent(zn, inside, base); }
+      if (S.fear > 0.5){ S.pantT -= dt; if (S.pantT <= 0){ S.pantT = 1.15 - S.fear * 0.3; SFX.pant(0.04 + S.fear * 0.08); } }
+      updateRelicSounds(dt);
       S.creakT -= dt; if (S.creakT <= 0 && inside){ SFX.creak(R(0.6, 1.6), R(-.8, .8), 0.8); S.creakT = R(6, 15); }
       if (base){ S.dripT -= dt; if (S.dripT <= 0){ SFX.drip(); S.dripT = R(0.8, 3.5); } }
       if (S.flags.foyer){ S.whisperT -= dt; if (S.whisperT <= 0){ SFX.whisper(R(1.2, 2.4), R(-1, 1), 0.22 + S.fear * 0.2); S.whisperT = R(18, 40); } }
@@ -2523,8 +3071,8 @@ function frame(now){
     for (const it of items) if (!it.taken) it.m.uniforms.uEmissive.value = S.nv ? 0.5 + pulse * 3 : pulse;
     S.fear = Math.max(0, S.fear - dt * 0.6);
     zoneEvents(p, dt);
-    updateRide(dt); updateMannequins(dt); updateRadio(dt); updatePoppers(dt); updateAnims(dt); updateCalliope(dt); updateFallDoll(dt);
-    if (S.faceT > 0){ S.faceT -= dt; scareFace.visible = true; scareFace.position.copy(camPos).addScaledVector(camFwd, 0.42); scareFace.position.y += 0.18; scareFace.rotation.set((rnd() - 0.5) * 0.2, Math.atan2(camPos.x - scareFace.position.x, camPos.z - scareFace.position.z), (rnd() - 0.5) * 0.3); } else scareFace.visible = false;
+    updateRide(dt); updateMannequins(dt); updatePilgrims(dt); updateRadio(dt); updatePoppers(dt); updateAnims(dt); updateCalliope(dt); updateFallDoll(dt);
+    if (S.faceT > 0){ S.faceT -= dt; scareFace.visible = true; scareFace.children[1].material = S.faceMat || M.mface; scareFace.position.copy(camPos).addScaledVector(camFwd, 0.42); scareFace.position.y += 0.18; scareFace.rotation.set((rnd() - 0.5) * 0.2, Math.atan2(camPos.x - scareFace.position.x, camPos.z - scareFace.position.z), (rnd() - 0.5) * 0.3); } else scareFace.visible = false;
     updateRemote(dt);
     updateCaptured(dt);
     updateEnemy(dt);
@@ -2553,7 +3101,8 @@ function frame(now){
 }
 requestAnimationFrame(frame);
 window.__dom1417 = { netSend, shared, NET, PEERS, mates, agents, capture, HIDES, S, player, items, E, DOORS, startFinal, showE, inter, nodes, nodeIds, bfs, solids, takeItem, keys, updatePlayer, updateEnemy, floorH,
-  ride, cart, MANNEQ, powerOn, openHatch, sitDown, rideStart, rideLever, lightGroups, floors, TRACK_S, camPos, focusLabel: () => $('hint').textContent };
+  ride, cart, MANNEQ, powerOn, openHatch, sitDown, rideStart, rideLever, lightGroups, floors, TRACK_S, camPos, focusLabel: () => $('hint').textContent,
+  startAct2, burnEdgar, RELICS, PILGRIMS, winGame, skipCine, cine, ambientEvent, SFX, AU };
 })();
 </script>
 </body></html>
