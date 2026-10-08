@@ -151,6 +151,7 @@ label.sl input{accent-color:var(--tape);width:140px}
       </div>
       <div class="code" id="roomCode" hidden></div>
       <div class="status" id="netStatus"></div>
+      <div class="small" id="netDiag"></div>
       <div class="row"><button class="go" id="startCoop" type="button" hidden><i></i>Начать вдвоём</button></div>
     </div>
     <div class="small">Играть в наушниках. Голос — через Discord или телефон. Прототип: двор, два этажа, подвал.</div>
@@ -1206,6 +1207,15 @@ function respawn(fromNet){
 // both players join the same room on all three public signalling networks at once; whichever finds the partner first carries the game
 const E_MODES = ['hidden', 'appear', 'crawl', 'rise', 'wander', 'hunt'];
 const APP_ID = 'dom1417-holloway-mansion';
+// fixed lists, so both players are guaranteed to meet on the same servers
+const RELAYS = {
+  nostr: ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.primal.net', 'wss://nostr.mom', 'wss://relay.nostr.band', 'wss://offchain.pub'],
+  torrent: ['wss://tracker.webtorrent.dev', 'wss://tracker.openwebtorrent.com', 'wss://tracker.btorrent.xyz', 'wss://tracker.files.fm:7073/announce'],
+  mqtt: ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt']
+};
+const NET_NAMES = { nostr: 'Nostr', torrent: 'торренты', mqtt: 'MQTT' };
+// public best-effort TURN relay for networks that block direct connections
+const TURN = [{ urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' }];
 function netStatus(t){ $('netStatus').textContent = t; }
 function myRole(){ const r = document.querySelector('input[name=role]:checked'); return r ? r.value : 'cam'; }
 function relayUrls(kind){
@@ -1228,8 +1238,9 @@ function joinAll(code){
   for (const kind of ['nostr', 'torrent', 'mqtt']){
     const urls = relayUrls(kind); if (urls === false) continue;
     try {
-      const cfg = { appId: APP_ID, relayConfig: urls ? { urls } : { redundancy: 4, warnOnRelayFailure: false } };
-      const room = P[kind](cfg, 'room-' + code.toLowerCase());
+      const cfg = { appId: APP_ID, relayConfig: { urls: urls || RELAYS[kind], warnOnRelayFailure: false } };
+      if (!urls) cfg.turnConfig = TURN;
+      const room = P[kind](cfg, 'room-' + code.toLowerCase(), { onJoinError: d => { NET.joinErr = (d && d.error) || 'webrtc'; console.warn('p2p join error', kind, d); } });
       const act = room.makeAction('m');
       const link = { kind, room, peer: null, send: m => act.send(m, { target: link.peer }) };
       room.onPeerJoin = id => {
@@ -1237,13 +1248,34 @@ function joinAll(code){
         NET.partnerId = id; link.peer = id; if (!NET.links.includes(link)) NET.links.push(link); linkUp();
       };
       room.onPeerLeave = id => { if (id !== link.peer) return; link.peer = null; NET.links = NET.links.filter(l => l !== link); if (!NET.links.length) onNetLost(); };
-      act.onMessage = (data, meta) => { if (meta && meta.peerId && meta.peerId !== NET.partnerId) return; onNetMsg(data); };
+      act.onMessage = (data, meta) => {
+        const id = meta && meta.peerId;
+        if (id && !NET.partnerId) room.onPeerJoin(id);   // a message can beat the join event
+        if (id && id !== NET.partnerId) return;
+        if (id && !link.peer){ link.peer = id; if (!NET.links.includes(link)) NET.links.push(link); }
+        onNetMsg(data);
+      };
       NET.rooms.push(room);
     } catch (e){ console.warn('p2p ' + kind, e); }
   }
   if (!NET.rooms.length){ netStatus('Не удалось запустить сетевой модуль.'); lobbyLock(false); return false; }
-  NET.waitT = setTimeout(() => { if (!NET.on) netStatus(NET.host ? 'Пока никого. Код: ' + code + '. Если друг уже ввёл его, а связи нет, сеть может блокировать соединение.' : 'Пока никого с таким кодом. Проверь код; если всё верно, сеть может блокировать соединение.'); }, 25000);
+  NET.waitStart = performance.now(); NET.joinErr = null;
+  clearInterval(NET.diagT); NET.diagT = setInterval(() => lobbyDiag(code), 1000);
   return true;
+}
+// while waiting: how many signalling servers this browser actually reached, and what went wrong
+function lobbyDiag(code){
+  if (NET.on || S.started){ clearInterval(NET.diagT); $('netDiag').textContent = ''; return; }
+  const P = window.P2P, parts = [];
+  for (const k of ['nostr', 'torrent', 'mqtt']){
+    let n = 0, tot = 0;
+    try { const socks = P.sockets[k](); for (const u in socks){ tot++; const w = socks[u]; if (w && (w.readyState === 1 || w.connected)) n++; } } catch (e){}
+    if (relayUrls(k) !== false) parts.push(NET_NAMES[k] + ' ' + n + '/' + (tot || RELAYS[k].length));
+  }
+  $('netDiag').textContent = 'Серверы знакомства: ' + parts.join(' · ');
+  const waited = (performance.now() - NET.waitStart) / 1000;
+  if (NET.joinErr) netStatus('Друг найден, но прямое соединение между вами не проходит: сеть одного из вас блокирует WebRTC. Попробуйте другую сеть (например, раздать интернет с телефона).');
+  else if (waited > 25) netStatus(NET.host ? 'Пока никого. Код: ' + code + '. Проверь, что друг ввёл именно его.' : 'Пока никого с кодом ' + code + '. Проверь код и что создатель комнаты не закрыл страницу.');
 }
 function onNetMsg(m){
   if (!m || typeof m !== 'object') return;
