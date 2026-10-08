@@ -181,7 +181,7 @@ label.sl input{accent-color:var(--tape);width:140px}
 </div>
 
 <script src="three.min.js"></script>
-<script src="peerjs.min.js"></script>
+<script src="p2p.min.js"></script>
 <script>
 (function(){
 'use strict';
@@ -732,9 +732,9 @@ const S = {
   role: 'solo', nv: false, captured: null, out: false
 };
 // co-op: NET is the connection, RP is the partner as last reported over the network
-const NET = { on: false, host: false, conn: null, peer: null, applying: false, sendT: 0, lastRx: 0, ePos: new V3(), eYaw: 0, eFrozen: false, eMoving: false, started: false };
+const NET = { on: false, host: false, links: [], rooms: [], partnerId: null, seq: 0, seen: new Set(), applying: false, sendT: 0, lastRx: 0, ePos: new V3(), eYaw: 0, eFrozen: false, eMoving: false, started: false };
 const RP = { ok: false, pos: new V3(10, Y, -11.5), tpos: new V3(10, Y, -11.5), yaw: Math.PI, pitch: 0, crouch: false, flash: false, nv: false, noise: 0, hide: -1, hideSeen: false, cap: false, role: '', eye: new V3(), fwd: new V3(0, 0, 1), stepAcc: 0 };
-function netSend(m){ if (NET.conn && NET.conn.open) try { NET.conn.send(m); } catch (e){} }
+function netSend(m){ if (!NET.links.length) return; m.q = ++NET.seq; for (const l of NET.links) try { l.send(m); } catch (e){} }
 const player = { pos: new V3(10, Y, -11.5), vy: 0, yaw: Math.PI, pitch: 0, stamina: 1, bob: 0, stepAcc: 0, eye: 1.6 };
 const keys = {};
 const touch = { jx: 0, jy: 0, run: false };
@@ -1202,54 +1202,68 @@ function respawn(fromNet){
   if (!fromNet) requestLock();
 }
 
-/* ================= co-op networking (PeerJS, browser to browser) ================= */
+/* ================= co-op networking (WebRTC via Trystero: Nostr relays, BitTorrent trackers, MQTT brokers) ================= */
+// both players join the same room on all three public signalling networks at once; whichever finds the partner first carries the game
 const E_MODES = ['hidden', 'appear', 'crawl', 'rise', 'wander', 'hunt'];
+const APP_ID = 'dom1417-holloway-mansion';
 function netStatus(t){ $('netStatus').textContent = t; }
 function myRole(){ const r = document.querySelector('input[name=role]:checked'); return r ? r.value : 'cam'; }
-function peerOpts(){
-  const o = { debug: 0 };
-  try { const q = new URLSearchParams(location.search); if (q.get('peerhost')){ o.host = q.get('peerhost'); o.port = +(q.get('peerport') || 9000); o.path = q.get('peerpath') || '/'; o.secure = false; } } catch (e){}
-  return o;
+function relayUrls(kind){
+  // ?tracker=ws://host:port limits signalling to one tracker (local testing)
+  try { const t = new URLSearchParams(location.search).get('tracker'); if (t) return kind === 'torrent' ? [t] : false; } catch (e){}
+  return null;
 }
 function makeCode(){ const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let c = ''; for (let i = 0; i < 5; i++) c += A[Math.floor(Math.random() * A.length)]; return c; }
 function lobbyLock(on){ $('host').disabled = on; $('join').disabled = on; $('joinCode').disabled = on; }
-function netError(e){
-  const t = e && e.type;
-  netStatus(t === 'peer-unavailable' ? 'Комната с таким кодом не найдена.' : t === 'unavailable-id' ? 'Код занят, создай комнату ещё раз.' : t === 'network' || t === 'server-error' || t === 'socket-error' ? 'Нет связи с сервером соединений. Проверь интернет.' : t === 'browser-incompatible' ? 'Браузер не поддерживает WebRTC.' : 'Ошибка соединения' + (t ? ': ' + t : '') + '.');
-  lobbyLock(false);
+function linkUp(){
+  if (NET.on) return;
+  NET.on = true; RP.ok = true; NET.lastRx = performance.now(); clearTimeout(NET.waitT);
+  $('start').hidden = true;
+  if (NET.host){ netStatus('Напарник подключился.'); $('startCoop').hidden = false; }
+  else netStatus('Подключено. Роль выберет создатель комнаты. Ждём, пока он начнёт.');
+  netSend({ t: 'hello', role: myRole() });
 }
-function setupConn(c){
-  NET.conn = c;
-  c.on('open', () => {
-    NET.on = true; RP.ok = true; NET.lastRx = performance.now();
-    $('start').hidden = true;
-    if (NET.host){ netStatus('Напарник подключился.'); $('startCoop').hidden = false; }
-    else netStatus('Подключено. Роль выберет создатель комнаты. Ждём, пока он начнёт.');
-    netSend({ t: 'hello', role: myRole() });
-  });
-  c.on('data', onNet);
-  c.on('close', onNetLost);
-  c.on('error', onNetLost);
+function joinAll(code){
+  const P = window.P2P; NET.rooms = []; NET.links = []; NET.partnerId = null;
+  for (const kind of ['nostr', 'torrent', 'mqtt']){
+    const urls = relayUrls(kind); if (urls === false) continue;
+    try {
+      const cfg = { appId: APP_ID, relayConfig: urls ? { urls } : { redundancy: 4, warnOnRelayFailure: false } };
+      const room = P[kind](cfg, 'room-' + code.toLowerCase());
+      const act = room.makeAction('m');
+      const link = { kind, room, peer: null, send: m => act.send(m, { target: link.peer }) };
+      room.onPeerJoin = id => {
+        if (NET.partnerId && id !== NET.partnerId) return;   // a third player is ignored
+        NET.partnerId = id; link.peer = id; if (!NET.links.includes(link)) NET.links.push(link); linkUp();
+      };
+      room.onPeerLeave = id => { if (id !== link.peer) return; link.peer = null; NET.links = NET.links.filter(l => l !== link); if (!NET.links.length) onNetLost(); };
+      act.onMessage = (data, meta) => { if (meta && meta.peerId && meta.peerId !== NET.partnerId) return; onNetMsg(data); };
+      NET.rooms.push(room);
+    } catch (e){ console.warn('p2p ' + kind, e); }
+  }
+  if (!NET.rooms.length){ netStatus('Не удалось запустить сетевой модуль.'); lobbyLock(false); return false; }
+  NET.waitT = setTimeout(() => { if (!NET.on) netStatus(NET.host ? 'Пока никого. Код: ' + code + '. Если друг уже ввёл его, а связи нет, сеть может блокировать соединение.' : 'Пока никого с таким кодом. Проверь код; если всё верно, сеть может блокировать соединение.'); }, 25000);
+  return true;
+}
+function onNetMsg(m){
+  if (!m || typeof m !== 'object') return;
+  if (m.q){ if (NET.seen.has(m.q)) return; NET.seen.add(m.q); if (NET.seen.size > 600){ const keep = [...NET.seen].slice(-300); NET.seen = new Set(keep); } }
+  onNet(m);
 }
 $('host').addEventListener('click', () => {
-  if (!window.Peer){ netStatus('Не загрузился сетевой модуль (unpkg.com). Открой игру файлом или с itch.io.'); return; }
+  if (!window.P2P){ netStatus('Не загрузился сетевой модуль (p2p.min.js).'); return; }
   initAudio(); lobbyLock(true);
   const code = makeCode(); NET.host = true;
-  netStatus('Создаю комнату…');
-  const peer = NET.peer = new Peer('dom1417-' + code.toLowerCase(), peerOpts());
-  peer.on('open', () => { $('roomCode').hidden = false; $('roomCode').textContent = code; netStatus('Передай код другу. Ждём напарника…'); });
-  peer.on('connection', c => { if (NET.conn && NET.conn.open){ c.on('open', () => c.close()); return; } setupConn(c); });
-  peer.on('error', netError);
+  if (!joinAll(code)) return;
+  $('roomCode').hidden = false; $('roomCode').textContent = code;
+  netStatus('Передай код другу. Ждём напарника…');
 });
 $('join').addEventListener('click', () => {
   const code = $('joinCode').value.trim().toUpperCase();
-  if (code.length !== 5){ netStatus('Код — пять букв.'); return; }
-  if (!window.Peer){ netStatus('Не загрузился сетевой модуль (unpkg.com). Открой игру файлом или с itch.io.'); return; }
+  if (!/^[A-Z]{5}$/.test(code)){ netStatus('Код — пять латинских букв.'); return; }
+  if (!window.P2P){ netStatus('Не загрузился сетевой модуль (p2p.min.js).'); return; }
   initAudio(); lobbyLock(true); NET.host = false;
-  netStatus('Подключаюсь…');
-  const peer = NET.peer = new Peer(peerOpts());
-  peer.on('open', () => setupConn(peer.connect('dom1417-' + code.toLowerCase(), { reliable: true, serialization: 'json' })));
-  peer.on('error', netError);
+  if (joinAll(code)) netStatus('Ищу комнату ' + code + '…');
 });
 $('startCoop').addEventListener('click', () => {
   const role = myRole();
@@ -1258,6 +1272,8 @@ $('startCoop').addEventListener('click', () => {
 });
 function onNetLost(){
   if (!NET.on) return;
+  for (const r of NET.rooms) try { r.leave(); } catch (e){}
+  NET.rooms = []; NET.links = [];
   NET.on = false; RP.ok = false; avatar.visible = false; shared.uFlash2I.value = 0; $('mate').hidden = true;
   if (S.captured) freeLocal();
   RP.cap = false;
@@ -1266,7 +1282,6 @@ function onNetLost(){
 }
 function onNet(m){
   NET.lastRx = performance.now();
-  if (!m || typeof m !== 'object') return;
   switch (m.t){
     case 'hello': RP.role = m.role; if (NET.host && m.role === myRole()){ /* the guest takes whichever role is left */ } break;
     case 'start': if (!S.started) beginGame(m.role === 'light' ? 'light' : 'cam', true); break;
@@ -1749,7 +1764,7 @@ function frame(now){
   renderer.setRenderTarget(null); post.material.uniforms.tDiffuse.value = rt.texture; renderer.render(postScene, postCam);
 }
 requestAnimationFrame(frame);
-window.__dom1417 = { shared, NET, RP, agents, capture, HIDES, avatar, S, player, items, E, DOORS, startFinal, showE, inter, nodes, nodeIds, bfs, solids, takeItem, keys, updatePlayer, updateEnemy, floorH };
+window.__dom1417 = { netSend, shared, NET, RP, agents, capture, HIDES, avatar, S, player, items, E, DOORS, startFinal, showE, inter, nodes, nodeIds, bfs, solids, takeItem, keys, updatePlayer, updateEnemy, floorH };
 })();
 </script>
 </body></html>

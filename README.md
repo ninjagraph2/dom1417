@@ -4,4 +4,4 @@ PS1-хоррор в браузере: заброшенный особняк ку
 
 Играть: https://ninjagraph2.github.io/dom1417/
 
-Всё в одном `index.html` на Three.js r128; кооператив работает через WebRTC (PeerJS), библиотеки лежат рядом.
+Всё в одном `index.html` на Three.js r128; кооператив работает через WebRTC (Trystero: Nostr, BitTorrent-трекеры и MQTT для знакомства), библиотеки лежат рядом.
